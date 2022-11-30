@@ -1,0 +1,129 @@
+Original CFG:
+
+V = {A, B, C, D, E, S}
+T = {a, b}
+P = {
+    A -> `C`
+    A -> `a`
+    B -> `C`
+    B -> `b`
+    C -> `C D E`
+    C -> ``
+    D -> `A`
+    D -> `B`
+    D -> `a b`
+    S -> ``
+    S -> `a A a`
+    S -> `b B b`
+}
+S = S
+
+-------------------------------------
+
+>> Eliminating epsilon productions
+Nullables are {A, B, C, D, S}
+Created 15 productions, original had 12
+
+V = {A, B, C, D, E, S}
+T = {a, b}
+P = {
+    A -> `C`
+    A -> `a`
+    B -> `C`
+    B -> `b`
+    C -> `C D E`
+    C -> `C E`
+    C -> `D E`
+    C -> `E`
+    D -> `A`
+    D -> `B`
+    D -> `a b`
+    S -> `a A a`
+    S -> `a a`
+    S -> `b B b`
+    S -> `b b`
+}
+S = S
+
+>> Eliminating unit pairs
+Found 5 unit productions
+Unit pairs: {(A, A), (A, C), (A, E), (B, B), (B, C), (B, E), (C, C), (C, E), (D, A), (D, B), (D, C), (D, D), (D, E), (E, E), (S, S)}
+Created 21 new productions, original had 15
+
+V = {A, B, C, D, E, S}
+T = {a, b}
+P = {
+    A -> `C D E`
+    A -> `C E`
+    A -> `D E`
+    A -> `a`
+    B -> `C D E`
+    B -> `C E`
+    B -> `D E`
+    B -> `b`
+    C -> `C D E`
+    C -> `C E`
+    C -> `D E`
+    D -> `C D E`
+    D -> `C E`
+    D -> `D E`
+    D -> `a b`
+    D -> `a`
+    D -> `b`
+    S -> `a A a`
+    S -> `a a`
+    S -> `b B b`
+    S -> `b b`
+}
+S = S
+
+>> Eliminating useless symbols
+Generating symbols: {A, B, D, S, a, b}
+Reachable symbols: {A, B, S, a, b}
+Useful symbols: {A, B, S, a, b}
+Removed 3 variables, 0 terminals and 15 productions
+
+V = {A, B, S}
+T = {a, b}
+P = {
+    A -> `a`
+    B -> `b`
+    S -> `a A a`
+    S -> `a a`
+    S -> `b B b`
+    S -> `b b`
+}
+S = S
+
+>> Replacing terminals in bad bodies
+Added 0 new variables: {}
+Created 6 new productions, original had 6
+
+V = {A, B, S}
+T = {a, b}
+P = {
+    A -> `a`
+    B -> `b`
+    S -> `A A A`
+    S -> `A A`
+    S -> `B B B`
+    S -> `B B`
+}
+S = S
+
+>> Broke 2 bodies, added 2 new variables
+>>> Result CFG:
+
+V = {A, B, S, S_2, S_3}
+T = {a, b}
+P = {
+    A -> `a`
+    B -> `b`
+    S -> `A A`
+    S -> `A S_2`
+    S -> `B B`
+    S -> `B S_3`
+    S_2 -> `A A`
+    S_3 -> `B B`
+}
+S = S
