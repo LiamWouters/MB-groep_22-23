@@ -2,9 +2,9 @@
 #include "../../lib/nlohmann-json/json.hpp"
 #include "../utilities/utilities.h"
 
+#include <string>
 #include <fstream>
 #include <iostream>
-
 using json = nlohmann::json;
 
 productions sortProductions(const productions& vec) {
@@ -555,4 +555,207 @@ bool CFG::accepts(const std::string& w, std::ostream& out) const {
         out << "false" << std::endl;
     }
     return accepted;
+}
+
+void CFG::lltable(){
+    /*
+     * This function determines the first and follow sets to be used by an LL parser.
+     *
+     * Rules for first sets:
+     * 1. If X is a terminal then First(X) is just X!
+     * 2. If there is a Production X → ε then add <EOS> to first(X)
+     * 3. If there is a Production X → Y1Y2…Yk then add first(Y1Y2..Yk) to first(X), First(Y1Y2..Yk) is either:
+     *      -First(Y1) (if First(Y1) doesn't contain ε)
+     *      OR (if First(Y1) does contain ε) then First (Y1Y2..Yk) is First(Y1) \ ε + First(Y2..Yk)
+     *      -If First(Y1) First(Y2)..First(Yk) all contain ε then add ε to First(Y1Y2…Yk) as well
+     *
+     * Rules for the follow sets:
+     * 1. The starting symbol always has <EOS> in its follow set
+     * 2. If there is a production A → aBb, then everything in FIRST(b) \ ε goes in FOLLOW(B)
+     * 3. If there is a production A → aB, then everything in FOLLOW(A) is in FOLLOW(B)
+     * 4. If there is a production A → aBb, where FIRST(b) contains ε, then everything in FOLLOW(A) is in FOLLOW(B)
+     *
+     * Credits: https://stackoverflow.com/questions/3818330/what-are-first-and-follow-sets-used-for-in-parsing
+     */
+    // Some containers to store information.
+    std::map<std::string, std::vector<std::string>> first;
+    std::map<std::string, std::vector<std::string>> follow;
+    std::map<std::string, std::vector<std::string>> check;
+    std::map<std::string, std::vector<std::string>> followFollow;
+    std::vector<std::string> tableElements = t;
+    tableElements.emplace_back("<EOS>");
+    std::set<std::string> nullables = findNullableVariables();
+    // Initialize maps with all empty vectors
+    for(auto &i: v){
+        first[i] = {};
+        follow[i] = {};
+        followFollow[i] = {};
+    }
+    // Determine the easy and hard sets
+    for(auto &i: p){
+        std::string var = i.head;
+        if(i.body.empty()){
+            first[var].emplace_back("");
+            continue;
+        }
+        std::string firstchar = i.body[0];
+        if(isTerminal(firstchar)){
+            first[var].emplace_back(firstchar);
+            continue;
+        }
+        else{
+            int j = 0;
+            std::string checkOrder = firstchar;
+            if(i.body.size() == 1){
+                if(nullables.find(firstchar) != nullables.end()){first[i.head].emplace_back("<EOS>");}
+                check[i.head].emplace_back(i.body[0]);
+                continue;
+            }
+            while(nullables.find(firstchar) != nullables.end()){
+                j += 1;
+                firstchar = i.body[j];
+                checkOrder += (i.body[j]);
+            }
+            if(j == i.body.size()-1){first[var].emplace_back("<EOS>");}
+            else{first[var].emplace_back(i.body[j+1]);}
+            check[i.head].emplace_back(checkOrder);
+        }
+    }
+    // Determine the "harder" first sets.
+    bool noChecks = check.empty();
+    while(!noChecks){
+        auto i = check.begin();
+        while(i != check.end()){
+            auto j = i->second.begin();
+            while(j != i->second.end()){
+                bool noCheckVars = true;
+                for(auto &k: *j){
+                    std::string var(1, k);
+                    if(!check[var].empty()){
+                        noCheckVars = false;
+                    }
+                }
+                if(noCheckVars){
+                    std::vector<std::string> add;
+                    for(auto &k: *j){
+                        std::string var(1, k);
+                        if(add.empty()){add = first[var];}
+                        else{
+                            std::vector<std::string> refresh;
+                            std::merge(add.begin(), add.end(), first[var].begin(), first[var].end(), std::back_inserter(refresh));
+                            add = refresh;
+                        }
+                    }
+                    for(auto &k: add){
+                        if(k.empty()){continue;}
+                        if(std::find(first[i->first].begin(), first[i->first].end(), k) == first[i->first].end()){
+                            first[i->first].emplace_back(k);
+                        }
+                    }
+                    i->second.erase(j);
+                }
+                else{j++;}
+            }
+            if(i->second.empty()){i = check.erase(i);}
+            else{i++;}
+        }
+        noChecks = true;
+        for(auto &k: check){
+            if(!k.second.empty()){noChecks = false; break;}
+        }
+    }
+    // First sets are now properly determined, now onto the follow sets
+    follow[s].emplace_back("<EOS>");
+    for(auto &pr: p){
+        for(int i = 0; i < pr.body.size(); i++){
+            if(isVariable(pr.body[i])){
+                if(i == pr.body.size()-1){
+                    if(isVariable(pr.body[i]) && std::find(followFollow[pr.body[i]].begin(), followFollow[pr.body[i]].end(), pr.head) == followFollow[pr.body[i]].end()){
+                        followFollow[pr.body[i]].emplace_back(pr.head);
+                    }
+                    if(std::find(follow[pr.body[i]].begin(), follow[pr.body[i]].end(), "<EOS>") == follow[pr.body[i]].end()){
+                        follow[pr.body[i]].emplace_back("<EOS>");
+                    }
+                    continue;
+                }
+                else if(isTerminal(pr.body[i+1])){
+                    if(std::find(follow[pr.body[i]].begin(), follow[pr.body[i]].end(), pr.body[i+1]) == follow[pr.body[i]].end()){
+                        follow[pr.body[i]].emplace_back(pr.body[i+1]);
+                    }
+                }
+                else if(isVariable(pr.body[i+1])){
+                    for(auto &j: first[pr.body[i+1]]){
+                        if(std::find(follow[pr.body[i]].begin(), follow[pr.body[i]].end(), j) == follow[pr.body[i]].end()){
+                            follow[pr.body[i]].emplace_back(j);
+                        }
+                    }
+                    bool null = true;
+                    int j = i+1;
+                    while(j < pr.body.size()-1){
+                        if(isTerminal(pr.body[j])){
+                            null = false;
+                            break;
+                        }
+                        else if(nullables.find(pr.body[j]) == nullables.end()){
+                            null = false;
+                            break;
+                        }
+                    }
+                    if(null && std::find(followFollow[pr.body[i]].begin(), followFollow[pr.body[i]].end(), pr.head) == followFollow[pr.body[i]].end()) {
+                        followFollow[pr.body[i]].emplace_back(pr.head);
+                    }
+                }
+            }
+        }
+    }
+    // Remove the statements that imply that follow(A) must be added to itself or empty vectors
+    auto k = followFollow.begin();
+    std::vector<std::string> incompleteVars;
+    while(k != followFollow.end()){
+        if(k->second.empty()){k = followFollow.erase(k);}
+        else{
+            auto l = k->second.begin();
+            while(l != k->second.end()){
+                if(*l == k->first){k->second.erase(l);}
+                else{l++;}
+            }
+            if(k->second.empty()){k = followFollow.erase(k);}
+            else{
+                incompleteVars.emplace_back(k->first);
+                k++;
+            }
+        }
+    }
+    bool complete = followFollow.empty();
+    while(!complete){
+        auto m = followFollow.begin();
+        while(m != followFollow.end()){
+            auto n = m->second.begin();
+            while(n != m->second.end()){
+                std::string current = *n;
+                if(std::find(incompleteVars.begin(), incompleteVars.end(), current) == incompleteVars.end()){
+                    std::vector<std::string> combine;
+                    std::set_union(follow[current].begin(), follow[current].end(), follow[m->first].begin(), follow[m->first].end(), std::back_inserter(combine));
+                    for(auto &q: combine){
+                        if(std::find(follow[m->first].begin(), follow[m->first].end(), q) == follow[m->first].end()){
+                            follow[m->first].emplace_back(q);
+                        }
+                    }
+                    m->second.erase(n);
+                }
+                else{
+                    n++;
+                }
+            }
+            if(m->second.empty()){
+                m = followFollow.erase(m);
+            }
+            else{
+                m++;
+            }
+        }
+        if(followFollow.empty()){
+            complete = true;
+        }
+    }
 }

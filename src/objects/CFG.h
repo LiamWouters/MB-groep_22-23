@@ -31,6 +31,8 @@ public:
 
     bool accepts(const std::string& w, std::ostream& out = std::cout) const;
 
+    void lltable();
+
 private:
     int countProductions() const;
 
