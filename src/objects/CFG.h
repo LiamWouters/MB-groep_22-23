@@ -31,9 +31,9 @@ public:
     void setProductions(productions prod);
     void setStartState(std::string start);
 
-    void CFG::addVariable(std::string var);
-    void CFG::addTerminal(std::string ter);
-    void CFG::addProduction(Production prod);
+    void addVariable(std::string var);
+    void addTerminal(std::string ter);
+    void addProduction(Production prod);
 
     void print(std::ostream& out = std::cout) const;
 
