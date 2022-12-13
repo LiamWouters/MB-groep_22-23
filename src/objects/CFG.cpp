@@ -74,6 +74,25 @@ CFG::CFG(const std::string path) {
     }
 }
 
+CFG::CFG(const CFG &that) : v(that.v), t(that.t), p(that.p), s(that.s) {}
+
+/*
+ * Getters/ Setters [USE WITH CAUTION]
+ */
+productions CFG::getProductions() {return p;}
+std::string CFG::getStartState() {return s;}
+std::vector<std::string> CFG::getTerminals() {return t;}
+std::vector<std::string> CFG::getVariables() {return v;}
+
+void CFG::setVariables(std::vector<std::string> var) {v = var;}
+void CFG::setTerminals(std::vector<std::string> ter) {t = ter;}
+void CFG::setProductions(productions prod) {p = prod;}
+void CFG::setStartState(std::string start) {s = start;}
+
+void CFG::addVariable(std::string var) {v.emplace_back(var);}
+void CFG::addTerminal(std::string ter) {t.emplace_back(ter);}
+void CFG::addProduction(Production prod) {p.emplace_back(prod);}
+
 int CFG::countProductions() const { return p.size(); }
 
 int CFG::countVariables() const { return v.size(); }

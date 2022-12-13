@@ -11,9 +11,29 @@ using unitPair = std::pair<std::string, std::string>;
 
 class CFG {
 public:
+    /*
+     * Constructors
+     */
     CFG();
-
     CFG(std::string path);
+    CFG(const CFG &that);
+
+    /*
+     * Getters/ Setters [USE WITH CAUTION]
+     */
+    std::vector<std::string> getVariables();
+    std::vector<std::string> getTerminals();
+    productions getProductions();
+    std::string getStartState();
+
+    void setVariables(std::vector<std::string> var);
+    void setTerminals(std::vector<std::string> ter);
+    void setProductions(productions prod);
+    void setStartState(std::string start);
+
+    void CFG::addVariable(std::string var);
+    void CFG::addTerminal(std::string ter);
+    void CFG::addProduction(Production prod);
 
     void print(std::ostream& out = std::cout) const;
 
