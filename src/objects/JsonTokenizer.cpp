@@ -20,6 +20,7 @@ void JsonTokenizer::tokenize(const std::string& path) {
             c++;
         }
     }
+    infile.close();
 }
 
 void JsonTokenizer::split(const std::string& path) {
@@ -31,6 +32,7 @@ void JsonTokenizer::split(const std::string& path) {
     while (infile >> std::noskipws >> ch) {
         strings.emplace_back(1, ch);
     }
+    infile.close();
 }
 
 void JsonTokenizer::printTokens(std::ostream& out = std::cout) const {
