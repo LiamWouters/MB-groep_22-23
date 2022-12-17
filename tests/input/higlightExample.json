@@ -1,0 +1,19 @@
+{
+  "This blue string has a purple value" : 123,
+  "Another blue string has a pink special value": true,
+  "Blue strings can also have another, green string value": "See?",
+  "Now for arrays": [
+    true,
+    null,
+    {
+      "Recursion": "We conquer it like a boss.",
+      "This": [
+        {"a": "n"},
+        {"c": [{"d": 4.0}]}
+      ]
+    },
+    345.5,
+    "filler",
+    [null, 456, "more filler", "last filler"]
+  ]
+}
