@@ -115,7 +115,7 @@ void SyntaxHighlighter::customToHTML(const std::string& path){
      * that highlights the syntax of the file.
      *
      * Used colors:
-     * Red: Characters inside tags.
+     * Purple: Characters inside tags.
      * Blue: Characters such as '<', '>' and '-'.
      * Black: Characters between tags.
      * Red: Errors (any)
