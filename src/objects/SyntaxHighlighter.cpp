@@ -109,4 +109,62 @@ void SyntaxHighlighter::jsonToHTML(const std::string &path){
     std::cout << copy+".html" << " created successfully!\n";
 }
 
-void SyntaxHighlighter::customToHTML(const std::string & path){}
+void SyntaxHighlighter::customToHTML(const std::string& path){
+    /*
+     * Given a path to a Custom Markup Language (CML) file, this function creates an output HTML
+     * that highlights the syntax of the file.
+     *
+     * Used colors:
+     * Red: Characters inside tags.
+     * Blue: Characters such as '<', '>' and '-'.
+     * Black: Characters between tags.
+     * Red: Errors (any)
+     *
+     * =====================================================================
+     *
+     * Step 1: Get the filename from the given path and check if it's CML.
+     */
+    std::string copy = path;
+    while(copy.find('/') != std::string::npos){
+        copy = copy.substr(1, copy.size()-1);
+    }
+    if(!copy.find(".cml")){std::cout << "Invalid path: expected CML file.\n"; return;}
+    for(int i = 0; i < 4; i++){copy.pop_back();}
+    // Step 2: Create an HTML file with the same filename in the outputhtml folder.
+    std::ofstream file; file.open("../outputhtml/"+copy+".html", std::ios::out);
+    if(!file){std::cout << "Error in creating html file: perhaps an invalid path?\n"; return;}
+    // Final Step: Syntax Highlight and write to HTML with the help of a tokenizer.
+    JsonTokenizer j; j.tokenize(path);
+    // Keep track of the current line number and its contents.
+    int currLine = 1; std::string addLine; std::string tagContent;
+    // Some bools for conditions, the clones deal with recursion.
+    bool betweenTag = false;
+    // A clean HTML file has a body tag.
+    file << body;
+    // Iterate over all tokens and color them accordingly, main obstacles are '<', '/' and '>'.
+    // Notice the use of &lt; and &gt;, these make it possible to actually display "tags".
+    for(auto & token : j.tokens){
+        if(token.pos.line == currLine+1){
+            currLine += 1;
+            file << pre(addLine)
+            addLine = "";
+        }
+        while(addLine.size()<token.pos.column-1){addLine += " ";}
+        if(token.content == "/"){
+            addLine += endTag(purple); addLine += blue; addLine += token.content; addLine += endTag(blue); addLine += purple;
+            continue;
+        }
+        if(token.content == "<"){
+            addLine += blue; addLine += "&lt;"; addLine += purple;
+            continue;
+        }
+        if(token.content == ">"){
+            betweenTag = !betweenTag;
+            addLine += endTag(purple); addLine += "&gt;"; addLine += endTag(blue);
+            continue;
+        }
+        addLine += token.content;
+    }
+    // Add the final line and the body endtag.
+    file << pre(addLine) file << endTag(body);
+}
