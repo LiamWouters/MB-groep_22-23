@@ -3,7 +3,7 @@
   "Terminals": ["x", "y"],
   "Productions": [
     {"head": "S", "body": ["x", "S", "y"]},
-    {"head": "S", "body": ["x"]}
+    {"head": "S", "body": []}
   ],
   "Start": "S"
 }
