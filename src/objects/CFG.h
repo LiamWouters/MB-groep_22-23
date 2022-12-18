@@ -51,7 +51,7 @@ public:
 
     bool accepts(const std::string& w, std::ostream& out = std::cout) const;
 
-    void lltable();
+    std::map<std::pair<std::string, std::string>, std::vector<std::string>> lltable() const;
 
 private:
     int countProductions() const;

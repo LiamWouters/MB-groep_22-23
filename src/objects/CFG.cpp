@@ -576,7 +576,7 @@ bool CFG::accepts(const std::string& w, std::ostream& out) const {
     return accepted;
 }
 
-void CFG::lltable(){
+std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::lltable() const {
     /*
      * This function determines the first and follow sets to be used by an LL parser.
      *
@@ -594,46 +594,48 @@ void CFG::lltable(){
      * 3. If there is a production A → aB, then everything in FOLLOW(A) is in FOLLOW(B)
      * 4. If there is a production A → aBb, where FIRST(b) contains ε, then everything in FOLLOW(A) is in FOLLOW(B)
      *
+     * Final rules for constructing the parse table:
+     * Step 3: For each production A –> α. (A tends to alpha):
+     *  1. For each terminal in First(α), make entry A –> α in the table.
+     *  2. If First(α) contains ε, then for each terminal in Follow(A), make entry A –>  ε in the table.
+     *  3. If the First(α) contains ε and Follow(A) contains $, then make entry A –>  ε in the table for the $.
+     *
      * Credits: https://stackoverflow.com/questions/3818330/what-are-first-and-follow-sets-used-for-in-parsing
+     * And: https://www.geeksforgeeks.org/construction-of-ll1-parsing-table/
      */
     // Some containers to store information.
     std::map<std::string, std::vector<std::string>> first;
     std::map<std::string, std::vector<std::string>> follow;
     std::map<std::string, std::vector<std::string>> check;
     std::map<std::string, std::vector<std::string>> followFollow;
+    std::map<std::pair<std::string, std::string>, std::vector<std::string>> expect;
     std::vector<std::string> tableElements = t;
     tableElements.emplace_back("<EOS>");
     std::set<std::string> nullables = findNullableVariables();
     // Initialize maps with all empty vectors
     for(auto &i: v){
-        first[i] = {};
-        follow[i] = {};
-        followFollow[i] = {};
+        first[i] = {}; follow[i] = {}; followFollow[i] = {}; expect[std::make_pair(i, "<EOS>")] = {"<ERR>"};
+        for(auto &j: t){expect[std::make_pair(i, j)] = {"<ERR>"};}
     }
     // Determine the easy and hard sets
     for(auto &i: p){
         std::string var = i.head;
         if(i.body.empty()){
-            first[var].emplace_back("");
-            continue;
+            first[var].emplace_back(""); continue;
         }
         std::string firstchar = i.body[0];
         if(isTerminal(firstchar)){
-            first[var].emplace_back(firstchar);
-            continue;
+            first[var].emplace_back(firstchar); continue;
         }
         else{
             int j = 0;
             std::string checkOrder = firstchar;
             if(i.body.size() == 1){
                 if(nullables.find(firstchar) != nullables.end()){first[i.head].emplace_back("<EOS>");}
-                check[i.head].emplace_back(i.body[0]);
-                continue;
+                check[i.head].emplace_back(i.body[0]); continue;
             }
             while(nullables.find(firstchar) != nullables.end()){
-                j += 1;
-                firstchar = i.body[j];
-                checkOrder += (i.body[j]);
+                j += 1; firstchar = i.body[j]; checkOrder += (i.body[j]);
             }
             if(j == i.body.size()-1){first[var].emplace_back("<EOS>");}
             else{first[var].emplace_back(i.body[j+1]);}
@@ -650,9 +652,7 @@ void CFG::lltable(){
                 bool noCheckVars = true;
                 for(auto &k: *j){
                     std::string var(1, k);
-                    if(!check[var].empty()){
-                        noCheckVars = false;
-                    }
+                    if(!check[var].empty()){noCheckVars = false;}
                 }
                 if(noCheckVars){
                     std::vector<std::string> add;
@@ -677,8 +677,7 @@ void CFG::lltable(){
             }
             if(i->second.empty()){i = check.erase(i);}
             else{i++;}
-        }
-        noChecks = true;
+        } noChecks = true;
         for(auto &k: check){
             if(!k.second.empty()){noChecks = false; break;}
         }
@@ -694,8 +693,7 @@ void CFG::lltable(){
                     }
                     if(std::find(follow[pr.body[i]].begin(), follow[pr.body[i]].end(), "<EOS>") == follow[pr.body[i]].end()){
                         follow[pr.body[i]].emplace_back("<EOS>");
-                    }
-                    continue;
+                    } continue;
                 }
                 else if(isTerminal(pr.body[i+1])){
                     if(std::find(follow[pr.body[i]].begin(), follow[pr.body[i]].end(), pr.body[i+1]) == follow[pr.body[i]].end()){
@@ -711,14 +709,8 @@ void CFG::lltable(){
                     bool null = true;
                     int j = i+1;
                     while(j < pr.body.size()-1){
-                        if(isTerminal(pr.body[j])){
-                            null = false;
-                            break;
-                        }
-                        else if(nullables.find(pr.body[j]) == nullables.end()){
-                            null = false;
-                            break;
-                        }
+                        if(isTerminal(pr.body[j])){ null = false; break;}
+                        else if(nullables.find(pr.body[j]) == nullables.end()){null = false; break;}
                     }
                     if(null && std::find(followFollow[pr.body[i]].begin(), followFollow[pr.body[i]].end(), pr.head) == followFollow[pr.body[i]].end()) {
                         followFollow[pr.body[i]].emplace_back(pr.head);
@@ -740,8 +732,7 @@ void CFG::lltable(){
             }
             if(k->second.empty()){k = followFollow.erase(k);}
             else{
-                incompleteVars.emplace_back(k->first);
-                k++;
+                incompleteVars.emplace_back(k->first); k++;
             }
         }
     }
@@ -762,19 +753,36 @@ void CFG::lltable(){
                     }
                     m->second.erase(n);
                 }
-                else{
-                    n++;
+                else{n++;}
+            }
+            if(m->second.empty()){m = followFollow.erase(m);}
+            else{m++;}
+        }
+        if(followFollow.empty()){complete = true;}
+    }
+    // First and follow sets are complete, now determine expected rules.
+    for(auto &production: p){
+        if(production.body.empty()){
+            for(auto &i: follow[production.head]){
+                expect[std::make_pair(production.head, i)] = {};
+            } continue;
+        }
+        std::string firstChar = production.body[0];
+        if(isTerminal(firstChar)){expect[std::make_pair(production.head, firstChar)] = production.body;}
+        else{
+            for(auto &l: first[firstChar]){
+                if(l.empty()){continue;}
+                expect[std::make_pair(production.head, l)] = production.body;
+            }
+            if(std::find(first[firstChar].begin(), first[firstChar].end(), "") != first[firstChar].end()){
+                for(auto &m: follow[firstChar]){
+                    expect[std::make_pair(production.head, m)] = {};
+                }
+                if(std::find(follow[firstChar].begin(), follow[firstChar].end(), "<EOS>") != follow[firstChar].end()){
+                    expect[std::make_pair(production.head, "<EOS>")] = {};
                 }
             }
-            if(m->second.empty()){
-                m = followFollow.erase(m);
-            }
-            else{
-                m++;
-            }
-        }
-        if(followFollow.empty()){
-            complete = true;
         }
     }
+    return expect;
 }
