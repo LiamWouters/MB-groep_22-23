@@ -53,8 +53,6 @@ public:
 
     std::map<std::pair<std::string, std::string>, std::vector<std::string>> lltable() const;
 
-    bool isTerminal(const std::string& symbol) const;
-
 private:
     int countProductions() const;
 
@@ -78,6 +76,8 @@ private:
 
     void replaceProductionRuleEps(const std::set<std::string>& nullableV, productions& temp, const Production& x,
                                   int m) const;
+
+    bool isTerminal(const std::string& symbol) const;
 
     bool isVariable(const std::string& symbol) const;
 

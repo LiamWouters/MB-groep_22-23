@@ -25,10 +25,10 @@ bool LL1Parser::accepts(const std::string &input){
      *
      * ==================================================================================
      *
-     * Step 1: fetch the "expect" table, get the starting state and copy the input
-     *
+     * Step 1: fetch the "expect" table, get the starting state and copy the input.
      */
     auto expect = grammar.lltable();
+    std::vector<std::string> terminals = grammar.getTerminals();
     std::string current = grammar.getStartState();
     std::string inputCopy = input;
     // This variable was necessary to prevent some errors.
@@ -49,7 +49,7 @@ bool LL1Parser::accepts(const std::string &input){
         current = replace;
         // If the first character of the current string is a terminal, execute a match.
         std::string first(1, current[0]);
-        if(grammar.isTerminal(first)){
+        if(std::find(terminals.begin(), terminals.end(), first) != terminals.end()){
             if(!match(inputCopy, current)){return false;}
         }
         if(current.empty() && !inputCopy.empty()){return false;}
