@@ -147,6 +147,12 @@ void LR1Parser::constructParseTable() {
             for (std::string symbol : item.first.body) {
                 std::cout << symbol;
             }
+            if (item.second != "") {
+                std::cout << ",\t" << item.second;
+            }
+            else {
+                std::cout << ",\tNONE";
+            }
             std::cout << "]" << std::endl;
         }
         std::cout << "________________________________________" << std::endl;
@@ -182,8 +188,32 @@ void LR1Parser::constructParseTable() {
         std::cout << "________________________________________" << std::endl;
     }
     // create complete item set 0!
+    // find lookaheads using first and follow set
+    // for each follow terminal create an item with that lookahead
+    itemSet0.clear();
+    for (std::pair<Production, std::string> item : parserItemSets[0]) {
+        for (std::string term : follow[{0,item.first.head}]) {
+            itemSet0.emplace_back(std::make_pair(item.first, term));
+        }
+    }
 
-
+    if (debugprint) {
+        std::cout << "(current) Item Set 0 : " << std::endl;
+        for (std::pair<Production, std::string> item : itemSet0) {
+            std::cout << "\t [" << item.first.head << " -> ";
+            for (std::string symbol : item.first.body) {
+                std::cout << symbol;
+            }
+            if (item.second != "") {
+                std::cout << ",\t" << item.second;
+            }
+            else {
+                std::cout << ",\tNONE";
+            }
+            std::cout << "]" << std::endl;
+        }
+        std::cout << "________________________________________" << std::endl;
+    }
 }
 
 bool LR1Parser::parse(std::string input) {
