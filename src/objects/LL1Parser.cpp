@@ -41,10 +41,11 @@ bool LL1Parser::accepts(const std::string &input){
         if(inputCopy.empty()){currentChar = "<EOS>";}
         // At this point the first character of the current string is always a variable,
         // which means we expect a certain production.
-        if(expect[std::make_pair(current, currentChar)] == error){return false;}
+        std::string currentSymbol(1, current[0]);
+        if(expect[std::make_pair(currentSymbol, currentChar)] == error){return false;}
         // Replace the symbol with the expected production rule.
         std::string replace;
-        for(auto &i: expect[std::make_pair(current, currentChar)]){replace += i;}
+        for(auto &i: expect[std::make_pair(currentSymbol, currentChar)]){replace += i;}
         if(current.size() > 1){replace += current.substr(1, current.size()-1);}
         current = replace;
         // If the first character of the current string is a terminal, execute a match.

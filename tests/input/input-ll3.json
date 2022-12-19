@@ -1,12 +1,12 @@
 {
-  "Variables": ["S'", "S", "Y"],
+  "Variables": ["T", "S", "Y"],
   "Terminals": ["a","x", "y", "z"],
   "Productions": [
-    {"head": "S'", "body": ["S"]},
+    {"head": "T", "body": ["S"]},
     {"head": "S", "body": ["x", "Y", "z", "S"]},
     {"head": "S", "body": ["a"]},
     {"head": "Y", "body": ["x", "Y", "z"]},
     {"head": "Y", "body": ["y"]}
   ],
-  "Start": "S'"
+  "Start": "T"
 }
