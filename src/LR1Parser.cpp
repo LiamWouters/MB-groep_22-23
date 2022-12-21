@@ -11,7 +11,7 @@
  * CONSTRUCTORS
  */
 LR1Parser::LR1Parser(const CFG &grammar) : grammar(CFG(grammar)) {
-    debugprint = true;
+    debugprint = false;
     constructParseTable();
 }
 
@@ -372,134 +372,8 @@ void LR1Parser::constructParseTable() {
      * The input grammar may NOT already have a state called "S"
      * The input grammar may NOT already have a terminal "*"
      */
-    /// the "https://en.wikipedia.org/wiki/Canonical_LR_parser" method (half complete)
-    /*
-    /// Augment grammar
-    // add new starting state
-    grammar.addVariable("S");
-    grammar.addProduction(Production("S", {grammar.getStartState()}));
-    grammar.setStartState("S");
-
-    if (debugprint) {
-        std::cout << "Augmented grammar: " << std::endl;
-        grammar.print();
-        std::cout << "________________________________________" << std::endl;
-    }
-    /// create item sets
-    /// item set 0:
-    // create item set 0 for LR(0) (no lookaheads) (start from the start rule, then create the closure)
-    std::set<std::pair<Production, std::string>> itemSet0;
-    for (Production prod : grammar.getProductions()) {
-        if (prod.head == grammar.getStartState()) {
-            // augment body (add '*' to indicate current parsing position)
-            augmentRule(prod);
-            itemSet0.insert(std::make_pair(prod, "")); // lookahead is empty
-        }
-    }
-    generateClosure(itemSet0);
-    parserItemSets.insert(std::make_pair(0, itemSet0));
-
-    if (debugprint) {
-        std::cout << "(current) Item Set 0 : (closure from start rule, lookahead missing (LR(0)))" << std::endl;
-        for (std::pair<Production, std::string> item : itemSet0) {
-            std::cout << "\t [" << item.first.head << " -> ";
-            for (std::string symbol : item.first.body) {
-                std::cout << symbol;
-            }
-            if (item.second != "") {
-                std::cout << ",\t" << item.second;
-            }
-            else {
-                std::cout << ",\tNONE";
-            }
-            std::cout << "]" << std::endl;
-        }
-        std::cout << "________________________________________" << std::endl;
-    }
-
-    // create FIRST set
-    createFirstSet();
-
-    if (debugprint) {
-        std::cout << "First Set: " << std::endl;
-        for (std::string variable : grammar.getVariables()) {
-            std::cout << "\t FIRST(" << variable << ") = { ";
-            for (std::string terminal : first[variable]) {
-                std::cout << "\'" << terminal << "\' ";
-            }
-            std::cout << "}" << std::endl;
-        }
-        std::cout << "________________________________________" << std::endl;
-    }
-
-    // using the incomplete item set 0, create FOLLOW set
-    createFollowSet(0);
-
-    if (debugprint) {
-        std::cout << "Follow Set: " << std::endl;
-        for (std::string variable : grammar.getVariables()) {
-            std::cout << "\t FOLLOW(0," << variable << ") = { ";
-            for (std::string terminal : follow[{0,variable}]) {
-                std::cout << "\'" << terminal << "\' ";
-            }
-            std::cout << " }" << std::endl;
-        }
-        std::cout << "________________________________________" << std::endl;
-    }
-    // create complete item set 0!
-    // find lookaheads using first and follow set
-    // for each follow terminal create an item with that lookahead
-    itemSet0.clear();
-    for (std::pair<Production, std::string> item : parserItemSets[0]) {
-        for (std::string term : follow[{0,item.first.head}]) {
-            itemSet0.insert(std::make_pair(item.first, term));
-        }
-    }
-    parserItemSets[0] = itemSet0;
-
-
-    if (debugprint) {
-        std::cout << "(FINAL) Item Set 0 : " << std::endl;
-        for (std::pair<Production, std::string> item : parserItemSets[0]) {
-            std::cout << "\t [" << item.first.head << " -> ";
-            for (std::string symbol : item.first.body) {
-                std::cout << symbol;
-            }
-            if (item.second != "") {
-                std::cout << ",\t" << item.second;
-            }
-            else {
-                std::cout << ",\tNONE";
-            }
-            std::cout << "]" << std::endl;
-        }
-        std::cout << "________________________________________" << std::endl;
-    }
-
-    // create other item sets
-    generateNextSets();
-
-    if (debugprint) {
-        std::cout << "PRINT ALL SETS : " << std::endl;
-        for (auto it = parserItemSets.begin(); it != parserItemSets.end(); it++) {
-            std::cout << "\tItem Set " << (*it).first << " : " << std::endl;
-            for (std::pair<Production, std::string> item : (*it).second) {
-                std::cout << "\t\t [" << item.first.head << " -> ";
-                for (std::string symbol: item.first.body) {
-                    std::cout << symbol;
-                }
-                if (item.second != "") {
-                    std::cout << ",\t" << item.second;
-                } else {
-                    std::cout << ",\tNONE";
-                }
-                std::cout << "]" << std::endl;
-            }
-            std::cout << "________________________________________" << std::endl;
-        }
-    }
-     */
-    /// the goto method: "https://www.eecis.udel.edu/~cavazos/cisc672-fall08/lectures/Lecture-10.pdf"
+    /// source: "https://en.wikipedia.org/wiki/Canonical_LR_parser"
+    /// the goto method: source: "https://www.eecis.udel.edu/~cavazos/cisc672-fall08/lectures/Lecture-10.pdf"
     // create item set 0, then itemset1 = goto(i0, x), ...
     /// Augment grammar
     // add new starting state
