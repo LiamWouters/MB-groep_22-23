@@ -6,7 +6,7 @@
 int main(int argc, char* argv[]) {
     //JsonGrammarGenerator::generate();
 
-    CFG* grammar = new CFG("../tests/input/input-LR1_1.json");
+    CFG* grammar = new CFG("../tests/input/input-LR1_4.json");
     LR1Parser* parser = new LR1Parser(*grammar);
     std::cout << "done!" << std::endl;
 }

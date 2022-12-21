@@ -1,0 +1,9 @@
+{
+  "Variables": ["SheepNoise"],
+  "Terminals": ["baa"],
+  "Productions": [
+    {"head": "SheepNoise", "body": ["baa", "SheepNoise"]},
+    {"head": "SheepNoise", "body": ["baa"]}
+  ],
+  "Start": "SheepNoise"
+}

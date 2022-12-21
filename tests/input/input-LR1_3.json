@@ -1,0 +1,12 @@
+{
+  "Variables": ["Expr", "Factor"],
+  "Terminals": ["num", "+", "(", ")"],
+  "Productions": [
+    {"head": "Expr", "body": ["Factor"]},
+    {"head": "Expr", "body": ["(", "Expr", ")"]},
+    {"head": "Factor", "body": ["num"]},
+    {"head": "Factor", "body": ["+", "Factor"]},
+    {"head": "Factor", "body": ["Factor", "+", "n"]}
+  ],
+  "Start": "Expr"
+}
