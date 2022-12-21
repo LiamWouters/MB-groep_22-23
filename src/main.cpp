@@ -1,5 +1,5 @@
 #include <iostream>
-#include "LR1Parser.h"
+#include "objects/LR1Parser.h"
 #include "objects/CFG.h"
 #include "objects/JsonGrammarGenerator.h"
 

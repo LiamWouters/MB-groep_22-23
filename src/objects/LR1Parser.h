@@ -7,8 +7,8 @@
 
 #include <vector>
 #include <stack>
-#include "objects/CFG.h"
-#include "objects/Production.h"
+#include "CFG.h"
+#include "Production.h"
 
 class LR1Parser {
     /*
