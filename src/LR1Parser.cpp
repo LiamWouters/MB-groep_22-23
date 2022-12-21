@@ -523,10 +523,56 @@ void LR1Parser::constructParseTable() {
     }
 }
 
-bool LR1Parser::parse(std::string input) {
-    /// check if parse table is constructed (if not construct)
+bool LR1Parser::parse(std::vector<std::string> input) {
+    /// parse table constructed after constructor is called
+    /// parse:
+    parserStack.push("0"); // state
+    std::string inpSymbol = "";
+    std::string action = "";
+    while (action != "accept") {
+        if (input.size() > 0) {
+            inpSymbol = input[0];
+        }
+        else {
+            inpSymbol = "EOS";
+        }
+        if (inpSymbol != "EOS" and std::find(grammar.getTerminals().begin(), grammar.getTerminals().end(), inpSymbol) == grammar.getTerminals().end()) {
+            std::cerr << "LR PARSER ERROR: parser input is not a terminal of the grammar" << std::endl;
+            return false;
+        }
+        std::vector<std::string> event = actionTable[{std::stoi(parserStack.top()), inpSymbol}];
+        if (event.empty()) {
+            std::cerr << "LR PARSER ERROR: parser input is not valid (action is empty, state + input symbol is not valid)" << std::endl;
+            return false;
+        }
+        action = event[0];
 
-    /// parse
-
-    return false;
+        if (action == "shift") {
+            // push input onto stack, push new state onto stack
+            parserStack.push(inpSymbol);
+            parserStack.push(event[1]);
+            // remove input symbol from input
+            input.erase(input.begin());
+        }
+        else if (action == "reduce") {
+            std::string reduceTO = event[1]; // production head
+            std::vector<std::string> reduceFrom;
+            for (int i = event.size()-1; i > 2; i--) { // the production body is put in reverse
+                if (event[i] == "*") {continue;} // don't include "*" in production
+                reduceFrom.emplace_back(event[i]);
+            }
+            // reduce the stack
+            while (!reduceFrom.empty()) {
+                parserStack.pop(); // remove state
+                if (reduceFrom[0] != parserStack.top()) { std::cerr << "LR PARSER ERROR: reduce action error" << std::endl; return false; }
+                parserStack.pop(); // pop symbol
+                reduceFrom.erase(reduceFrom.begin());
+            }
+            // get next state
+            int nextState = gotoTable[{std::stoi(parserStack.top()), reduceTO}];
+            parserStack.push(reduceTO);
+            parserStack.push(std::to_string(nextState));
+        }
+    }
+    return true; // action must be "accept" (it left the while loop)
 }
