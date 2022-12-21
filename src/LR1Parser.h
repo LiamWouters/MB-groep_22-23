@@ -42,7 +42,6 @@ private:
     void computeGOTO();
     void createGOTOTable();
     void createACTIONTable();
-    void generateNextSets();
     void createItemSet(const int itemSetNumber);
     void generateClosure(std::set<std::pair<Production, std::string>>& itemSet); // generates the closure of the given item set
     void createFirstSet();

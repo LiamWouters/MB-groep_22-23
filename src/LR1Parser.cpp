@@ -20,45 +20,6 @@ LR1Parser::LR1Parser(const CFG &grammar) : grammar(CFG(grammar)) {
  * PRIVATE FUNCTIONS
  */
 
-void LR1Parser::generateNextSets() {
-    /*
-     * Generate next sets from existing sets:
-     *  => Steps: 1) For every symbol 1 appearing after "*" in each already existing set k, create new item set m by adding to m all the rules of k where "*" is followed by A,
-     *               but only if m will not be the same as an already existing item set after step 3
-     *            2) shift all the "*" for each rule in the new set
-     *            3) create closure of the new item set
-     *            4) Repeat from step 1 for all new created item sets until no more new sets appear
-     */
-    /// STEP 1
-    std::set<std::set<std::pair<Production, std::string>>> newItemSets;
-    std::map<std::string, std::set<std::pair<Production, std::string>>> itemSetforSymbol; // used to gather all the rules which have the given symbol after the * from the already existing sets
-
-    // grab rules
-    for (int i = 0; i < parserItemSets.size(); i++) {
-        std::set<std::pair<Production, std::string>> existingItemSet = parserItemSets[i];
-        for (std::pair<Production, std::string> item : existingItemSet) {
-            // for each item in existing item set, check its production for the first symbol after the *
-            std::string parsedSymbol = getParsedSymbol(item);
-            shiftMarker(item);                                 /// STEP 2 (only applies to existing items, not those gotten from the closure of the new sets)
-            // add item to the correct new item set
-            if (itemSetforSymbol.count(parsedSymbol) == 0) {
-                itemSetforSymbol[parsedSymbol] = {item};
-            }
-            else {
-                itemSetforSymbol[parsedSymbol].insert(item);
-            }
-        }
-    }
-
-    /// STEP 3
-    for (auto it = itemSetforSymbol.begin(); it != itemSetforSymbol.end(); it++) {
-        // add closure
-        generateClosure((*it).second);
-        // add the new item set to the parserItemSets
-        parserItemSets[parserItemSets.size()] = (*it).second;
-    }
-}
-
 void LR1Parser::createGOTOTable() {
     /*
      * fill in the goto table
