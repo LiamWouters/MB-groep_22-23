@@ -107,6 +107,8 @@ private:
 
     bool evaluateCykTable(std::map<int, std::map<int, std::set<std::string>>>& table, int n) const;
 
+public:
+
     std::vector<std::string> v;
     std::vector<std::string> t;
     productions p;

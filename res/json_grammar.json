@@ -772,6 +772,7 @@
             "head": "ws"
         }
     ],
+    "Start": "json",
     "Terminals": [
         "{",
         "}",

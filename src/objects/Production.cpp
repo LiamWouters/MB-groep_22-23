@@ -24,3 +24,11 @@ std::string Production::toString() const {
     result += "`" + printVecDelimited(this->body, " ") + "`";
     return result;
 }
+
+bool Production::operator==(const Production& rhs) const {
+    if (head == rhs.head && body == rhs.body) {
+        return true;
+    } else {
+        return false;
+    }
+}
