@@ -10,8 +10,8 @@
 /*
  * CONSTRUCTORS
  */
-LR1Parser::LR1Parser(const CFG &grammar) : grammar(CFG(grammar)) {
-    debugprint = false;
+LR1Parser::LR1Parser(const CFG &grammar, const bool debugprint) : grammar(grammar), debugprint(debugprint) {
+    printbuffer.clear();
     constructParseTable();
 }
 
@@ -123,24 +123,9 @@ std::set<std::pair<Production, std::string>> LR1Parser::GOTO(const std::set<std:
         }
     }
     // produce closure
-    generateClosure(newItemSet); // missing lookaheads-
-    // put in lookaheads (using follow)
-    std::set<std::pair<Production, std::string>> newItemSetLookaheads;
-    for (std::pair<Production, std::string> item : newItemSet) {
-        if (item.second == "") {
-            // doesn't have lookahead yet
-            for (std::string term : follow[item.first.head]) {
-                newItemSetLookaheads.insert(std::make_pair(item.first, term));
-            }
-        }
-        else {
-            // if it does have a lookahead, it wasn't created in the closure but is one of the old rules (with marker shifted)
-            // just re-add it
-            newItemSetLookaheads.insert(item);
-        }
-    }
+    generateClosure(newItemSet);
 
-    return newItemSetLookaheads;
+    return newItemSet;
 }
 
 void LR1Parser::computeGOTO() {
@@ -205,23 +190,51 @@ void LR1Parser::computeGOTO() {
 
 void LR1Parser::generateClosure(std::set<std::pair<Production, std::string>> &itemSet) {
     std::vector<std::string> variables = grammar.getVariables();
+    std::vector<std::string> terminals = grammar.getTerminals();
     /// MAY NOT WORK CORRECTLY IF GRAMMAR CONTAINS EPSILON TRANSITIONS
     /*
      * RULES: all production rules for each nonterminal following a "*" must be included into the item set, until all of those nonterminals are dealt with
      * (for item set 0 we begin with the start rule)
-     * (no lookahead symbol is added for the new rules)
      */
     int ogSize = itemSet.size();
+    auto ogItemSet = itemSet;
 
-    for (std::pair<Production, std::string> item : itemSet) {
-        std::string nextSymbol = getParsedSymbol(item);
-        if (std::find(variables.begin(), variables.end(), nextSymbol) != variables.end()) {
+    for (std::pair<Production, std::string> item : ogItemSet) {
+        std::string parsedSymbol = getParsedSymbol(item);
+        if (std::find(variables.begin(), variables.end(), parsedSymbol) != variables.end()) {
             // next symbol is a variable
             // add its rules to the itemSet
+
+            // find lookaheads for possible new item sets
+            std::vector<std::string> lookaheads = {};
+            auto markerIt = std::find(item.first.body.begin(), item.first.body.end(), "*");
+            if (markerIt+2 != item.first.body.end()) {
+                // parsed symbol isn't the final symbol in the production
+                std::string symbolAfterParsed = *(markerIt+2);
+                if (std::find(terminals.begin(), terminals.end(), symbolAfterParsed) != terminals.end()) {
+                    // is terminal
+                    lookaheads.emplace_back(symbolAfterParsed);
+                }
+                else {
+                    // is variable
+                    for (auto f : first[symbolAfterParsed]) {
+                        lookaheads.emplace_back(f);
+                    }
+                }
+            }
+            else {
+                // parsed symbol IS the final symbol in the production
+                std::string originalLookahead = item.second;
+                lookaheads.emplace_back(originalLookahead);
+            }
+
             for (Production prod : grammar.getProductions()) {
-                if (prod.head != nextSymbol) {continue;}
+                if (prod.head != parsedSymbol) {continue;}
                 augmentRule(prod);
-                itemSet.insert(std::make_pair(prod, "")); /// NO LOOKAHEAD ADDED (calculated later)
+
+                for (auto l : lookaheads) {
+                    itemSet.insert(std::make_pair(prod, l));
+                }
             }
         }
     }
@@ -270,58 +283,6 @@ void LR1Parser::createFirstSet() {
     }
 }
 
-std::map<std::string, std::set<std::string>> LR1Parser::createFollowSet(const std::set<std::pair<Production, std::string>>* itemSet) {
-    std::vector<std::string> variables = grammar.getVariables();
-    std::vector<std::string> terminals = grammar.getTerminals();
-    /*
-     * will hold the set of terminals that can appear immediately after a nonterminal
-     * 3 possibilities: (B = nonterminal)
-     *          -> X -> a B b   [b is added to FOLLOW(x, B)]            RULE 1
-     *          -> X -> a B A   [FIRST(A) is added to FOLLOW(x, B)]     RULE 2
-     *          -> A -> a B     [FOLLOW(x, A) is added to FOLLOW(x, B)] RULE 3
-     */
-    //initialize
-    std::map<std::string, std::set<std::string>> follow;
-    for (std::string variable : grammar.getVariables()) {
-        follow[variable] = std::set<std::string>{"EOS"}; /// NOT SURE IF YOU ALWAYS HAVE EOS, MAY BE WRONG !!!!!!!!!!!!!!!!!!!!!!! CHECK
-    }
-    /// Rule 1&2:
-    for (std::pair<Production, std::string> item : *itemSet) {
-        // check production body for Variables, add next variable to the follow set for that variable
-        for (int i = 0; i < item.first.body.size()-1; i++) { // we don't check the last symbol because it doesn't have a follow
-            auto symbol = item.first.body[i];
-            auto next = item.first.body[i+1];
-            if (std::find(variables.begin(), variables.end(), symbol) != variables.end()) {
-                // if variable, check next symbol, if that symbol is a variable, add all the FIRST(nextsymb) terminals
-                // otherwise if next symbol = terminal add that terminal
-                if (std::find(variables.begin(), variables.end(), next) != variables.end()) {
-                    for (std::string terminal : first[next]) {
-                        follow[symbol].insert(terminal);
-                    }
-                }
-                else {
-                    if (std::find(terminals.begin(), terminals.end(), next) != terminals.end()) {
-                        follow[symbol].insert(next); // must be a terminal (test because it could add "*" otherwise)
-                    }
-                }
-            }
-        }
-    }
-    /// Rule 3: (now that Rule 1 and 2 are fully done we can apply this rule without missing anything)
-    for (std::pair<Production, std::string> item : *itemSet) {
-        // loop over all productions again
-        // check if production is of the form: A -> ... B
-        std::string lastSymbol = item.first.body[item.first.body.size()-1];
-        if ((item.first.head != lastSymbol) && (std::find(variables.begin(), variables.end(), lastSymbol) != variables.end())) {
-            // add FOLLOW of head to FOLLOW of lastSymbol
-            for (std::string term : follow[item.first.head]) {
-                follow[lastSymbol].insert(term);
-            }
-        }
-    }
-    return follow;
-}
-
 std::string LR1Parser::getParsedSymbol(const std::pair<Production, std::string> item) {
     auto it = std::find(item.first.body.begin(), item.first.body.end(), "*");
     if (it >= item.first.body.end()-1) {return "EOS";} // no star OR star is the last symbol (no parsed symbol)
@@ -358,16 +319,7 @@ bool LR1Parser::augmentRule(Production& rule) {
     return true;
 }
 
-///////////////////////////////////////////////////////////////////////
-/*
- * PUBLIC FUNCTIONS
- */
 void LR1Parser::constructParseTable() {
-    if (debugprint) {
-        std::cout << "start grammar: " << std::endl;
-        grammar.print();
-        std::cout << "________________________________________" << std::endl;
-    }
     /*
      * The input grammar may NOT already have a state called "S"
      * The input grammar may NOT already have a terminal "*"
@@ -381,24 +333,19 @@ void LR1Parser::constructParseTable() {
     grammar.addProduction(Production("S", {grammar.getStartState()}));
     grammar.setStartState("S");
 
-    if (debugprint) {
-        std::cout << "Augmented grammar: " << std::endl;
-        grammar.print();
-        std::cout << "________________________________________" << std::endl;
-    }
     /// calculate first set
     createFirstSet();
 
     if (debugprint) {
-        std::cout << "First Set: " << std::endl;
+        printbuffer << "First Set:" << std::endl;
         for (std::string variable : grammar.getVariables()) {
-            std::cout << "\t FIRST(" << variable << ") = { ";
+            printbuffer << "  FIRST(" << variable << ") = { ";
             for (std::string terminal : first[variable]) {
-                std::cout << "\'" << terminal << "\' ";
+                printbuffer << "\'" << terminal << "\' ";
             }
-            std::cout << "}" << std::endl;
+            printbuffer << "}" << std::endl;
         }
-        std::cout << "________________________________________" << std::endl;
+        printbuffer << "________________________________________" << std::endl;
     }
     /// compute item set 0: (item set 0 == closure(s))
     std::set<std::pair<Production, std::string>> itemSet0;
@@ -406,47 +353,31 @@ void LR1Parser::constructParseTable() {
         if (prod.head == grammar.getStartState()) {
             // augment body (add '*' to indicate current parsing position)
             augmentRule(prod);
-            itemSet0.insert(std::make_pair(prod, "")); // lookahead is empty
+            itemSet0.insert(std::make_pair(prod, "EOS")); // lookahead of startstate is EOS (always)
         }
     }
-    generateClosure(itemSet0); // incomplete (missing lookaheads, instead of FIRST(&a) [slide 7] we use FIRST and FOLLOW table)
+    generateClosure(itemSet0);
     parserItemSets.insert(std::make_pair(0, itemSet0));
 
-    if (debugprint) {
-        std::cout << "(current) Item Set 0 : (closure from start rule, lookahead missing (LR(0)))" << std::endl;
-        for (std::pair<Production, std::string> item : itemSet0) {
-            std::cout << "\t [" << item.first.head << " -> ";
-            for (std::string symbol : item.first.body) {
-                std::cout << symbol;
-            }
-            if (item.second != "") {
-                std::cout << ",\t" << item.second;
-            }
-            else {
-                std::cout << ",\tNONE";
-            }
-            std::cout << "]" << std::endl;
-        }
-        std::cout << "________________________________________" << std::endl;
-    }
-
     // using the incomplete item set 0, create FOLLOW set
+    /*
     follow = createFollowSet(&itemSet0);
 
     if (debugprint) {
-        std::cout << "Follow Set: " << std::endl;
+        printbuffer << "Follow Set:" << std::endl;
         for (std::string variable : grammar.getVariables()) {
-            std::cout << "\t FOLLOW(0," << variable << ") = { ";
+            printbuffer << "  FOLLOW(0," << variable << ") = { ";
             for (std::string terminal : follow[variable]) {
-                std::cout << "\'" << terminal << "\' ";
+                printbuffer << "\'" << terminal << "\' ";
             }
-            std::cout << " }" << std::endl;
+            printbuffer << " }" << std::endl;
         }
-        std::cout << "________________________________________" << std::endl;
+        printbuffer << "________________________________________" << std::endl;
     }
     // Finish item set 0!
     // find lookaheads using first and follow set
     // for each follow terminal create an item with that lookahead
+
     itemSet0.clear();
     for (std::pair<Production, std::string> item : parserItemSets[0]) {
         for (std::string term : follow[item.first.head]) {
@@ -454,45 +385,28 @@ void LR1Parser::constructParseTable() {
         }
     }
     parserItemSets[0] = itemSet0;
-
-    if (debugprint) {
-        std::cout << "(FINAL) Item Set 0 : " << std::endl;
-        for (std::pair<Production, std::string> item : parserItemSets[0]) {
-            std::cout << "\t [" << item.first.head << " -> ";
-            for (std::string symbol : item.first.body) {
-                std::cout << symbol;
-            }
-            if (item.second != "") {
-                std::cout << ",\t" << item.second;
-            }
-            else {
-                std::cout << ",\tNONE";
-            }
-            std::cout << "]" << std::endl;
-        }
-        std::cout << "________________________________________" << std::endl;
-    }
+     */
 
     /// compute GOTOs
     computeGOTO();
 
     if (debugprint) {
-        std::cout << "ALL ITEM SETS: " << std::endl;
+        printbuffer << "ALL ITEM SETS:" << std::endl;
         for (int i = 0; i<parserItemSets.size(); i++) {
-            std::cout << "Item Set " << i << " : " << std::endl;
+            printbuffer << "Item Set " << i << " :" << std::endl;
             for (std::pair<Production, std::string> item: parserItemSets[i]) {
-                std::cout << "\t [" << item.first.head << " -> ";
+                printbuffer << "  [" << item.first.head << " -> ";
                 for (std::string symbol: item.first.body) {
-                    std::cout << symbol;
+                    printbuffer << symbol;
                 }
                 if (item.second != "") {
-                    std::cout << ",\t" << item.second;
+                    printbuffer << ", " << item.second;
                 } else {
-                    std::cout << ",\tNONE";
+                    printbuffer << ", NONE";
                 }
-                std::cout << "]" << std::endl;
+                printbuffer << "]" << std::endl;
             }
-            std::cout << "________________________________________" << std::endl;
+            printbuffer << "________________________________________" << std::endl;
         }
     }
 
@@ -500,30 +414,46 @@ void LR1Parser::constructParseTable() {
     createGOTOTable();
 
     if (debugprint) {
-        std::cout << "GOTO TABLE: " << std::endl;
+        printbuffer << "GOTO TABLE:" << std::endl;
         for (auto tableEntry : gotoTable) {
-            std::cout << "\t GOTO(" << tableEntry.first.first << ", " << tableEntry.first.second << ") = " << tableEntry.second << std::endl;
+            printbuffer << "  GOTO(" << tableEntry.first.first << ", " << tableEntry.first.second << ") = " << tableEntry.second << std::endl;
         }
-        std::cout << "________________________________________" << std::endl;
+        printbuffer << "________________________________________" << std::endl;
     }
 
     /// fill ACTION table
     createACTIONTable();
 
     if (debugprint) {
-        std::cout << "ACTION TABLE: " << std::endl;
+        printbuffer << "ACTION TABLE:" << std::endl;
         for (auto tableEntry : actionTable) {
-            std::cout << "\t ACTION(" << tableEntry.first.first << ", " << tableEntry.first.second << ") = ";
+            printbuffer << "  ACTION(" << tableEntry.first.first << ", " << tableEntry.first.second << ") = ";
             for (std::string b : tableEntry.second) {
-                std::cout << b;
+                printbuffer << b;
             }
-            std::cout << std::endl;
+            printbuffer << std::endl;
         }
-        std::cout << "________________________________________" << std::endl;
+        printbuffer << "________________________________________" << std::endl;
     }
 }
 
+///////////////////////////////////////////////////////////////////////
+/*
+ * PUBLIC FUNCTIONS
+ */
+const std::stringstream &LR1Parser::getPrintbuffer() const {
+    return printbuffer;
+}
+
 bool LR1Parser::parse(std::vector<std::string> input) {
+    if (debugprint) {
+        printbuffer.str(std::string());
+        printbuffer << "PARSER INPUT: ";
+        for (auto s : input) {
+            printbuffer << s;
+        }
+        printbuffer << std::endl;
+    }
     /// parse table constructed after constructor is called
     /// parse:
     parserStack.push("0"); // state
@@ -537,15 +467,26 @@ bool LR1Parser::parse(std::vector<std::string> input) {
             inpSymbol = "EOS";
         }
         if (inpSymbol != "EOS" and std::find(grammar.getTerminals().begin(), grammar.getTerminals().end(), inpSymbol) == grammar.getTerminals().end()) {
-            std::cerr << "LR PARSER ERROR: parser input is not a terminal of the grammar" << std::endl;
+            //std::cerr << "LR PARSER ERROR: parser input is not in the given grammar" << std::endl;
             return false;
         }
         std::vector<std::string> event = actionTable[{std::stoi(parserStack.top()), inpSymbol}];
         if (event.empty()) {
-            std::cerr << "LR PARSER ERROR: parser input is not valid (action is empty, state + input symbol is not valid)" << std::endl;
+            //std::cerr << "LR PARSER ERROR: parser input is not valid (action is empty, state + input symbol is not valid)" << std::endl;
             return false;
         }
         action = event[0];
+
+        if (debugprint) {
+            for (std::string s : event) {
+                if (s == "*") { continue; }
+                if (s != event[0]) {
+                    printbuffer << " ";
+                }
+                printbuffer << s;
+            }
+            printbuffer << std::endl;
+        }
 
         if (action == "shift") {
             // push input onto stack, push new state onto stack
@@ -564,7 +505,7 @@ bool LR1Parser::parse(std::vector<std::string> input) {
             // reduce the stack
             while (!reduceFrom.empty()) {
                 parserStack.pop(); // remove state
-                if (reduceFrom[0] != parserStack.top()) { std::cerr << "LR PARSER ERROR: reduce action error" << std::endl; return false; }
+                if (reduceFrom[0] != parserStack.top()) { /*std::cerr << "LR PARSER ERROR: reduce action error" << std::endl;*/ return false; }
                 parserStack.pop(); // pop symbol
                 reduceFrom.erase(reduceFrom.begin());
             }

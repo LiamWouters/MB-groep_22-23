@@ -1,0 +1,13 @@
+PARSER INPUT: cdccd
+shift 3
+shift 4
+reduce C -> d
+reduce C -> c C
+shift 6
+shift 6
+shift 7
+reduce C -> d
+reduce C -> c C
+reduce C -> c C
+reduce A -> C C
+accept
