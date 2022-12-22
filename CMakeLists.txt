@@ -9,6 +9,8 @@ AUX_SOURCE_DIRECTORY(lib/nlohmann-json NM_JSON_FILES)
 
 AUX_SOURCE_DIRECTORY(src/objects OBJECT_FILES)
 
+AUX_SOURCE_DIRECTORY(src/objects/EarleyParser OBJECT_FILES_EARLEY_PARSER)
+
 AUX_SOURCE_DIRECTORY(src/utilities UTILITY_FILES)
 
 AUX_SOURCE_DIRECTORY(tests T_SOURCE_FILES)
@@ -18,6 +20,7 @@ set(RELEASE_SOURCE_FILES
         src/main.cpp
         src/objects/LR1Parser.cpp
         ${OBJECT_FILES}
+        ${OBJECT_FILES_EARLEY_PARSER}
         ${NM_JSON_FILES}
         ${UTILITY_FILES}
         src/objects/LL1Parser.cpp src/objects/LL1Parser.h)
@@ -25,6 +28,7 @@ set(RELEASE_SOURCE_FILES
 # The source files with tests
 set(TEST_SOURCE_FILES
         ${OBJECT_FILES}
+        ${OBJECT_FILES_EARLEY_PARSER}
         ${NM_JSON_FILES}
         ${UTILITY_FILES}
         ${DOCTEST_FILES}
