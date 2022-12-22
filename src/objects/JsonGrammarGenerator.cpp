@@ -9,6 +9,7 @@ void JsonGrammarGenerator::generate() {
     std::ofstream file("../res/json_grammar.json");
 
     nlohmann::json j;
+    generateStart(j);
     generateVariables(j);
     generateTerminals(j);
     generateProductions(j);
@@ -16,6 +17,8 @@ void JsonGrammarGenerator::generate() {
     file << std::setw(4) << j;
     file.close();
 }
+
+void JsonGrammarGenerator::generateStart(nlohmann::json& j) { j["Start"] = "json"; }
 
 void JsonGrammarGenerator::generateVariables(nlohmann::json& j) {
     j["Variables"] = {"json",    "value",   "object",     "members",   "member", "array",   "elements",

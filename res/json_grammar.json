@@ -577,6 +577,18 @@
         },
         {
             "body": [
+                ","
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                ":"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
                 "integer",
                 "fraction",
                 "exponent"
@@ -760,6 +772,7 @@
             "head": "ws"
         }
     ],
+    "Start": "json",
     "Terminals": [
         "{",
         "}",
