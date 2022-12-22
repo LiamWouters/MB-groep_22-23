@@ -16,6 +16,9 @@ public:
     bool isCompleted() const;
     std::string getNextSymbol() const;
 
+    /// print functions
+    void print(std::ostream& out) const;
+
     /// operators
     bool operator==(const EarleyItem& rhs) const;
 

@@ -3,6 +3,7 @@
 //
 
 #include "StateSet.h"
+#include <iostream>
 
 void StateSet::addEarleyItem(const EarleyItem& earleyItem) {
     for (const auto& item : m_set) {
@@ -11,4 +12,11 @@ void StateSet::addEarleyItem(const EarleyItem& earleyItem) {
         }
     }
     m_set.emplace_back(earleyItem);
+}
+void StateSet::addEarleyItemUnsafe(const EarleyItem& earleyItem) { m_set.emplace_back(earleyItem); }
+
+void StateSet::print(std::ostream& out = std::cout) const {
+    for (const auto& item : m_set) {
+        item.print(out);
+    }
 }

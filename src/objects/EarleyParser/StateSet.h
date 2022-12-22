@@ -10,8 +10,14 @@
 
 class StateSet {
 public:
+    /// member functions
     void addEarleyItem(const EarleyItem& earleyItem);
+    void addEarleyItemUnsafe(const EarleyItem& earleyItem);
 
+    /// print function
+    void print(std::ostream& out) const;
+
+    /// variables
     std::vector<EarleyItem> m_set;
 };
 
