@@ -1,12 +1,12 @@
 {
-  "Variables": ["E", "T"],
-  "Terminals": ["n", "+", "(", ")"],
+  "Variables": ["Expr", "Term", "Factor"],
+  "Terminals": ["-", "x", "ident"],
   "Productions": [
-    {"head": "E", "body": ["T"]},
-    {"head": "E", "body": ["(", "E", ")"]},
-    {"head": "T", "body": ["n"]},
-    {"head": "T", "body": ["+", "T"]},
-    {"head": "T", "body": ["T", "+", "n"]}
+    {"head": "Expr", "body": ["Term", "-", "Expr"]},
+    {"head": "Expr", "body": ["Term"]},
+    {"head": "Term", "body": ["Factor", "x", "Term"]},
+    {"head": "Term", "body": ["Factor"]},
+    {"head": "Factor", "body": ["ident"]}
   ],
-  "Start": "E"
+  "Start": "Expr"
 }

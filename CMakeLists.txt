@@ -18,7 +18,6 @@ AUX_SOURCE_DIRECTORY(tests T_SOURCE_FILES)
 # The source files without tests
 set(RELEASE_SOURCE_FILES
         src/main.cpp
-        src/objects/LR1Parser.cpp
         ${OBJECT_FILES}
         ${OBJECT_FILES_EARLEY_PARSER}
         ${NM_JSON_FILES}

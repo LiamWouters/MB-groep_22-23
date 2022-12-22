@@ -1,0 +1,85 @@
+First Set:
+  FIRST(A) = { 'c' 'd' }
+  FIRST(C) = { 'c' 'd' }
+  FIRST(S) = { 'c' 'd' }
+________________________________________
+ALL ITEM SETS:
+Item Set 0 :
+  [A -> *CC, EOS]
+  [C -> *cC, c]
+  [C -> *cC, d]
+  [C -> *d, c]
+  [C -> *d, d]
+  [S -> *A, EOS]
+________________________________________
+Item Set 1 :
+  [S -> A*, EOS]
+________________________________________
+Item Set 2 :
+  [A -> C*C, EOS]
+  [C -> *cC, EOS]
+  [C -> *d, EOS]
+________________________________________
+Item Set 3 :
+  [C -> *cC, c]
+  [C -> *cC, d]
+  [C -> *d, c]
+  [C -> *d, d]
+  [C -> c*C, c]
+  [C -> c*C, d]
+________________________________________
+Item Set 4 :
+  [C -> d*, c]
+  [C -> d*, d]
+________________________________________
+Item Set 5 :
+  [A -> CC*, EOS]
+________________________________________
+Item Set 6 :
+  [C -> *cC, EOS]
+  [C -> *d, EOS]
+  [C -> c*C, EOS]
+________________________________________
+Item Set 7 :
+  [C -> d*, EOS]
+________________________________________
+Item Set 8 :
+  [C -> cC*, c]
+  [C -> cC*, d]
+________________________________________
+Item Set 9 :
+  [C -> cC*, EOS]
+________________________________________
+GOTO TABLE:
+  GOTO(0, A) = 1
+  GOTO(0, C) = 2
+  GOTO(0, c) = 3
+  GOTO(0, d) = 4
+  GOTO(2, C) = 5
+  GOTO(2, c) = 6
+  GOTO(2, d) = 7
+  GOTO(3, C) = 8
+  GOTO(3, c) = 3
+  GOTO(3, d) = 4
+  GOTO(6, C) = 9
+  GOTO(6, c) = 6
+  GOTO(6, d) = 7
+________________________________________
+ACTION TABLE:
+  ACTION(0, c) = shift3
+  ACTION(0, d) = shift4
+  ACTION(1, EOS) = accept
+  ACTION(2, c) = shift6
+  ACTION(2, d) = shift7
+  ACTION(3, c) = shift3
+  ACTION(3, d) = shift4
+  ACTION(4, c) = reduceC->d*
+  ACTION(4, d) = reduceC->d*
+  ACTION(5, EOS) = reduceA->CC*
+  ACTION(6, c) = shift6
+  ACTION(6, d) = shift7
+  ACTION(7, EOS) = reduceC->d*
+  ACTION(8, c) = reduceC->cC*
+  ACTION(8, d) = reduceC->cC*
+  ACTION(9, EOS) = reduceC->cC*
+________________________________________

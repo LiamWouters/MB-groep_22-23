@@ -1,0 +1,11 @@
+PARSER INPUT: ident-ident
+shift 4
+reduce Factor -> ident
+reduce Term -> Factor
+shift 5
+shift 4
+reduce Factor -> ident
+reduce Term -> Factor
+reduce Expr -> Term
+reduce Expr -> Term - Expr
+accept
