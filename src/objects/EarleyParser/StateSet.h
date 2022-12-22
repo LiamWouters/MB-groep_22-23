@@ -10,7 +10,9 @@
 
 class StateSet {
 public:
-    std::vector<StateSet> m_set;
+    void addEarleyItem(const EarleyItem& earleyItem);
+
+    std::vector<EarleyItem> m_set;
 };
 
 #endif // MB_GROEP_22_23_STATESET_H
