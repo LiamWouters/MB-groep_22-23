@@ -750,31 +750,27 @@
             "head": "sign"
         },
         {
-            "body": [
-                "ws",
-                "ws"
-            ],
-            "head": "ws"
-        },
-        {
             "body": [],
             "head": "ws"
         },
         {
             "body": [
-                " "
+                " ",
+                "ws"
             ],
             "head": "ws"
         },
         {
             "body": [
-                "\n"
+                "\n",
+                "ws"
             ],
             "head": "ws"
         },
         {
             "body": [
-                "\t"
+                "\t",
+                "ws"
             ],
             "head": "ws"
         }

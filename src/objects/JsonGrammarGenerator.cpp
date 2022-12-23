@@ -74,7 +74,7 @@ void JsonGrammarGenerator::generateProductions(nlohmann::json& j) {
     // addProductions(j, "ws", {{}, {" "}, {"\n"}, {"\t"}});
 
     // CHANGED PRODUCTION
-    addProductions(j, "ws", {{"ws", "ws"}, {}, {" "}, {"\n"}, {"\t"}});
+    addProductions(j, "ws", {{}, {" ", "ws"}, {"\n", "ws"}, {"\t", "ws"}});
 }
 
 void JsonGrammarGenerator::addProduction(nlohmann::json& j, const std::string& head,
