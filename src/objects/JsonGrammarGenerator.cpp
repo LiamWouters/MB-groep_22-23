@@ -70,7 +70,11 @@ void JsonGrammarGenerator::generateProductions(nlohmann::json& j) {
     addProductions(j, "fraction", {{}, {".", "digits"}});
     addProductions(j, "exponent", {{}, {"E", "sign", "digits"}, {"e", "sign", "digits"}});
     addProductions(j, "sign", {{}, {"+"}, {"-"}});
-    addProductions(j, "ws", {{}, {" "}, {"\n"}, {"\t"}});
+
+    // addProductions(j, "ws", {{}, {" "}, {"\n"}, {"\t"}});
+
+    // CHANGED PRODUCTION
+    addProductions(j, "ws", {{"ws", "ws"}, {}, {" "}, {"\n"}, {"\t"}});
 }
 
 void JsonGrammarGenerator::addProduction(nlohmann::json& j, const std::string& head,

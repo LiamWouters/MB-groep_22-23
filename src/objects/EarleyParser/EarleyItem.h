@@ -13,7 +13,7 @@ public:
     EarleyItem(Production production, unsigned int dot, unsigned int start);
 
     /// memberfunctions
-    bool isCompleted() const;
+    bool isDotAtEnd() const;
     std::string getNextSymbol() const;
 
     /// print functions

@@ -9,6 +9,8 @@ public:
     // divides file found in path into tokens and stores them into member 'tokens'
     void tokenize(const std::string& path);
 
+    void tokenizeString(const std::string& input);
+
     // divides file found in path into strings and stores them into member 'strings'
     void split(const std::string& path);
 

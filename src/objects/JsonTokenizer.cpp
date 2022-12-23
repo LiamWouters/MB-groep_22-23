@@ -46,3 +46,11 @@ void JsonTokenizer::printStrings(std::ostream& out) const {
         out << cur << std::endl;
     }
 }
+
+void JsonTokenizer::tokenizeString(const std::string& input) {
+    unsigned int c = 1;
+    for (const auto& ch : input) {
+        tokens.emplace_back(std::string(1, ch), 1, c);
+        c++;
+    }
+}

@@ -51,6 +51,12 @@ public:
 
     bool accepts(const std::string& w, std::ostream& out = std::cout) const;
 
+    std::set<std::string> findNullableVariables() const;
+
+    bool isTerminal(const std::string& symbol) const;
+
+    bool isVariable(const std::string& symbol) const;
+
     std::map<std::pair<std::string, std::string>, std::vector<std::string>> lltable() const;
 
 private:
@@ -59,8 +65,6 @@ private:
     int countVariables() const;
 
     int countTerminals() const;
-
-    std::set<std::string> findNullableVariables() const;
 
     bool isUnitProduction(const Production& prod) const;
 
@@ -76,10 +80,6 @@ private:
 
     void replaceProductionRuleEps(const std::set<std::string>& nullableV, productions& temp, const Production& x,
                                   int m) const;
-
-    bool isTerminal(const std::string& symbol) const;
-
-    bool isVariable(const std::string& symbol) const;
 
     std::set<std::string> findGeneratingSymbols() const;
 
