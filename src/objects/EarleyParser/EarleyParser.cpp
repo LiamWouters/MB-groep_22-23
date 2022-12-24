@@ -70,7 +70,7 @@ EarleyItem EarleyParser::getEarlyItem(unsigned int index_chart, unsigned int ind
 }
 void EarleyParser::printChart(std::ostream& out = std::cout) const {
     for (unsigned int index_chart = 0; index_chart < m_chart.size(); index_chart++) {
-        out << "=== " << index_chart << "===" << std::endl;
+        out << "=== " << index_chart << " ===" << std::endl;
         m_chart[index_chart].print(out);
         out << std::endl;
     }
