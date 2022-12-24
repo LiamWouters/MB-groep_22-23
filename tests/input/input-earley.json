@@ -1,0 +1,154 @@
+{
+  "Variables": [
+    "Sum",
+    "Product",
+    "Factor",
+    "Number"
+  ],
+  "Terminals": [
+    "+",
+    "-",
+    "*",
+    "(",
+    ")",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "/"
+  ],
+  "Productions": [
+    {
+      "head": "Sum",
+      "body": [
+        "Sum",
+        "+",
+        "Product"
+      ]
+    },
+    {
+      "head": "Sum",
+      "body": [
+        "Sum",
+        "-",
+        "Product"
+      ]
+    },
+    {
+      "head": "Sum",
+      "body": [
+        "Product"
+      ]
+    },
+    {
+      "head": "Product",
+      "body": [
+        "Product",
+        "*",
+        "Factor"
+      ]
+    },
+    {
+      "head": "Product",
+      "body": [
+        "Product",
+        "/",
+        "Factor"
+      ]
+    },
+    {
+      "head": "Product",
+      "body": [
+        "Factor"
+      ]
+    },
+    {
+      "head": "Factor",
+      "body": [
+        "(",
+        "Sum",
+        ")"
+      ]
+    },
+    {
+      "head": "Factor",
+      "body": [
+        "Number"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "Number",
+        "Number"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "0"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "1"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "2"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "3"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "4"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "5"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "6"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "7"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "8"
+      ]
+    },
+    {
+      "head": "Number",
+      "body": [
+        "9"
+      ]
+    }
+  ],
+  "Start": "Sum"
+}
