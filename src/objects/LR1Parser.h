@@ -28,9 +28,9 @@ private:
     //              giving a pair of an (parent)ITEMSETNUMBER and a SYMBOL (symbol = symbol that is recognized after * (symbol that is getting parsed that leads to the marker shifting (recognizing the symbol)))
     //              returns the item set (STATE of parser) that the parser will go to (after recognizing symbol)
     std::map<std::pair<int, std::string>, std::vector<std::string>> actionTable;
-    // ACTION table:  form: {(parentItemSetNumber, recognizedSymbol), (action, state)}
+    // ACTION table:  form: {(parentItemSetNumber, recognizedSymbol), {action, ...}}
     //              same input as GOTO table
-    //              returns action, state pair
+    //              returns vector<string> action + additional info
     //              vb: "accept" | "shift", "4"| "reduce", "A", "->", "b" (reduce A->b, A is head, b is body)
 
     std::stack<std::string> parserStack;
@@ -46,11 +46,15 @@ private:
     std::string getParsedSymbol(const std::pair<Production, std::string> item);
     bool augmentRule(Production& rule);
     bool shiftMarker(std::pair<Production, std::string>& item);
+    bool augmentGrammar();
 public:
-    LR1Parser(const CFG &grammar, const bool debugprint = false);
+    LR1Parser(const CFG &grammar, const bool debugprint = false); // normal constructor
+    LR1Parser(const std::string &fileLocation, const CFG &grammar, const bool debugprint = false); // load constructor
     const std::stringstream &getPrintbuffer() const;
 
     void constructParseTable();
+
+    void saveParser(std::string fileName);
 
     bool parse(std::vector<std::string> input);
 };
