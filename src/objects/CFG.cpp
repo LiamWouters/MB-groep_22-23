@@ -701,6 +701,7 @@ std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::llt
                     while(j < pr.body.size()-1){
                         if(isTerminal(pr.body[j])){null = false; break;}
                         else if(nullables.find(pr.body[j]) == nullables.end()){null = false; break;}
+                        j += 1;
                     }
                     if(null && std::find(followFollow[pr.body[i]].begin(), followFollow[pr.body[i]].end(), pr.head) == followFollow[pr.body[i]].end()) {
                         followFollow[pr.body[i]].emplace_back(pr.head);
@@ -745,7 +746,14 @@ std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::llt
                 }
                 else{n++;}
             }
-            if(m->second.empty()){m = followFollow.erase(m);}
+            if(m->second.empty()){
+                auto complete = incompleteVars.begin();
+                while(complete != incompleteVars.end()){
+                    if(*complete == m->first){incompleteVars.erase(complete);}
+                    else{complete++;}
+                }
+                m = followFollow.erase(m);
+            }
             else{m++;}
         }
         if(followFollow.empty()){complete = true;}
@@ -774,5 +782,6 @@ std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::llt
             }
         }
     }
+    for(auto &e: expect){if(e.second.empty()){e.second = {"<ERR>"};}}
     return expect;
 }

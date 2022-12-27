@@ -8,7 +8,7 @@ LL1Parser::LL1Parser(const CFG &c){
     grammar = c;
 }
 
-bool LL1Parser::accepts(const std::vector<std::string> &input){
+bool LL1Parser::accepts(const std::vector<token> &input){
     /*
      * The LL Parser works top-down as in from start symbol to string.
      * It uses 2 techniques: expect (a production), and match (terminals).
@@ -29,28 +29,38 @@ bool LL1Parser::accepts(const std::vector<std::string> &input){
      */
     auto expect = grammar.lltable();
     std::vector<std::string> terminals = grammar.getTerminals();
-    std::vector<std::string> current = {grammar.getStartState()};
-    std::vector<std::string> inputCopy = input;
-    // This variable was necessary to prevent some errors.
+    token start(grammar.getStartState(), 1, 0);
+    std::vector<token> current = {start};
+    std::vector<token> inputCopy = input;
+    // These variables were necessary to prevent some errors.
     std::vector<std::string> error = {"<ERR>"};
+    token eos("<EOS>", 0, 0);
     // Step 2: Let the parsing begin!
     // As long as not both the input and current string are empty, operations must be done.
     while(!(inputCopy.empty() && current.empty())){
         // Fetch the first character (= "<EOS>" if string empty).
-        std::string currentChar = inputCopy[0];
-        if(inputCopy.empty()){currentChar = "<EOS>";}
+        token currentChar = inputCopy[0];
+        if(inputCopy.empty()){currentChar = eos;}
         // At this point the first character of the current string is always a variable,
         // which means we expect a certain production.
-        std::string currentSymbol = current[0];
-        if(expect[std::make_pair(currentSymbol, currentChar)] == error){return false;}
+        token currentSymbol = current[0];
+        if(expect[std::make_pair(currentSymbol.content, currentChar.content)] == error){return false;}
         // Replace the symbol with the expected production rule.
-        std::vector<std::string> replace;
-        for(auto &i: expect[std::make_pair(currentSymbol, currentChar)]){replace.emplace_back(i);}
-        if(current.size() > 1){for(int i = 1; i < current.size(); i++){replace.emplace_back(current[i]);}}
+        std::vector<token> replace;
+        for(auto &i: expect[std::make_pair(currentSymbol.content, currentChar.content)]){
+            token t(i, replace.end()-replace.begin(), 0);
+            replace.emplace_back(t);
+        }
+        if(current.size() > 1){
+            for(int i = 1; i < current.size(); i++){
+                token t(current[i].content, replace.end()-replace.begin(), 0);
+                replace.emplace_back(t);
+            }
+        }
         current = replace;
         // If the first character of the current string is a terminal, execute a match.
-        std::string first = current[0];
-        if(std::find(terminals.begin(), terminals.end(), first) != terminals.end()){
+        token first = current[0];
+        if(std::find(terminals.begin(), terminals.end(), first.content) != terminals.end()){
             if(!match(inputCopy, current)){return false;}
         }
         if(current.empty() && !inputCopy.empty()){return false;}
@@ -59,10 +69,10 @@ bool LL1Parser::accepts(const std::vector<std::string> &input){
     return true;
 }
 
-bool LL1Parser::match(std::vector<std::string>& input, std::vector<std::string>& current){
+bool LL1Parser::match(std::vector<token>& input, std::vector<token>& current){
     int matches = 0;
-    while(input[0] == current[0]){
-        std::vector<std::string> newInput(input.size()-1), newCurrent(current.size()-1);
+    while(input[0].content == current[0].content){
+        std::vector<token> newInput, newCurrent;
         matches += 1;
         std::copy(input.begin()+1, input.end(), newInput.begin());
         std::copy(current.begin()+1, current.end(), newCurrent.begin());
