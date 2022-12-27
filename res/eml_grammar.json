@@ -1,0 +1,898 @@
+{
+    "Productions": [
+        {
+            "body": [
+                "<",
+                "r",
+                "o",
+                "o",
+                "t",
+                ">",
+                "element",
+                "<",
+                "/",
+                "r",
+                "o",
+                "o",
+                "t",
+                ">"
+            ],
+            "head": "eml"
+        },
+        {
+            "body": [
+                "object"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "array"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "string"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "number"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "t",
+                "r",
+                "u",
+                "e"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "f",
+                "a",
+                "l",
+                "s",
+                "e"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "n",
+                "u",
+                "l",
+                "l"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "OTag",
+                "ws",
+                "CTag"
+            ],
+            "head": "object"
+        },
+        {
+            "body": [
+                "OTag",
+                "members",
+                "CTag"
+            ],
+            "head": "object"
+        },
+        {
+            "body": [
+                "member"
+            ],
+            "head": "members"
+        },
+        {
+            "body": [
+                "member",
+                "members"
+            ],
+            "head": "members"
+        },
+        {
+            "body": [
+                "element"
+            ],
+            "head": "member"
+        },
+        {
+            "body": [
+                "ws"
+            ],
+            "head": "array"
+        },
+        {
+            "body": [
+                "elements"
+            ],
+            "head": "array"
+        },
+        {
+            "body": [
+                "element"
+            ],
+            "head": "elements"
+        },
+        {
+            "body": [
+                "element",
+                "elements"
+            ],
+            "head": "elements"
+        },
+        {
+            "body": [
+                "ws",
+                "value",
+                "ws"
+            ],
+            "head": "element"
+        },
+        {
+            "body": [
+                "<",
+                "string",
+                ">"
+            ],
+            "head": "OTag"
+        },
+        {
+            "body": [
+                "<",
+                "/",
+                "string",
+                ">"
+            ],
+            "head": "CTag"
+        },
+        {
+            "body": [
+                "characters"
+            ],
+            "head": "string"
+        },
+        {
+            "body": [],
+            "head": "characters"
+        },
+        {
+            "body": [
+                "character",
+                "characters"
+            ],
+            "head": "characters"
+        },
+        {
+            "body": [
+                "0"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "1"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "2"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "3"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "4"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "5"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "6"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "7"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "8"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "9"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "A"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "B"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "C"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "D"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "E"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "F"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "G"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "H"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "I"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "J"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "K"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "L"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "M"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "N"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "O"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "P"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "Q"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "R"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "S"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "T"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "U"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "V"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "W"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "X"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "Y"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "Z"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "a"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "b"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "c"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "d"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "e"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "f"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "g"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "h"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "i"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "j"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "k"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "l"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "m"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "n"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "o"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "p"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "q"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "r"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "s"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "t"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "u"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "v"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "w"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "x"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "y"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "z"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "?"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "!"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "("
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                ")"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "."
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "+"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "-"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                " "
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                ","
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                ":"
+            ],
+            "head": "character"
+        },
+        {
+            "body": [
+                "integer",
+                "fraction",
+                "exponent"
+            ],
+            "head": "number"
+        },
+        {
+            "body": [
+                "digit"
+            ],
+            "head": "integer"
+        },
+        {
+            "body": [
+                "onenine",
+                "digits"
+            ],
+            "head": "integer"
+        },
+        {
+            "body": [
+                "-",
+                "digit"
+            ],
+            "head": "integer"
+        },
+        {
+            "body": [
+                "-",
+                "onenine",
+                "digits"
+            ],
+            "head": "integer"
+        },
+        {
+            "body": [
+                "digit"
+            ],
+            "head": "digits"
+        },
+        {
+            "body": [
+                "digit",
+                "digits"
+            ],
+            "head": "digits"
+        },
+        {
+            "body": [
+                "0"
+            ],
+            "head": "digit"
+        },
+        {
+            "body": [
+                "onenine"
+            ],
+            "head": "digit"
+        },
+        {
+            "body": [
+                "1"
+            ],
+            "head": "onenine"
+        },
+        {
+            "body": [
+                "2"
+            ],
+            "head": "onenine"
+        },
+        {
+            "body": [
+                "3"
+            ],
+            "head": "onenine"
+        },
+        {
+            "body": [
+                "4"
+            ],
+            "head": "onenine"
+        },
+        {
+            "body": [
+                "5"
+            ],
+            "head": "onenine"
+        },
+        {
+            "body": [
+                "6"
+            ],
+            "head": "onenine"
+        },
+        {
+            "body": [
+                "7"
+            ],
+            "head": "onenine"
+        },
+        {
+            "body": [
+                "8"
+            ],
+            "head": "onenine"
+        },
+        {
+            "body": [
+                "9"
+            ],
+            "head": "onenine"
+        },
+        {
+            "body": [],
+            "head": "fraction"
+        },
+        {
+            "body": [
+                ".",
+                "digits"
+            ],
+            "head": "fraction"
+        },
+        {
+            "body": [],
+            "head": "exponent"
+        },
+        {
+            "body": [
+                "E",
+                "sign",
+                "digits"
+            ],
+            "head": "exponent"
+        },
+        {
+            "body": [
+                "e",
+                "sign",
+                "digits"
+            ],
+            "head": "exponent"
+        },
+        {
+            "body": [],
+            "head": "sign"
+        },
+        {
+            "body": [
+                "+"
+            ],
+            "head": "sign"
+        },
+        {
+            "body": [
+                "-"
+            ],
+            "head": "sign"
+        },
+        {
+            "body": [],
+            "head": "ws"
+        },
+        {
+            "body": [
+                " ",
+                "ws"
+            ],
+            "head": "ws"
+        },
+        {
+            "body": [
+                "\n",
+                "ws"
+            ],
+            "head": "ws"
+        },
+        {
+            "body": [
+                "\t",
+                "ws"
+            ],
+            "head": "ws"
+        }
+    ],
+    "Start": "eml",
+    "Terminals": [
+        "<",
+        ">",
+        "/",
+        "-",
+        ".",
+        "+",
+        " ",
+        "\n",
+        "\t",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "?",
+        "!",
+        "(",
+        ")"
+    ],
+    "Variables": [
+        "eml",
+        "value",
+        "object",
+        "members",
+        "member",
+        "array",
+        "elements",
+        "element",
+        "OTag",
+        "CTag",
+        "string",
+        "characters",
+        "character",
+        "number",
+        "integer",
+        "digits",
+        "digit",
+        "onenine",
+        "fraction",
+        "exponent",
+        "sign",
+        "ws"
+    ]
+}
