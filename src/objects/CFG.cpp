@@ -629,17 +629,20 @@ std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::llt
         }
         else{
             int j = 0;
-            std::string checkOrder = firstchar;
+            std::vector<std::string> checkOrder = {firstchar};
             if(i.body.size() == 1){
                 if(nullables.find(firstchar) != nullables.end()){first[i.head].emplace_back("<EOS>");}
                 check[i.head].emplace_back(i.body[0]); continue;
             }
             while(nullables.find(firstchar) != nullables.end()){
-                j += 1; firstchar = i.body[j]; checkOrder += (i.body[j]);
+                j += 1; firstchar = i.body[j]; checkOrder.emplace_back(i.body[j]);
             }
             if(j == i.body.size()-1){first[var].emplace_back("<EOS>");}
-            else{first[var].emplace_back(i.body[j+1]);}
-            check[i.head].emplace_back(checkOrder);
+            else{
+                if(isTerminal(i.body[j+1])){first[var].emplace_back(i.body[j+1]);}
+                else{checkOrder.emplace_back(i.body[j+1]);}
+            }
+            for(auto &k:checkOrder){check[i.head].emplace_back(k);}
         }
     }
     // Determine the "harder" first sets.
@@ -650,23 +653,10 @@ std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::llt
             auto j = i->second.begin();
             while(j != i->second.end()){
                 bool noCheckVars = true;
-                for(auto &k: *j){
-                    std::string var(1, k);
-                    if(!check[var].empty()){noCheckVars = false;}
-                }
+                if(!check[*j].empty()){noCheckVars = false;}
+                if(i->first == *j){i->second.erase(j); continue;}
                 if(noCheckVars){
-                    std::vector<std::string> add;
-                    for(auto &k: *j){
-                        std::string var(1, k);
-                        if(add.empty()){add = first[var];}
-                        else{
-                            std::vector<std::string> refresh;
-                            std::merge(add.begin(), add.end(), first[var].begin(), first[var].end(), std::back_inserter(refresh));
-                            add = refresh;
-                        }
-                    }
-                    for(auto &k: add){
-                        if(k.empty()){continue;}
+                    for(auto &k: first[*j]){
                         if(std::find(first[i->first].begin(), first[i->first].end(), k) == first[i->first].end()){
                             first[i->first].emplace_back(k);
                         }
@@ -709,7 +699,7 @@ std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::llt
                     bool null = true;
                     int j = i+1;
                     while(j < pr.body.size()-1){
-                        if(isTerminal(pr.body[j])){ null = false; break;}
+                        if(isTerminal(pr.body[j])){null = false; break;}
                         else if(nullables.find(pr.body[j]) == nullables.end()){null = false; break;}
                     }
                     if(null && std::find(followFollow[pr.body[i]].begin(), followFollow[pr.body[i]].end(), pr.head) == followFollow[pr.body[i]].end()) {

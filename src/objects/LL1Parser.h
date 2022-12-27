@@ -14,10 +14,10 @@
 class LL1Parser {
 public:
     explicit LL1Parser(const CFG&);
-    bool accepts(const std::string&);
+    bool accepts(const std::vector<std::string>&);
 private:
     CFG grammar;
-    bool match(std::string&, std::string&);
+    static bool match(std::vector<std::string>&, std::vector<std::string>&);
 };
 
 #endif //MB_GROEP_22_23_LL1PARSER_H
