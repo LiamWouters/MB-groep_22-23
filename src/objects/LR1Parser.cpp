@@ -370,7 +370,7 @@ void LR1Parser::createFirstSet() {
     while (setChanged) {
         setChanged = false;
         for (Production p : grammar.getProductions()) {
-            int originalCount = -1;
+            int originalCount = -1; // -1 for if the set doesn't exist yet (count == 0)
             if (first.count(p.head) != 0) {
                 originalCount = first[p.head].size();
             }
@@ -401,6 +401,7 @@ void LR1Parser::createFirstSet() {
                 /// now all the other symbols in the production
                 for (int i = 0; i<p.body.size()-1; i++) {
                     // while first[p.body[i]] contains epsilon,
+                    if (std::find(variables.begin(), variables.end(), p.body[i]) == variables.end()) {break;} // not variable
                     if (std::find(first[p.body[i]].begin(), first[p.body[i]].end(), "") == first[p.body[i]].end()) {
                         // does NOT contain epsilon
                         break;

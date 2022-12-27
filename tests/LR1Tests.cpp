@@ -71,7 +71,7 @@ TEST_SUITE("LR1 Parser Tests") {
         */
         CHECK_EQ(parser->getPrintbuffer().str(), expected.str());
     }
-    TEST_CASE("[LR1 Parser Tests] test_jsonSimplified") {
+    TEST_CASE("[LR1 Parser Tests] test_json") {
         // json TEST
         CFG* grammar = new CFG("../res/json_grammar.json");
         /*for (Production prod : grammar->getProductions()) {
