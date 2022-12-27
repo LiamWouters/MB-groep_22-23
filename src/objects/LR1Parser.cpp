@@ -1,18 +1,95 @@
 //
 // Created by liam on 13/12/2022.
 //
-
+#include "../../lib/nlohmann-json/json.hpp"
+#include <iomanip>
 #include <iostream>
 #include <algorithm>
 #include <queue>
+#include <fstream>
 #include "LR1Parser.h"
 
 /*
  * CONSTRUCTORS
  */
 LR1Parser::LR1Parser(const CFG &grammar, const bool debugprint) : grammar(grammar), debugprint(debugprint) {
-    printbuffer.clear();
+    // normal constructor
+    printbuffer.str(std::string());
     constructParseTable();
+}
+
+LR1Parser::LR1Parser(const std::string &fileLocation, const CFG &grammar, const bool debugprint) : grammar(grammar), debugprint(debugprint) {
+    // load constructor
+    printbuffer.str(std::string());
+    // NOT CONSTRUCTING PARSE TABLE
+    // we do need to augment the grammar
+    augmentGrammar();
+
+    /// load parser
+    std::ifstream input(fileLocation);
+    nlohmann::json j;
+    input >> j;
+
+    // fill parserItemSets
+    for (int i = 0; i < j["parserItemSets"].size(); i++) {
+        std::set<std::pair<Production, std::string>> itemSet;
+        for (int item = 0; item < j["parserItemSets"][i]["itemSet"].size(); item++) {
+            Production prod(j["parserItemSets"][i]["itemSet"][item]["head"], j["parserItemSets"][i]["itemSet"][item]["body"].get<std::vector<std::string>>());
+            std::string lookahead = j["parserItemSets"][i]["itemSet"][item]["lookahead"];
+            std::pair<Production, std::string> itemObject = std::make_pair(prod, lookahead);
+            itemSet.insert(itemObject);
+        }
+
+        parserItemSets.insert(std::make_pair(j["parserItemSets"][i]["itemSetNumber"], itemSet));
+    }
+    // fill gotoTable
+    for (int i = 0; i < j["gotoTable"].size(); i++) {
+        std::pair<int, std::string> key = std::make_pair(j["gotoTable"][i]["key"]["parentItemSetNumber"], j["gotoTable"][i]["key"]["recognizedSymbol"]);
+        gotoTable[key] = j["gotoTable"][i]["gotoSetNumber"];
+    }
+    // fill actionTable
+    for (int i = 0; i < j["actionTable"].size(); i++) {
+        std::pair<int, std::string> key = std::make_pair(j["actionTable"][i]["key"]["parentItemSetNumber"], j["actionTable"][i]["key"]["recognizedSymbol"]);
+        std::vector<std::string> action = j["actionTable"][i]["action"].get<std::vector<std::string>>();
+        actionTable[key] = action;
+    }
+
+    // debug print
+    if (debugprint) {
+        printbuffer << "ALL ITEM SETS:" << std::endl;
+        for (int i = 0; i<parserItemSets.size(); i++) {
+            printbuffer << "Item Set " << i << " :" << std::endl;
+            for (std::pair<Production, std::string> item: parserItemSets[i]) {
+                printbuffer << "  [" << item.first.head << " -> ";
+                for (std::string symbol: item.first.body) {
+                    printbuffer << symbol;
+                }
+                if (item.second != "") {
+                    printbuffer << ", " << item.second;
+                } else {
+                    printbuffer << ", NONE";
+                }
+                printbuffer << "]" << std::endl;
+            }
+            printbuffer << "________________________________________" << std::endl;
+        }
+        ///+++///
+        printbuffer << "GOTO TABLE:" << std::endl;
+        for (auto tableEntry : gotoTable) {
+            printbuffer << "  GOTO(" << tableEntry.first.first << ", " << tableEntry.first.second << ") = " << tableEntry.second << std::endl;
+        }
+        printbuffer << "________________________________________" << std::endl;
+        ///+++///
+        printbuffer << "ACTION TABLE:" << std::endl;
+        for (auto tableEntry : actionTable) {
+            printbuffer << "  ACTION(" << tableEntry.first.first << ", " << tableEntry.first.second << ") = ";
+            for (std::string b : tableEntry.second) {
+                printbuffer << b;
+            }
+            printbuffer << std::endl;
+        }
+        printbuffer << "________________________________________" << std::endl;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -249,12 +326,18 @@ void LR1Parser::generateClosure(std::set<std::pair<Production, std::string>> &it
 void LR1Parser::createFirstSet() {
     std::vector<std::string> variables = grammar.getVariables();
     std::vector<std::string> terminals = grammar.getTerminals();
-    /// MAY NOT WORK CORRECTLY IF GRAMMAR CONTAINS EPSILON TRANSITIONS
+    // initialize first for all variables
+    /*
     for (std::string var : variables) {
         first.insert(std::make_pair(var, std::set<std::string>{})); // initialize set
         for (Production prod : grammar.getProductions()) {
             if (prod.head == var) {
-                first[var].insert(prod.body[0]); // we will replace the variables later
+                if (prod.body.size() == 0) {
+                    first[var].insert(""); // EPSILON
+                }
+                else {
+                    first[var].insert(prod.body[0]); // we will replace the variables later
+                }
             }
         }
     }
@@ -264,11 +347,12 @@ void LR1Parser::createFirstSet() {
         int originalSetSize = 0;
         while (originalSetSize != first[var].size()) {
             originalSetSize = first[var].size();
-            for (std::string symbol : first[var]) {
+            auto firstVarCopy = first[var];
+            for (std::string symbol : firstVarCopy) {
                 if (std::find(variables.begin(), variables.end(), symbol) != variables.end()) {
                     // symbol == variable
                     for (Production prod : grammar.getProductions()) {
-                        if (prod.head == symbol) {
+                        if (prod.head == symbol && prod.body.size() > 0) {
                             first[var].insert(prod.body[0]);
                         }
                     }
@@ -279,6 +363,89 @@ void LR1Parser::createFirstSet() {
         // remove all variables in set
         for (std::string v : variables) {
             first[var].erase(v);
+        }
+    }
+     */
+    int setChanged = true;
+    while (setChanged) {
+        setChanged = false;
+        for (Production p : grammar.getProductions()) {
+            int originalCount = -1; // -1 for if the set doesn't exist yet (count == 0)
+            if (first.count(p.head) != 0) {
+                originalCount = first[p.head].size();
+            }
+            if (p.body.size() > 0) {
+                // normal production
+                /// add first of the first symbol of the production (if variable), otherwise the symbol itself
+                if (std::find(variables.begin(), variables.end(), p.body[0]) == variables.end()) {
+                    // p.body[0] is terminal
+                    if (first.count(p.head) == 0) { // add to first[head]
+                        first[p.head] = {p.body[0]};
+                    }
+                    else {
+                        first[p.head].insert(p.body[0]);
+                    }
+                }
+                else {
+                    // p.body[0] is variable
+                    std::set<std::string> firstOfVar = first[p.body[0]];
+                    firstOfVar.erase(""); // remove epsilon
+                    if (first.count(p.head) == 0) { // add to first[head]
+                        first[p.head] = firstOfVar;
+                    }
+                    else {
+                        first[p.head].insert(firstOfVar.begin(), firstOfVar.end());
+                    }
+                }
+
+                /// now all the other symbols in the production
+                for (int i = 0; i<p.body.size()-1; i++) {
+                    // while first[p.body[i]] contains epsilon,
+                    if (std::find(variables.begin(), variables.end(), p.body[i]) == variables.end()) {break;} // not variable
+                    if (std::find(first[p.body[i]].begin(), first[p.body[i]].end(), "") == first[p.body[i]].end()) {
+                        // does NOT contain epsilon
+                        break;
+                    }
+                    else {
+                        // does contain epsilon
+                        // add first[p.body[i+1]] to first[p.head]
+                        if (std::find(variables.begin(), variables.end(), p.body[i+1]) == variables.end()) {
+                            // p.body[i+1] is terminal
+                            if (first.count(p.head) == 0) { // add to first[head]
+                                first[p.head] = {p.body[i+1]};
+                            }
+                            else {
+                                first[p.head].insert(p.body[i+1]);
+                            }
+                        }
+                        else {
+                            // p.body[i+1] is variable
+                            std::set<std::string> firstOfVar = first[p.body[i+1]];
+                            firstOfVar.erase(""); // remove epsilon
+                            if (first.count(p.head) == 0) { // add to first[head]
+                                first[p.head] = firstOfVar;
+                            }
+                            else {
+                                first[p.head].insert(firstOfVar.begin(), firstOfVar.end());
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                // epsilon production
+                if (first.count(p.head) == 0) { // add to first[head]
+                    first[p.head] = {""};
+                }
+                else {
+                    first[p.head].insert("");
+                }
+            }
+            int newCount = 0;
+            if (first.count(p.head) != 0) {
+                newCount = first[p.head].size();
+            }
+            if (newCount != originalCount) {setChanged = true;}
         }
     }
 }
@@ -323,15 +490,15 @@ void LR1Parser::constructParseTable() {
     /*
      * The input grammar may NOT already have a state called "S"
      * The input grammar may NOT already have a terminal "*"
+     * Epsilon = ""
      */
     /// source: "https://en.wikipedia.org/wiki/Canonical_LR_parser"
     /// the goto method: source: "https://www.eecis.udel.edu/~cavazos/cisc672-fall08/lectures/Lecture-10.pdf"
+
+
     // create item set 0, then itemset1 = goto(i0, x), ...
     /// Augment grammar
-    // add new starting state
-    grammar.addVariable("S");
-    grammar.addProduction(Production("S", {grammar.getStartState()}));
-    grammar.setStartState("S");
+    augmentGrammar();
 
     /// calculate first set
     createFirstSet();
@@ -358,34 +525,6 @@ void LR1Parser::constructParseTable() {
     }
     generateClosure(itemSet0);
     parserItemSets.insert(std::make_pair(0, itemSet0));
-
-    // using the incomplete item set 0, create FOLLOW set
-    /*
-    follow = createFollowSet(&itemSet0);
-
-    if (debugprint) {
-        printbuffer << "Follow Set:" << std::endl;
-        for (std::string variable : grammar.getVariables()) {
-            printbuffer << "  FOLLOW(0," << variable << ") = { ";
-            for (std::string terminal : follow[variable]) {
-                printbuffer << "\'" << terminal << "\' ";
-            }
-            printbuffer << " }" << std::endl;
-        }
-        printbuffer << "________________________________________" << std::endl;
-    }
-    // Finish item set 0!
-    // find lookaheads using first and follow set
-    // for each follow terminal create an item with that lookahead
-
-    itemSet0.clear();
-    for (std::pair<Production, std::string> item : parserItemSets[0]) {
-        for (std::string term : follow[item.first.head]) {
-            itemSet0.insert(std::make_pair(item.first, term));
-        }
-    }
-    parserItemSets[0] = itemSet0;
-     */
 
     /// compute GOTOs
     computeGOTO();
@@ -435,6 +574,13 @@ void LR1Parser::constructParseTable() {
         }
         printbuffer << "________________________________________" << std::endl;
     }
+}
+
+bool LR1Parser::augmentGrammar() {
+    // add new starting state
+    grammar.addVariable("S");
+    grammar.addProduction(Production("S", {grammar.getStartState()}));
+    grammar.setStartState("S");
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -516,4 +662,62 @@ bool LR1Parser::parse(std::vector<std::string> input) {
         }
     }
     return true; // action must be "accept" (it left the while loop)
+}
+
+void LR1Parser::saveParser(std::string fileName) {
+    /*
+     * this function is here to save time
+     * it saves the constructed LR1 parser into file format
+     * it is not needed for the functionality of the parser
+     *
+     * Saves:   parserItemSets
+     *          gotoTable
+     *          actionTable
+     */
+
+    /// parserItemSets
+    nlohmann::json j;
+    for (auto itemSet : parserItemSets) {
+        nlohmann::json itemSetObject;
+        itemSetObject["itemSetNumber"] = itemSet.first;
+        for (auto item : itemSet.second) {
+            nlohmann::json itemObject;
+            itemObject["head"] = item.first.head;
+            itemObject["body"] = item.first.body;
+            itemObject["lookahead"] = item.second;
+            itemSetObject["itemSet"].emplace_back(itemObject);
+        }
+
+        j["parserItemSets"].emplace_back(itemSetObject);
+    }
+    /// gotoTable
+    for (auto tableEntry : gotoTable) {
+        nlohmann::json tableEntryObject;
+        nlohmann::json tableEntryKeyObject;
+        tableEntryKeyObject["parentItemSetNumber"] = tableEntry.first.first;
+        tableEntryKeyObject["recognizedSymbol"] = tableEntry.first.second;
+
+        tableEntryObject["key"] = tableEntryKeyObject;
+        tableEntryObject["gotoSetNumber"] = tableEntry.second;
+
+        j["gotoTable"].emplace_back(tableEntryObject);
+    }
+    /// actionTable
+    for (auto tableEntry : actionTable) {
+        nlohmann::json tableEntryObject;
+        nlohmann::json tableEntryKeyObject;
+        tableEntryKeyObject["parentItemSetNumber"] = tableEntry.first.first;
+        tableEntryKeyObject["recognizedSymbol"] = tableEntry.first.second;
+
+        tableEntryObject["key"] = tableEntryKeyObject;
+        tableEntryObject["action"] = tableEntry.second;
+
+        j["actionTable"].emplace_back(tableEntryObject);
+    }
+
+    /// print to file
+    std::string destination = "../res/";
+    destination += fileName + ".json";
+    std::ofstream outputFile(destination);
+    outputFile << std::setw(4) << j;
 }

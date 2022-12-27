@@ -2,9 +2,11 @@
 #include "objects/LR1Parser.h"
 #include "objects/CFG.h"
 #include "objects/JsonGrammarGenerator.h"
+#include "objects/EMLGrammarGenerator.h"
 
 int main(int argc, char* argv[]) {
     JsonGrammarGenerator::generate();
+    EMLGrammarGenerator::generate();
 
     /*  LR1 PARSER TEST
     CFG* grammar = new CFG("../tests/input/input-LR1_1.json");

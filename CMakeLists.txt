@@ -22,7 +22,7 @@ set(RELEASE_SOURCE_FILES
         ${OBJECT_FILES_EARLEY_PARSER}
         ${NM_JSON_FILES}
         ${UTILITY_FILES}
-        src/objects/LL1Parser.cpp src/objects/LL1Parser.h)
+        src/objects/LL1Parser.cpp src/objects/LL1Parser.h src/objects/EMLGrammarGenerator.cpp src/objects/EMLGrammarGenerator.h)
 
 # The source files with tests
 set(TEST_SOURCE_FILES
