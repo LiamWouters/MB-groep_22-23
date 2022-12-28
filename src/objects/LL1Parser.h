@@ -19,6 +19,8 @@ public:
 private:
     CFG grammar;
     static bool match(std::vector<token>&, std::vector<token>&);
+    static void pop_front(std::vector<token>&);
+    static token getFront(std::vector<token>&);
 };
 
 #endif //MB_GROEP_22_23_LL1PARSER_H

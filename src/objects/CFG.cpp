@@ -576,7 +576,7 @@ bool CFG::accepts(const std::string& w, std::ostream& out) const {
     return accepted;
 }
 
-std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::lltable() const {
+std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::string>>> CFG::lltable() const {
     /*
      * This function determines the first and follow sets to be used by an LL parser.
      *
@@ -608,14 +608,17 @@ std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::llt
     std::map<std::string, std::vector<std::string>> follow;
     std::map<std::string, std::vector<std::string>> check;
     std::map<std::string, std::vector<std::string>> followFollow;
-    std::map<std::pair<std::string, std::string>, std::vector<std::string>> expect;
+    std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::string>>> expect;
     std::vector<std::string> tableElements = t;
     tableElements.emplace_back("<EOS>");
     std::set<std::string> nullables = findNullableVariables();
+    // The "error" variable:
+    std::vector<std::string> error = {"<ERR>"};
+    std::vector<std::vector<std::string>> empty = {{}};
+    std::vector<std::string> empty2 = {};
     // Initialize maps with all empty vectors
     for(auto &i: v){
-        first[i] = {}; follow[i] = {}; followFollow[i] = {}; expect[std::make_pair(i, "<EOS>")] = {"<ERR>"};
-        for(auto &j: t){expect[std::make_pair(i, j)] = {"<ERR>"};}
+        first[i] = {}; follow[i] = {}; followFollow[i] = {};
     }
     // Determine the easy and hard sets
     for(auto &i: p){
@@ -758,30 +761,58 @@ std::map<std::pair<std::string, std::string>, std::vector<std::string>> CFG::llt
         }
         if(followFollow.empty()){complete = true;}
     }
-    // First and follow sets are complete, now determine expected rules.
+    // First and follow sets are complete, remove duplicates and now determine expected rules.
+    for(auto &i: first){
+        std::vector<std::string> checkDupes;
+        auto j = i.second.begin();
+        while(j != i.second.end()){
+            if(std::find(checkDupes.begin(), checkDupes.end(), *j) == checkDupes.end()){
+                checkDupes.emplace_back(*j);
+                j++;
+            }
+            else{i.second.erase(j);}
+        }
+    }
+    for(auto &i: follow){
+        std::vector<std::string> checkDupes;
+        auto j = i.second.begin();
+        while(j != i.second.end()){
+            if(std::find(checkDupes.begin(), checkDupes.end(), *j) == checkDupes.end()){
+                checkDupes.emplace_back(*j);
+                j++;
+            }
+            else{i.second.erase(j);}
+        }
+    }
     for(auto &production: p){
         if(production.body.empty()){
             for(auto &i: follow[production.head]){
-                expect[std::make_pair(production.head, i)] = {};
+                expect[std::make_pair(production.head, i)].emplace_back(empty2);
             } continue;
         }
         std::string firstChar = production.body[0];
-        if(isTerminal(firstChar)){expect[std::make_pair(production.head, firstChar)] = production.body;}
+        if(isTerminal(firstChar)){expect[std::make_pair(production.head, firstChar)].emplace_back(production.body);}
         else{
             for(auto &l: first[firstChar]){
                 if(l.empty()){continue;}
-                expect[std::make_pair(production.head, l)] = production.body;
+                expect[std::make_pair(production.head, l)].emplace_back(production.body);
             }
             if(std::find(first[firstChar].begin(), first[firstChar].end(), "") != first[firstChar].end()){
                 for(auto &m: follow[firstChar]){
-                    expect[std::make_pair(production.head, m)] = {};
+                    expect[std::make_pair(production.head, m)].emplace_back(empty2);
                 }
                 if(std::find(follow[firstChar].begin(), follow[firstChar].end(), "<EOS>") != follow[firstChar].end()){
-                    expect[std::make_pair(production.head, "<EOS>")] = {};
+                    expect[std::make_pair(production.head, "<EOS>")].emplace_back(empty2);
                 }
             }
         }
     }
-    for(auto &e: expect){if(e.second.empty()){e.second = {"<ERR>"};}}
+    for(auto &i: v){
+        for(auto &w: tableElements){
+            if(expect.find(std::make_pair(i, w)) == expect.end()){
+                expect[std::make_pair(i, w)] = {{"<ERR>"}};
+            }
+        }
+    }
     return expect;
 }
