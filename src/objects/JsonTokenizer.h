@@ -20,8 +20,19 @@ public:
     // print member 'strings' to out
     void printStrings(std::ostream& out) const;
 
+    void tokenizeSimplified(const std::string& path);
+
+    void reset();
+
+    // bool isDouble(const std::string& s) const;
+    bool isJsonNumber(const std::string& s) const;
+
     std::vector<token> tokens;
     std::vector<std::string> strings;
+
+private:
+    void increaseRow(unsigned int& l, unsigned int& c, char ch) const;
+    void fixNumberTokens();
 };
 
 #endif // MB_GROEP_22_23_JSONTOKENIZER_H

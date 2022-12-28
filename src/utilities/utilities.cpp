@@ -94,3 +94,16 @@ std::vector<std::string> stringToVector(const std::string& s) {
     }
     return result;
 }
+
+std::string stringForSpecialCharacters(const std::string& s) {
+    if (s == "\n") {
+        return "\\n";
+    }
+    if (s == "\t") {
+        return "\\t";
+    }
+    if (s == " ") {
+        return "\" \"";
+    }
+    return s;
+};

@@ -50,7 +50,7 @@ void EarleyItem::print(std::ostream& out = std::cout) const {
             continue;
         }
         if (cur_to_print == " ") {
-            production += "space";
+            production += "\" \"";
             production += " ";
             continue;
         }

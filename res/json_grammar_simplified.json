@@ -1,0 +1,127 @@
+{
+    "Productions": [
+        {
+            "body": [
+                "element"
+            ],
+            "head": "json"
+        },
+        {
+            "body": [
+                "object"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "array"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "STRING"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "NUMBER"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "BOOLEAN"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "NULL"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "CURLY_OPEN",
+                "members",
+                "CURLY_CLOSE"
+            ],
+            "head": "object"
+        },
+        {
+            "body": [
+                "member"
+            ],
+            "head": "members"
+        },
+        {
+            "body": [
+                "member",
+                "COMMA",
+                "members"
+            ],
+            "head": "members"
+        },
+        {
+            "body": [
+                "STRING",
+                "COLON",
+                "element"
+            ],
+            "head": "member"
+        },
+        {
+            "body": [
+                "ARRAY_OPEN",
+                "elements",
+                "ARRAY_CLOSE"
+            ],
+            "head": "array"
+        },
+        {
+            "body": [
+                "element"
+            ],
+            "head": "elements"
+        },
+        {
+            "body": [
+                "element",
+                "COMMA",
+                "elements"
+            ],
+            "head": "elements"
+        },
+        {
+            "body": [
+                "value"
+            ],
+            "head": "element"
+        }
+    ],
+    "Start": "json",
+    "Terminals": [
+        "ARRAY_OPEN",
+        "ARRAY_CLOSE",
+        "CURLY_OPEN",
+        "CURLY_CLOSE",
+        "COLON",
+        "COMMA",
+        "STRING",
+        "NUMBER",
+        "BOOLEAN",
+        "NULL"
+    ],
+    "Variables": [
+        "json",
+        "element",
+        "value",
+        "object",
+        "array",
+        "members",
+        "member",
+        "elements"
+    ]
+}

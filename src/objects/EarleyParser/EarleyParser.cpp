@@ -39,7 +39,8 @@ void EarleyParser::predict(const std::string& next_symbol, unsigned int index_ch
 
 void EarleyParser::scan(const std::string& next_symbol, unsigned int index_chart, unsigned int index_state_set) {
     // compare next_symbol with input
-    if (next_symbol == m_input[index_chart].content) {
+    // old rule: if (next_symbol == m_input[index_chart].content)
+    if (next_symbol == m_input[index_chart].type) {
         EarleyItem cur_item = getEarlyItem(index_chart, index_state_set);
         // add StateSet to chart if needed (make chart array 1 bigger)
         if (m_chart.size() - 1 == index_chart) {
@@ -128,4 +129,36 @@ unsigned int EarleyParser::get_index_last_partial_parse() const {
         }
     }
     return index_last_partial_parse;
+}
+
+void EarleyParser::getErrorReport(ML markUpLanguage, std::ostream& out) const {
+    if (markUpLanguage == Json) {
+        getErrorReportJson(out);
+    }
+}
+
+void EarleyParser::getErrorReportJson(std::ostream& out) const {
+    unsigned int chart_size = m_chart.size();
+    token unexpected_token = m_input[chart_size - 1];
+
+    // print where error occurred
+    // old rule: unexpected_token.content
+    out << "Unexpected token \"" << unexpected_token.type << "\" at line " << unexpected_token.pos.line
+        << " and column " << unexpected_token.pos.column << "." << std::endl
+        << std::endl;
+
+    // print expected token
+    // look in last state set
+    for (const auto& item : m_chart.back().m_set) {
+        // if dot is at end or element next to dot is not a terminal: continue
+        if (item.isDotAtEnd()) {
+            continue;
+        }
+        std::string expected_token = item.getNextSymbol();
+        if (m_grammar.isVariable(expected_token)) {
+            continue;
+        }
+        // if symbol next to dot is a terminal
+        out << "Expected token: \"" << stringForSpecialCharacters(expected_token) << "\"." << std::endl;
+    }
 }

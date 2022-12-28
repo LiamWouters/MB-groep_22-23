@@ -26,4 +26,6 @@ std::set<std::string> setIntersection(const std::set<std::string>& a, const std:
 
 std::vector<std::string> stringToVector(const std::string& s);
 
+std::string stringForSpecialCharacters(const std::string& s);
+
 #endif // CFG_UTILITIES_H
