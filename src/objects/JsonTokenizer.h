@@ -2,6 +2,7 @@
 #define MB_GROEP_22_23_JSONTOKENIZER_H
 
 #include "Token.h"
+#include <iostream>
 #include <vector>
 
 class JsonTokenizer {
@@ -15,10 +16,12 @@ public:
     void split(const std::string& path);
 
     // print member 'tokens' to out
-    void printTokens(std::ostream& out) const;
+    void printTokens(std::ostream& out = std::cout) const;
+
+    void printTokensToFile(const std::string& path) const;
 
     // print member 'strings' to out
-    void printStrings(std::ostream& out) const;
+    void printStrings(std::ostream& out = std::cout) const;
 
     void tokenizeSimplified(const std::string& path);
 

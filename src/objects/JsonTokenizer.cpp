@@ -13,7 +13,7 @@ void JsonTokenizer::tokenize(const std::string& path) {
 
     // read input without skipping whitespaces
     while (infile >> std::noskipws >> ch) {
-        tokens.emplace_back(std::string(1, ch), l, c);
+        tokens.emplace_back(std::string(1, ch), l, c, std::string(1, ch));
         if (ch == '\n') {
             c = 1;
             l++;
@@ -36,9 +36,19 @@ void JsonTokenizer::split(const std::string& path) {
     infile.close();
 }
 
-void JsonTokenizer::printTokens(std::ostream& out = std::cout) const {
+void JsonTokenizer::printTokens(std::ostream& out) const {
     for (auto& cur : tokens) {
         cur.print(out);
+    }
+}
+
+void JsonTokenizer::printTokensToFile(const std::string& path) const {
+    std::ofstream file(path);
+    if (file.is_open()){
+        printTokens(file);
+    }
+    else{
+        std::cout << "Unable to open file" << std::endl;
     }
 }
 

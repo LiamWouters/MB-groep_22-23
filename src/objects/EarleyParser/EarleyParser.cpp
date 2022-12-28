@@ -4,6 +4,7 @@
 
 #include "EarleyParser.h"
 #include "../../utilities/utilities.h"
+#include <fstream>
 
 EarleyParser::EarleyParser(const CFG& grammar) : m_grammar{grammar} { init(); }
 
@@ -69,11 +70,21 @@ void EarleyParser::complete(unsigned int index_chart, unsigned int index_state_s
 EarleyItem EarleyParser::getEarlyItem(unsigned int index_chart, unsigned int index_state_set) const {
     return m_chart[index_chart].m_set[index_state_set];
 }
-void EarleyParser::printChart(std::ostream& out = std::cout) const {
+void EarleyParser::printChart(std::ostream& out) const {
     for (unsigned int index_chart = 0; index_chart < m_chart.size(); index_chart++) {
         out << "=== " << index_chart << " ===" << std::endl;
         m_chart[index_chart].print(out);
         out << std::endl;
+    }
+}
+
+void EarleyParser::printChartToFile(const std::string& path) const {
+    std::ofstream file(path);
+    if (file.is_open()){
+        printChart(file);
+    }
+    else{
+        std::cout << "Unable to open file" << std::endl;
     }
 }
 
@@ -131,9 +142,19 @@ unsigned int EarleyParser::get_index_last_partial_parse() const {
     return index_last_partial_parse;
 }
 
-void EarleyParser::getErrorReport(ML markUpLanguage, std::ostream& out) const {
-    if (markUpLanguage == Json) {
+void EarleyParser::printErrorReport(ML MarkUpLanguage, std::ostream& out) const {
+    if (MarkUpLanguage == Json) {
         getErrorReportJson(out);
+    }
+}
+
+void EarleyParser::printErrorReportToFile(ML MarkUpLanguage, const std::string& path) const {
+    std::ofstream file(path);
+    if (file.is_open()){
+        printErrorReport(MarkUpLanguage, file);
+    }
+    else{
+        std::cout << "Unable to open file" << std::endl;
     }
 }
 
