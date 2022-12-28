@@ -9,6 +9,8 @@
 #include "../Token.h"
 #include "StateSet.h"
 
+enum ML { Json, XML };
+
 class EarleyParser {
 public:
     /// constructors
@@ -36,6 +38,9 @@ public:
     unsigned int get_index_last_partial_parse() const;
     bool validate(const std::vector<token>& input);
 
+    /// error reporting
+    void getErrorReport(ML MarkUpLanguage, std::ostream& out = std::cout) const;
+
     /// variables
     std::vector<StateSet> m_chart;
     CFG m_grammar;
@@ -46,6 +51,7 @@ private:
     /// helper functions
     EarleyItem getEarlyItem(unsigned int index_chart, unsigned int index_state_set) const;
     bool isNullable(const std::string& variable) const;
+    void getErrorReportJson(std::ostream& out = std::cout) const;
 };
 
 #endif // MB_GROEP_22_23_EARLEYPARSER_H

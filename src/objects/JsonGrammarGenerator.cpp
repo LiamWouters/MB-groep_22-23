@@ -111,3 +111,26 @@ void JsonGrammarGenerator::addProductionsOneNine(nlohmann::json& j) {
         ;
     }
 }
+
+void JsonGrammarGenerator::simplifiedGenerate() {
+    std::ofstream file("../res/json_grammar_simplified.json");
+
+    nlohmann::json j;
+
+    j["Start"] = "json";
+    j["Variables"] = {"json", "element", "value", "object", "array", "members", "member", "elements"};
+    j["Terminals"] = {"ARRAY_OPEN", "ARRAY_CLOSE", "CURLY_OPEN", "CURLY_CLOSE", "COLON",
+                      "COMMA",      "STRING",      "NUMBER",     "BOOLEAN",     "NULL"};
+
+    addProduction(j, "json", {"element"});
+    addProductions(j, "value", {{"object"}, {"array"}, {"STRING"}, {"NUMBER"}, {"BOOLEAN"}, {"NULL"}});
+    addProductions(j, "object", {{"CURLY_OPEN", "CURLY_CLOSE"}, {"CURLY_OPEN", "members", "CURLY_CLOSE"}});
+    addProductions(j, "members", {{"member"}, {"member", "COMMA", "members"}});
+    addProduction(j, "member", {"STRING", "COLON", "element"});
+    addProductions(j, "array", {{"ARRAY_OPEN", "ARRAY_CLOSE"},{"ARRAY_OPEN", "elements", "ARRAY_CLOSE"}});
+    addProductions(j, "elements", {{"element"}, {"element", "COMMA", "elements"}});
+    addProduction(j, "element", {"value"});
+
+    file << std::setw(4) << j;
+    file.close();
+}
