@@ -6,6 +6,7 @@
 #include "../../utilities/utilities.h"
 #include "../JsonTokenizer.h"
 #include <fstream>
+#include <unordered_set>
 
 EarleyParser::EarleyParser(const CFG& grammar) : m_grammar{grammar} { init(); }
 
@@ -154,33 +155,42 @@ unsigned int EarleyParser::get_index_last_partial_parse() const {
     return index_last_partial_parse;
 }
 
-void EarleyParser::printErrorReport(ML MarkUpLanguage, std::ostream& out) const {
+void EarleyParser::printErrorReport(ML MarkUpLanguage, const std::string& fileWithError, std::ostream& out) const {
     if (MarkUpLanguage == Json) {
-        getErrorReportJson(out);
+        getErrorReportJson(fileWithError, out);
     }
 }
 
-void EarleyParser::printErrorReportToFile(ML MarkUpLanguage, const std::string& path) const {
+void EarleyParser::printErrorReportToFile(ML MarkUpLanguage, const std::string& fileWithError,
+                                          const std::string& path) const {
     std::ofstream file(path);
     if (file.is_open()) {
-        printErrorReport(MarkUpLanguage, file);
+        printErrorReport(MarkUpLanguage, fileWithError, file);
     } else {
         std::cout << "Unable to open file" << std::endl;
     }
 }
 
-void EarleyParser::getErrorReportJson(std::ostream& out) const {
+void EarleyParser::getErrorReportJson(const std::string& fileWithError, std::ostream& out) const {
     unsigned int chart_size = m_chart.size();
     token unexpected_token = m_input[chart_size - 1];
 
     // print where error occurred
-    // old rule: unexpected_token.content
-    out << "Unexpected token \"" << unexpected_token.type << "\" at line " << unexpected_token.pos.line
-        << " and column " << unexpected_token.pos.column << "." << std::endl
+    out << "Unexpected token of type \'" << unexpected_token.type << "\' with content \'" << unexpected_token.content
+        << "\' at line " << unexpected_token.pos.line << " and column " << unexpected_token.pos.column << "."
+        << std::endl
         << std::endl;
+
+    // print the json until error occured (with token after error present)
+    readFile(unexpected_token.pos.line, unexpected_token.pos.column + unexpected_token.content.size() - 1,
+             fileWithError, out);
+
+    out << std::endl;
+    out << "Instead of a " << unexpected_token.type << ", the parser expected a: " << std::endl;
 
     // print expected token
     // look in last state set
+    std::vector<EarleyItem> items_to_explore; // vector to keep track of potential tracked tokens
     for (const auto& item : m_chart.back().m_set) {
         // if dot is at end or element next to dot is not a terminal: continue
         if (item.isDotAtEnd()) {
@@ -190,7 +200,79 @@ void EarleyParser::getErrorReportJson(std::ostream& out) const {
         if (m_grammar.isVariable(expected_token)) {
             continue;
         }
-        // if symbol next to dot is a terminal
-        out << "Expected token: \"" << stringForSpecialCharacters(expected_token) << "\"." << std::endl;
+
+        // if symbol next to dot is a terminal, store rules we will explore in items_to_explore
+        items_to_explore.emplace_back(item);
+    }
+    // loop over items to explore:
+    for (unsigned int i = 0; i < items_to_explore.size(); i++) {
+
+        EarleyItem cur_item = items_to_explore[i];
+        out << std::endl;
+        // what terminal is expected?
+        out << cur_item.getNextSymbol() << ", based on:" << std::endl;
+
+        unsigned int chart_index = chart_size - 1;
+        bool not_reached_end = true;
+        std::unordered_set<std::string>
+            rules; // this set will contain all the rules to print as explanation for expected token
+        rules.insert(items_to_explore[i].m_production.toString()); // add rule to explore already to this set
+
+        // while we have not found the start tag
+        while (not_reached_end) {
+            // loop over items in current chart position, until fitting rule is found
+            for (const auto& state_set_item : m_chart[chart_index].m_set) {
+                if (!state_set_item.isDotAtEnd()) {
+                    if (state_set_item.getNextSymbol() == cur_item.m_production.head) {
+                        // new item to explore
+                        cur_item = state_set_item;
+                        // add rule of new item to rules
+                        rules.insert(cur_item.m_production.toString());
+                        // if we have found the start tag, stop exploring
+                        if (cur_item.m_production.head == m_grammar.s) {
+                            not_reached_end = false;
+                        }
+                        // if we have found a matching rule, stop exploring
+                        break;
+                    }
+                }
+            }
+            if (cur_item.m_dot != 0) {
+                // if dot is not at start position, go to position in chart indicated by start field item
+                chart_index = cur_item.m_start;
+            }
+        }
+        for (const auto& str : rules) {
+            // print rules that explain current expected token
+            out << '\t' << str << std::endl;
+        }
+    }
+}
+
+void EarleyParser::readFile(const unsigned int l, const unsigned int c, const std::string& fileWithError,
+                            std::ostream& out) const {
+    std::ifstream file(fileWithError);
+    if (file.is_open()) {
+        std::string line;
+        std::string output;
+        unsigned int line_counter = 0;
+        while (std::getline(file, line) and line_counter < l) {
+            if (line_counter == l - 1) {
+                for (unsigned int i = 0; i < line.size(); i++) {
+                    if (i < c) {
+                        output += line[i];
+                    }
+                }
+            } else {
+                output += line;
+                output += '\n';
+            }
+            line_counter++;
+        }
+        out << output;
+        out << std::endl;
+        file.close();
+    } else {
+        std::cout << "Unable to open file" << std::endl;
     }
 }

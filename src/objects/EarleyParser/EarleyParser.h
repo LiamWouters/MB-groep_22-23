@@ -45,8 +45,11 @@ public:
                       ML markUpLanguage); // tokenizes and validates (based on grammar in constructor)
 
     /// error reporting
-    void printErrorReport(ML MarkUpLanguage, std::ostream& out = std::cout) const;
-    void printErrorReportToFile(ML MarkUpLanguage, const std::string& path) const;
+    void printErrorReport(ML MarkUpLanguage, const std::string& fileWithError, std::ostream& out = std::cout) const;
+    void printErrorReportToFile(ML MarkUpLanguage, const std::string& fileWithError, const std::string& path) const;
+
+    void readFile(unsigned int l, unsigned int c, const std::string& fileWithError,
+                  std::ostream& out = std::cout) const;
 
     /// variables
     std::vector<StateSet> m_chart;
@@ -58,7 +61,7 @@ private:
     /// helper functions
     EarleyItem getEarlyItem(unsigned int index_chart, unsigned int index_state_set) const;
     bool isNullable(const std::string& variable) const;
-    void getErrorReportJson(std::ostream& out = std::cout) const;
+    void getErrorReportJson(const std::string& fileWithError, std::ostream& out = std::cout) const;
 };
 
 #endif // MB_GROEP_22_23_EARLEYPARSER_H
