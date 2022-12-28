@@ -10,8 +10,7 @@ TEST_SUITE("LR1 Parser Tests") {
         // non-json/eml test
         CFG* grammar = new CFG("../tests/input/input-LR1_1.json");
         LR1Parser* parser = new LR1Parser(*grammar, true);
-
-        //parser->saveParser("input-LR1_1-SAVEDPARSER");
+        parser->saveParser("input-LR1_1-SAVEDPARSER");
 
         const std::ifstream expectedFile("../tests/expected/expected-LR1_1.txt");
         std::stringstream expected;

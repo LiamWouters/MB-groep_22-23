@@ -44,6 +44,7 @@ struct token {
     void reset();
 
     // variables
+    bool addedToStructure; // variable for creating data structure for file conversion (to avoid adding the token multiple time)
     std::string content;
     position pos;
     std::string type;

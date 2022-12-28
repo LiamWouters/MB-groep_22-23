@@ -11,6 +11,7 @@
 #include "CFG.h"
 #include "Production.h"
 #include "Token.h"
+#include "FileConverter/Data.h"
 
 class LR1Parser {
 private:
@@ -35,6 +36,7 @@ private:
     //              vb: "accept" | "shift", "4"| "reduce", "A", "->", "b" (reduce A->b, A is head, b is body)
 
     std::stack<std::string> parserStack;
+    Data* dataStructure;
 
     ////////////////////////////////////////////////
     bool testUnique(const std::set<std::pair<Production, std::string>>* itemset1, const std::set<std::pair<Production, std::string>>* itemset2);
@@ -66,6 +68,9 @@ public:
      * this parse function is for parsing JSON and EML files
      */
     bool parse(std::vector<token> inputTokens);
+
+    bool printToJSON();
+    bool printToEML();
 };
 
 

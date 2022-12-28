@@ -1,0 +1,9 @@
+{
+  "testnum": 1,
+  "testbool1": true,
+  "testbool2": false,
+  "testbool3": null,
+  "teststring": "testing testing 123",
+  "testarray": ["valueInContainerTest", "CHANGE THIS TO OBJECT", [1, 2]],
+  "testobject": "NOT YET"
+}

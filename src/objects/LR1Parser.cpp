@@ -15,12 +15,14 @@
 LR1Parser::LR1Parser(const CFG &grammar, const bool debugprint) : grammar(grammar), debugprint(debugprint) {
     // normal constructor
     printbuffer.str(std::string());
+    dataStructure = nullptr;
     constructParseTable();
 }
 
 LR1Parser::LR1Parser(const std::string &fileLocation, const CFG &grammar, const bool debugprint) : grammar(grammar), debugprint(debugprint) {
     // load constructor
     printbuffer.str(std::string());
+    dataStructure = nullptr;
     // NOT CONSTRUCTING PARSE TABLE
     // we do need to augment the grammar
     augmentGrammar();
@@ -672,14 +674,78 @@ bool LR1Parser::parse(std::vector<token> inputTokens) {
     std::string inpTokenContent = "";   // used for creating the datastructure for conversion between JSON <-> EML
     std::string action = "";
 
+    // create data structure
+    /*
+{
+  "testnum": 1,
+  "testbool1": true,
+  "testbool2": false,
+  "testbool3": null,
+  "teststring": "testing testing 123",
+  "testarray": ["valueInContainerTest", "CHANGE THIS TO OBJECT", [1, 2]],
+  "testobject": "NOT YET"
+}
+     */
+    dataStructure = new Data();
+    std::string storedElementName = ""; // store name until we have value (so we know what element type it is)
+    std::stack<containerElement*> currentElemContainers; // vector of array or object,
+    bool tokenAlreadyAdded = true;
+
     while (action != "accept") {
         if (inputTokens.size() > 0) {
             inpTokenType = inputTokens[0].type;
             inpTokenContent = inputTokens[0].content;
+            tokenAlreadyAdded = inputTokens[0].addedToStructure;
         } else {
             inpTokenType = "EOS";
             inpTokenContent = "";
+            tokenAlreadyAdded = false;
         }
+
+        /// CREATE DATA STRUCTURE ///
+        if (!tokenAlreadyAdded) {
+            inputTokens[0].addedToStructure = true;
+            bool wasName = false; // if token was name, skip the element creation if statement
+            if (inpTokenType == "STRING" && storedElementName == "") {
+                if (currentElemContainers.empty()) {
+                    // if no name is stored, store content as name
+                    storedElementName = inpTokenContent;
+                    wasName = true;
+                } else {
+                    if (currentElemContainers.top()->getType() != "array") {
+                        storedElementName = inpTokenType;
+                        wasName = true;
+                    }
+                }
+            }
+
+            if (!wasName && (inpTokenType == "NUMBER" or inpTokenType == "STRING" or inpTokenType == "BOOLEAN" or inpTokenType == "NULL")) {
+                // value
+                valueElement *valElem = new valueElement();
+                valElem->setName(storedElementName);
+                valElem->setValue(inpTokenContent);
+
+                storedElementName = ""; // remove stored name
+                dataStructure->addElement(valElem, currentElemContainers);
+            } else if (inpTokenType == "ARRAY_OPEN") {
+                // array open
+                arrayElement *arrayElem = new arrayElement();
+                arrayElem->setName(storedElementName);
+
+                currentElemContainers.push(arrayElem);
+                storedElementName = "";
+            } else if (inpTokenType == "ARRAY_CLOSE") {
+                // array close
+                if (currentElemContainers.top()->getType() != "array") {
+                    std::cerr << "FILE CONVERTER ERROR: missing/wrong container closer (']' with no open array)"
+                              << std::endl;
+                }
+                containerElement *array = currentElemContainers.top();
+                currentElemContainers.pop(); // remove container from stack
+                dataStructure->addElement(array, currentElemContainers);
+            }
+        }
+        /////////////////////////////
 
         if (inpTokenType != "EOS" and std::find(grammar.getTerminals().begin(), grammar.getTerminals().end(), inpTokenType) == grammar.getTerminals().end()) {
             //std::cerr << "LR PARSER ERROR: parser input is not in the given grammar" << std::endl;
@@ -724,6 +790,20 @@ bool LR1Parser::parse(std::vector<token> inputTokens) {
         }
     }
     return true; // action must be "accept" (it left the while loop)
+}
+
+bool LR1Parser::printToJSON() {
+    if (dataStructure == nullptr) {
+        std::cerr << "MUST PARSE before trying to convert" << std::endl;
+        return false;
+    }
+    std::cout << dataStructure->writeToJSON() << std::endl;
+    return false;
+}
+
+bool LR1Parser::printToEML() {
+    std::cout << "ERROR: PRINTING TO EML NOT SUPPORTED YET" << std::endl;
+    return false;
 }
 
 void LR1Parser::saveParser(std::string fileName) {

@@ -11,6 +11,8 @@ AUX_SOURCE_DIRECTORY(src/objects OBJECT_FILES)
 
 AUX_SOURCE_DIRECTORY(src/objects/EarleyParser OBJECT_FILES_EARLEY_PARSER)
 
+AUX_SOURCE_DIRECTORY(src/objects/FileConverter OBJECT_FILES_FILE_CONVERTER)
+
 AUX_SOURCE_DIRECTORY(src/utilities UTILITY_FILES)
 
 AUX_SOURCE_DIRECTORY(tests T_SOURCE_FILES)
@@ -20,6 +22,7 @@ set(RELEASE_SOURCE_FILES
         src/main.cpp
         ${OBJECT_FILES}
         ${OBJECT_FILES_EARLEY_PARSER}
+        ${OBJECT_FILES_FILE_CONVERTER}
         ${NM_JSON_FILES}
         ${UTILITY_FILES}
         src/objects/LL1Parser.cpp src/objects/LL1Parser.h src/objects/EMLGrammarGenerator.cpp src/objects/EMLGrammarGenerator.h)
@@ -28,6 +31,7 @@ set(RELEASE_SOURCE_FILES
 set(TEST_SOURCE_FILES
         ${OBJECT_FILES}
         ${OBJECT_FILES_EARLEY_PARSER}
+        ${OBJECT_FILES_FILE_CONVERTER}
         ${NM_JSON_FILES}
         ${UTILITY_FILES}
         ${DOCTEST_FILES}
