@@ -10,7 +10,7 @@ token::token(std::string cont, const position& p, std::string t)
     : content{std::move(cont)}, pos{p}, type{std::move(t)} {}
 token::token(std::string cont, unsigned int l, unsigned int c,  std::string t) : content{std::move(cont)}, pos{l, c}, type(std::move(t)) {}
 
-void token::print(std::ostream& out = std::cout) const {
+void token::print(std::ostream& out) const {
     out << std::left
     << std::setw(16) << "(" + std::to_string(pos.line) + ", " +  std::to_string(pos.column) + "):"
     << std::setw(40) << content

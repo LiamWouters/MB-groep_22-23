@@ -30,7 +30,7 @@ public:
     void addItemToChart(unsigned int index_chart, unsigned int index_state_set);
 
     /// print functions
-    void printChart(std::ostream& out) const;
+    void printChart(std::ostream& out = std::cout) const;
 
     /// validation
     bool has_partial_parse(unsigned int index_chart) const;

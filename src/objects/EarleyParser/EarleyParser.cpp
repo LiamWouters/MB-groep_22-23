@@ -69,7 +69,7 @@ void EarleyParser::complete(unsigned int index_chart, unsigned int index_state_s
 EarleyItem EarleyParser::getEarlyItem(unsigned int index_chart, unsigned int index_state_set) const {
     return m_chart[index_chart].m_set[index_state_set];
 }
-void EarleyParser::printChart(std::ostream& out = std::cout) const {
+void EarleyParser::printChart(std::ostream& out) const {
     for (unsigned int index_chart = 0; index_chart < m_chart.size(); index_chart++) {
         out << "=== " << index_chart << " ===" << std::endl;
         m_chart[index_chart].print(out);

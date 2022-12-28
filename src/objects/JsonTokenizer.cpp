@@ -36,7 +36,7 @@ void JsonTokenizer::split(const std::string& path) {
     infile.close();
 }
 
-void JsonTokenizer::printTokens(std::ostream& out = std::cout) const {
+void JsonTokenizer::printTokens(std::ostream& out) const {
     for (auto& cur : tokens) {
         cur.print(out);
     }
