@@ -1,0 +1,588 @@
+First Set:
+  FIRST(json) = { 'ARRAY_OPEN' 'BOOLEAN' 'CURLY_OPEN' 'NULL' 'NUMBER' 'STRING' }
+  FIRST(element) = { 'ARRAY_OPEN' 'BOOLEAN' 'CURLY_OPEN' 'NULL' 'NUMBER' 'STRING' }
+  FIRST(value) = { 'ARRAY_OPEN' 'BOOLEAN' 'CURLY_OPEN' 'NULL' 'NUMBER' 'STRING' }
+  FIRST(object) = { 'CURLY_OPEN' }
+  FIRST(array) = { 'ARRAY_OPEN' }
+  FIRST(members) = { 'STRING' }
+  FIRST(member) = { 'STRING' }
+  FIRST(elements) = { 'ARRAY_OPEN' 'BOOLEAN' 'CURLY_OPEN' 'NULL' 'NUMBER' 'STRING' }
+  FIRST(S) = { 'ARRAY_OPEN' 'BOOLEAN' 'CURLY_OPEN' 'NULL' 'NUMBER' 'STRING' }
+________________________________________
+ALL ITEM SETS:
+Item Set 0 :
+  [S -> *json, EOS]
+  [array -> *ARRAY_OPENARRAY_CLOSE, EOS]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, EOS]
+  [element -> *value, EOS]
+  [json -> *element, EOS]
+  [object -> *CURLY_OPENCURLY_CLOSE, EOS]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, EOS]
+  [value -> *BOOLEAN, EOS]
+  [value -> *NULL, EOS]
+  [value -> *NUMBER, EOS]
+  [value -> *STRING, EOS]
+  [value -> *array, EOS]
+  [value -> *object, EOS]
+________________________________________
+Item Set 1 :
+  [S -> json*, EOS]
+________________________________________
+Item Set 2 :
+  [json -> element*, EOS]
+________________________________________
+Item Set 3 :
+  [element -> value*, EOS]
+________________________________________
+Item Set 4 :
+  [value -> object*, EOS]
+________________________________________
+Item Set 5 :
+  [value -> array*, EOS]
+________________________________________
+Item Set 6 :
+  [array -> *ARRAY_OPENARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> *ARRAY_OPENARRAY_CLOSE, COMMA]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, COMMA]
+  [array -> ARRAY_OPEN*ARRAY_CLOSE, EOS]
+  [array -> ARRAY_OPEN*elementsARRAY_CLOSE, EOS]
+  [element -> *value, ARRAY_CLOSE]
+  [element -> *value, COMMA]
+  [elements -> *element, ARRAY_CLOSE]
+  [elements -> *elementCOMMAelements, ARRAY_CLOSE]
+  [object -> *CURLY_OPENCURLY_CLOSE, ARRAY_CLOSE]
+  [object -> *CURLY_OPENCURLY_CLOSE, COMMA]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, ARRAY_CLOSE]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, COMMA]
+  [value -> *BOOLEAN, ARRAY_CLOSE]
+  [value -> *BOOLEAN, COMMA]
+  [value -> *NULL, ARRAY_CLOSE]
+  [value -> *NULL, COMMA]
+  [value -> *NUMBER, ARRAY_CLOSE]
+  [value -> *NUMBER, COMMA]
+  [value -> *STRING, ARRAY_CLOSE]
+  [value -> *STRING, COMMA]
+  [value -> *array, ARRAY_CLOSE]
+  [value -> *array, COMMA]
+  [value -> *object, ARRAY_CLOSE]
+  [value -> *object, COMMA]
+________________________________________
+Item Set 7 :
+  [member -> *STRINGCOLONelement, COMMA]
+  [member -> *STRINGCOLONelement, CURLY_CLOSE]
+  [members -> *member, CURLY_CLOSE]
+  [members -> *memberCOMMAmembers, CURLY_CLOSE]
+  [object -> CURLY_OPEN*CURLY_CLOSE, EOS]
+  [object -> CURLY_OPEN*membersCURLY_CLOSE, EOS]
+________________________________________
+Item Set 8 :
+  [value -> STRING*, EOS]
+________________________________________
+Item Set 9 :
+  [value -> NUMBER*, EOS]
+________________________________________
+Item Set 10 :
+  [value -> BOOLEAN*, EOS]
+________________________________________
+Item Set 11 :
+  [value -> NULL*, EOS]
+________________________________________
+Item Set 12 :
+  [elements -> element*, ARRAY_CLOSE]
+  [elements -> element*COMMAelements, ARRAY_CLOSE]
+________________________________________
+Item Set 13 :
+  [element -> value*, ARRAY_CLOSE]
+  [element -> value*, COMMA]
+________________________________________
+Item Set 14 :
+  [value -> object*, ARRAY_CLOSE]
+  [value -> object*, COMMA]
+________________________________________
+Item Set 15 :
+  [value -> array*, ARRAY_CLOSE]
+  [value -> array*, COMMA]
+________________________________________
+Item Set 16 :
+  [array -> ARRAY_OPENelements*ARRAY_CLOSE, EOS]
+________________________________________
+Item Set 17 :
+  [array -> *ARRAY_OPENARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> *ARRAY_OPENARRAY_CLOSE, COMMA]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, COMMA]
+  [array -> ARRAY_OPEN*ARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> ARRAY_OPEN*ARRAY_CLOSE, COMMA]
+  [array -> ARRAY_OPEN*elementsARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> ARRAY_OPEN*elementsARRAY_CLOSE, COMMA]
+  [element -> *value, ARRAY_CLOSE]
+  [element -> *value, COMMA]
+  [elements -> *element, ARRAY_CLOSE]
+  [elements -> *elementCOMMAelements, ARRAY_CLOSE]
+  [object -> *CURLY_OPENCURLY_CLOSE, ARRAY_CLOSE]
+  [object -> *CURLY_OPENCURLY_CLOSE, COMMA]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, ARRAY_CLOSE]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, COMMA]
+  [value -> *BOOLEAN, ARRAY_CLOSE]
+  [value -> *BOOLEAN, COMMA]
+  [value -> *NULL, ARRAY_CLOSE]
+  [value -> *NULL, COMMA]
+  [value -> *NUMBER, ARRAY_CLOSE]
+  [value -> *NUMBER, COMMA]
+  [value -> *STRING, ARRAY_CLOSE]
+  [value -> *STRING, COMMA]
+  [value -> *array, ARRAY_CLOSE]
+  [value -> *array, COMMA]
+  [value -> *object, ARRAY_CLOSE]
+  [value -> *object, COMMA]
+________________________________________
+Item Set 18 :
+  [array -> ARRAY_OPENARRAY_CLOSE*, EOS]
+________________________________________
+Item Set 19 :
+  [member -> *STRINGCOLONelement, COMMA]
+  [member -> *STRINGCOLONelement, CURLY_CLOSE]
+  [members -> *member, CURLY_CLOSE]
+  [members -> *memberCOMMAmembers, CURLY_CLOSE]
+  [object -> CURLY_OPEN*CURLY_CLOSE, ARRAY_CLOSE]
+  [object -> CURLY_OPEN*CURLY_CLOSE, COMMA]
+  [object -> CURLY_OPEN*membersCURLY_CLOSE, ARRAY_CLOSE]
+  [object -> CURLY_OPEN*membersCURLY_CLOSE, COMMA]
+________________________________________
+Item Set 20 :
+  [value -> STRING*, ARRAY_CLOSE]
+  [value -> STRING*, COMMA]
+________________________________________
+Item Set 21 :
+  [value -> NUMBER*, ARRAY_CLOSE]
+  [value -> NUMBER*, COMMA]
+________________________________________
+Item Set 22 :
+  [value -> BOOLEAN*, ARRAY_CLOSE]
+  [value -> BOOLEAN*, COMMA]
+________________________________________
+Item Set 23 :
+  [value -> NULL*, ARRAY_CLOSE]
+  [value -> NULL*, COMMA]
+________________________________________
+Item Set 24 :
+  [object -> CURLY_OPENmembers*CURLY_CLOSE, EOS]
+________________________________________
+Item Set 25 :
+  [members -> member*, CURLY_CLOSE]
+  [members -> member*COMMAmembers, CURLY_CLOSE]
+________________________________________
+Item Set 26 :
+  [object -> CURLY_OPENCURLY_CLOSE*, EOS]
+________________________________________
+Item Set 27 :
+  [member -> STRING*COLONelement, COMMA]
+  [member -> STRING*COLONelement, CURLY_CLOSE]
+________________________________________
+Item Set 28 :
+  [array -> *ARRAY_OPENARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> *ARRAY_OPENARRAY_CLOSE, COMMA]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, COMMA]
+  [element -> *value, ARRAY_CLOSE]
+  [element -> *value, COMMA]
+  [elements -> *element, ARRAY_CLOSE]
+  [elements -> *elementCOMMAelements, ARRAY_CLOSE]
+  [elements -> elementCOMMA*elements, ARRAY_CLOSE]
+  [object -> *CURLY_OPENCURLY_CLOSE, ARRAY_CLOSE]
+  [object -> *CURLY_OPENCURLY_CLOSE, COMMA]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, ARRAY_CLOSE]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, COMMA]
+  [value -> *BOOLEAN, ARRAY_CLOSE]
+  [value -> *BOOLEAN, COMMA]
+  [value -> *NULL, ARRAY_CLOSE]
+  [value -> *NULL, COMMA]
+  [value -> *NUMBER, ARRAY_CLOSE]
+  [value -> *NUMBER, COMMA]
+  [value -> *STRING, ARRAY_CLOSE]
+  [value -> *STRING, COMMA]
+  [value -> *array, ARRAY_CLOSE]
+  [value -> *array, COMMA]
+  [value -> *object, ARRAY_CLOSE]
+  [value -> *object, COMMA]
+________________________________________
+Item Set 29 :
+  [array -> ARRAY_OPENelementsARRAY_CLOSE*, EOS]
+________________________________________
+Item Set 30 :
+  [array -> ARRAY_OPENelements*ARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> ARRAY_OPENelements*ARRAY_CLOSE, COMMA]
+________________________________________
+Item Set 31 :
+  [array -> ARRAY_OPENARRAY_CLOSE*, ARRAY_CLOSE]
+  [array -> ARRAY_OPENARRAY_CLOSE*, COMMA]
+________________________________________
+Item Set 32 :
+  [object -> CURLY_OPENmembers*CURLY_CLOSE, ARRAY_CLOSE]
+  [object -> CURLY_OPENmembers*CURLY_CLOSE, COMMA]
+________________________________________
+Item Set 33 :
+  [object -> CURLY_OPENCURLY_CLOSE*, ARRAY_CLOSE]
+  [object -> CURLY_OPENCURLY_CLOSE*, COMMA]
+________________________________________
+Item Set 34 :
+  [object -> CURLY_OPENmembersCURLY_CLOSE*, EOS]
+________________________________________
+Item Set 35 :
+  [member -> *STRINGCOLONelement, COMMA]
+  [member -> *STRINGCOLONelement, CURLY_CLOSE]
+  [members -> *member, CURLY_CLOSE]
+  [members -> *memberCOMMAmembers, CURLY_CLOSE]
+  [members -> memberCOMMA*members, CURLY_CLOSE]
+________________________________________
+Item Set 36 :
+  [array -> *ARRAY_OPENARRAY_CLOSE, COMMA]
+  [array -> *ARRAY_OPENARRAY_CLOSE, CURLY_CLOSE]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, COMMA]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, CURLY_CLOSE]
+  [element -> *value, COMMA]
+  [element -> *value, CURLY_CLOSE]
+  [member -> STRINGCOLON*element, COMMA]
+  [member -> STRINGCOLON*element, CURLY_CLOSE]
+  [object -> *CURLY_OPENCURLY_CLOSE, COMMA]
+  [object -> *CURLY_OPENCURLY_CLOSE, CURLY_CLOSE]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, COMMA]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, CURLY_CLOSE]
+  [value -> *BOOLEAN, COMMA]
+  [value -> *BOOLEAN, CURLY_CLOSE]
+  [value -> *NULL, COMMA]
+  [value -> *NULL, CURLY_CLOSE]
+  [value -> *NUMBER, COMMA]
+  [value -> *NUMBER, CURLY_CLOSE]
+  [value -> *STRING, COMMA]
+  [value -> *STRING, CURLY_CLOSE]
+  [value -> *array, COMMA]
+  [value -> *array, CURLY_CLOSE]
+  [value -> *object, COMMA]
+  [value -> *object, CURLY_CLOSE]
+________________________________________
+Item Set 37 :
+  [elements -> elementCOMMAelements*, ARRAY_CLOSE]
+________________________________________
+Item Set 38 :
+  [array -> ARRAY_OPENelementsARRAY_CLOSE*, ARRAY_CLOSE]
+  [array -> ARRAY_OPENelementsARRAY_CLOSE*, COMMA]
+________________________________________
+Item Set 39 :
+  [object -> CURLY_OPENmembersCURLY_CLOSE*, ARRAY_CLOSE]
+  [object -> CURLY_OPENmembersCURLY_CLOSE*, COMMA]
+________________________________________
+Item Set 40 :
+  [members -> memberCOMMAmembers*, CURLY_CLOSE]
+________________________________________
+Item Set 41 :
+  [member -> STRINGCOLONelement*, COMMA]
+  [member -> STRINGCOLONelement*, CURLY_CLOSE]
+________________________________________
+Item Set 42 :
+  [element -> value*, COMMA]
+  [element -> value*, CURLY_CLOSE]
+________________________________________
+Item Set 43 :
+  [value -> object*, COMMA]
+  [value -> object*, CURLY_CLOSE]
+________________________________________
+Item Set 44 :
+  [value -> array*, COMMA]
+  [value -> array*, CURLY_CLOSE]
+________________________________________
+Item Set 45 :
+  [array -> *ARRAY_OPENARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> *ARRAY_OPENARRAY_CLOSE, COMMA]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, ARRAY_CLOSE]
+  [array -> *ARRAY_OPENelementsARRAY_CLOSE, COMMA]
+  [array -> ARRAY_OPEN*ARRAY_CLOSE, COMMA]
+  [array -> ARRAY_OPEN*ARRAY_CLOSE, CURLY_CLOSE]
+  [array -> ARRAY_OPEN*elementsARRAY_CLOSE, COMMA]
+  [array -> ARRAY_OPEN*elementsARRAY_CLOSE, CURLY_CLOSE]
+  [element -> *value, ARRAY_CLOSE]
+  [element -> *value, COMMA]
+  [elements -> *element, ARRAY_CLOSE]
+  [elements -> *elementCOMMAelements, ARRAY_CLOSE]
+  [object -> *CURLY_OPENCURLY_CLOSE, ARRAY_CLOSE]
+  [object -> *CURLY_OPENCURLY_CLOSE, COMMA]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, ARRAY_CLOSE]
+  [object -> *CURLY_OPENmembersCURLY_CLOSE, COMMA]
+  [value -> *BOOLEAN, ARRAY_CLOSE]
+  [value -> *BOOLEAN, COMMA]
+  [value -> *NULL, ARRAY_CLOSE]
+  [value -> *NULL, COMMA]
+  [value -> *NUMBER, ARRAY_CLOSE]
+  [value -> *NUMBER, COMMA]
+  [value -> *STRING, ARRAY_CLOSE]
+  [value -> *STRING, COMMA]
+  [value -> *array, ARRAY_CLOSE]
+  [value -> *array, COMMA]
+  [value -> *object, ARRAY_CLOSE]
+  [value -> *object, COMMA]
+________________________________________
+Item Set 46 :
+  [member -> *STRINGCOLONelement, COMMA]
+  [member -> *STRINGCOLONelement, CURLY_CLOSE]
+  [members -> *member, CURLY_CLOSE]
+  [members -> *memberCOMMAmembers, CURLY_CLOSE]
+  [object -> CURLY_OPEN*CURLY_CLOSE, COMMA]
+  [object -> CURLY_OPEN*CURLY_CLOSE, CURLY_CLOSE]
+  [object -> CURLY_OPEN*membersCURLY_CLOSE, COMMA]
+  [object -> CURLY_OPEN*membersCURLY_CLOSE, CURLY_CLOSE]
+________________________________________
+Item Set 47 :
+  [value -> STRING*, COMMA]
+  [value -> STRING*, CURLY_CLOSE]
+________________________________________
+Item Set 48 :
+  [value -> NUMBER*, COMMA]
+  [value -> NUMBER*, CURLY_CLOSE]
+________________________________________
+Item Set 49 :
+  [value -> BOOLEAN*, COMMA]
+  [value -> BOOLEAN*, CURLY_CLOSE]
+________________________________________
+Item Set 50 :
+  [value -> NULL*, COMMA]
+  [value -> NULL*, CURLY_CLOSE]
+________________________________________
+Item Set 51 :
+  [array -> ARRAY_OPENelements*ARRAY_CLOSE, COMMA]
+  [array -> ARRAY_OPENelements*ARRAY_CLOSE, CURLY_CLOSE]
+________________________________________
+Item Set 52 :
+  [array -> ARRAY_OPENARRAY_CLOSE*, COMMA]
+  [array -> ARRAY_OPENARRAY_CLOSE*, CURLY_CLOSE]
+________________________________________
+Item Set 53 :
+  [object -> CURLY_OPENmembers*CURLY_CLOSE, COMMA]
+  [object -> CURLY_OPENmembers*CURLY_CLOSE, CURLY_CLOSE]
+________________________________________
+Item Set 54 :
+  [object -> CURLY_OPENCURLY_CLOSE*, COMMA]
+  [object -> CURLY_OPENCURLY_CLOSE*, CURLY_CLOSE]
+________________________________________
+Item Set 55 :
+  [array -> ARRAY_OPENelementsARRAY_CLOSE*, COMMA]
+  [array -> ARRAY_OPENelementsARRAY_CLOSE*, CURLY_CLOSE]
+________________________________________
+Item Set 56 :
+  [object -> CURLY_OPENmembersCURLY_CLOSE*, COMMA]
+  [object -> CURLY_OPENmembersCURLY_CLOSE*, CURLY_CLOSE]
+________________________________________
+GOTO TABLE:
+  GOTO(0, ARRAY_OPEN) = 6
+  GOTO(0, BOOLEAN) = 10
+  GOTO(0, CURLY_OPEN) = 7
+  GOTO(0, NULL) = 11
+  GOTO(0, NUMBER) = 9
+  GOTO(0, STRING) = 8
+  GOTO(0, array) = 5
+  GOTO(0, element) = 2
+  GOTO(0, json) = 1
+  GOTO(0, object) = 4
+  GOTO(0, value) = 3
+  GOTO(6, ARRAY_CLOSE) = 18
+  GOTO(6, ARRAY_OPEN) = 17
+  GOTO(6, BOOLEAN) = 22
+  GOTO(6, CURLY_OPEN) = 19
+  GOTO(6, NULL) = 23
+  GOTO(6, NUMBER) = 21
+  GOTO(6, STRING) = 20
+  GOTO(6, array) = 15
+  GOTO(6, element) = 12
+  GOTO(6, elements) = 16
+  GOTO(6, object) = 14
+  GOTO(6, value) = 13
+  GOTO(7, CURLY_CLOSE) = 26
+  GOTO(7, STRING) = 27
+  GOTO(7, member) = 25
+  GOTO(7, members) = 24
+  GOTO(12, COMMA) = 28
+  GOTO(16, ARRAY_CLOSE) = 29
+  GOTO(17, ARRAY_CLOSE) = 31
+  GOTO(17, ARRAY_OPEN) = 17
+  GOTO(17, BOOLEAN) = 22
+  GOTO(17, CURLY_OPEN) = 19
+  GOTO(17, NULL) = 23
+  GOTO(17, NUMBER) = 21
+  GOTO(17, STRING) = 20
+  GOTO(17, array) = 15
+  GOTO(17, element) = 12
+  GOTO(17, elements) = 30
+  GOTO(17, object) = 14
+  GOTO(17, value) = 13
+  GOTO(19, CURLY_CLOSE) = 33
+  GOTO(19, STRING) = 27
+  GOTO(19, member) = 25
+  GOTO(19, members) = 32
+  GOTO(24, CURLY_CLOSE) = 34
+  GOTO(25, COMMA) = 35
+  GOTO(27, COLON) = 36
+  GOTO(28, ARRAY_OPEN) = 17
+  GOTO(28, BOOLEAN) = 22
+  GOTO(28, CURLY_OPEN) = 19
+  GOTO(28, NULL) = 23
+  GOTO(28, NUMBER) = 21
+  GOTO(28, STRING) = 20
+  GOTO(28, array) = 15
+  GOTO(28, element) = 12
+  GOTO(28, elements) = 37
+  GOTO(28, object) = 14
+  GOTO(28, value) = 13
+  GOTO(30, ARRAY_CLOSE) = 38
+  GOTO(32, CURLY_CLOSE) = 39
+  GOTO(35, STRING) = 27
+  GOTO(35, member) = 25
+  GOTO(35, members) = 40
+  GOTO(36, ARRAY_OPEN) = 45
+  GOTO(36, BOOLEAN) = 49
+  GOTO(36, CURLY_OPEN) = 46
+  GOTO(36, NULL) = 50
+  GOTO(36, NUMBER) = 48
+  GOTO(36, STRING) = 47
+  GOTO(36, array) = 44
+  GOTO(36, element) = 41
+  GOTO(36, object) = 43
+  GOTO(36, value) = 42
+  GOTO(45, ARRAY_CLOSE) = 52
+  GOTO(45, ARRAY_OPEN) = 17
+  GOTO(45, BOOLEAN) = 22
+  GOTO(45, CURLY_OPEN) = 19
+  GOTO(45, NULL) = 23
+  GOTO(45, NUMBER) = 21
+  GOTO(45, STRING) = 20
+  GOTO(45, array) = 15
+  GOTO(45, element) = 12
+  GOTO(45, elements) = 51
+  GOTO(45, object) = 14
+  GOTO(45, value) = 13
+  GOTO(46, CURLY_CLOSE) = 54
+  GOTO(46, STRING) = 27
+  GOTO(46, member) = 25
+  GOTO(46, members) = 53
+  GOTO(51, ARRAY_CLOSE) = 55
+  GOTO(53, CURLY_CLOSE) = 56
+________________________________________
+ACTION TABLE:
+  ACTION(0, ARRAY_OPEN) = shift6
+  ACTION(0, BOOLEAN) = shift10
+  ACTION(0, CURLY_OPEN) = shift7
+  ACTION(0, NULL) = shift11
+  ACTION(0, NUMBER) = shift9
+  ACTION(0, STRING) = shift8
+  ACTION(1, EOS) = accept
+  ACTION(2, EOS) = reducejson->element*
+  ACTION(3, EOS) = reduceelement->value*
+  ACTION(4, EOS) = reducevalue->object*
+  ACTION(5, EOS) = reducevalue->array*
+  ACTION(6, ARRAY_CLOSE) = shift18
+  ACTION(6, ARRAY_OPEN) = shift17
+  ACTION(6, BOOLEAN) = shift22
+  ACTION(6, CURLY_OPEN) = shift19
+  ACTION(6, NULL) = shift23
+  ACTION(6, NUMBER) = shift21
+  ACTION(6, STRING) = shift20
+  ACTION(7, CURLY_CLOSE) = shift26
+  ACTION(7, STRING) = shift27
+  ACTION(8, EOS) = reducevalue->STRING*
+  ACTION(9, EOS) = reducevalue->NUMBER*
+  ACTION(10, EOS) = reducevalue->BOOLEAN*
+  ACTION(11, EOS) = reducevalue->NULL*
+  ACTION(12, ARRAY_CLOSE) = reduceelements->element*
+  ACTION(12, COMMA) = shift28
+  ACTION(13, ARRAY_CLOSE) = reduceelement->value*
+  ACTION(13, COMMA) = reduceelement->value*
+  ACTION(14, ARRAY_CLOSE) = reducevalue->object*
+  ACTION(14, COMMA) = reducevalue->object*
+  ACTION(15, ARRAY_CLOSE) = reducevalue->array*
+  ACTION(15, COMMA) = reducevalue->array*
+  ACTION(16, ARRAY_CLOSE) = shift29
+  ACTION(17, ARRAY_CLOSE) = shift31
+  ACTION(17, ARRAY_OPEN) = shift17
+  ACTION(17, BOOLEAN) = shift22
+  ACTION(17, CURLY_OPEN) = shift19
+  ACTION(17, NULL) = shift23
+  ACTION(17, NUMBER) = shift21
+  ACTION(17, STRING) = shift20
+  ACTION(18, EOS) = reducearray->ARRAY_OPENARRAY_CLOSE*
+  ACTION(19, CURLY_CLOSE) = shift33
+  ACTION(19, STRING) = shift27
+  ACTION(20, ARRAY_CLOSE) = reducevalue->STRING*
+  ACTION(20, COMMA) = reducevalue->STRING*
+  ACTION(21, ARRAY_CLOSE) = reducevalue->NUMBER*
+  ACTION(21, COMMA) = reducevalue->NUMBER*
+  ACTION(22, ARRAY_CLOSE) = reducevalue->BOOLEAN*
+  ACTION(22, COMMA) = reducevalue->BOOLEAN*
+  ACTION(23, ARRAY_CLOSE) = reducevalue->NULL*
+  ACTION(23, COMMA) = reducevalue->NULL*
+  ACTION(24, CURLY_CLOSE) = shift34
+  ACTION(25, COMMA) = shift35
+  ACTION(25, CURLY_CLOSE) = reducemembers->member*
+  ACTION(26, EOS) = reduceobject->CURLY_OPENCURLY_CLOSE*
+  ACTION(27, COLON) = shift36
+  ACTION(28, ARRAY_OPEN) = shift17
+  ACTION(28, BOOLEAN) = shift22
+  ACTION(28, CURLY_OPEN) = shift19
+  ACTION(28, NULL) = shift23
+  ACTION(28, NUMBER) = shift21
+  ACTION(28, STRING) = shift20
+  ACTION(29, EOS) = reducearray->ARRAY_OPENelementsARRAY_CLOSE*
+  ACTION(30, ARRAY_CLOSE) = shift38
+  ACTION(31, ARRAY_CLOSE) = reducearray->ARRAY_OPENARRAY_CLOSE*
+  ACTION(31, COMMA) = reducearray->ARRAY_OPENARRAY_CLOSE*
+  ACTION(32, CURLY_CLOSE) = shift39
+  ACTION(33, ARRAY_CLOSE) = reduceobject->CURLY_OPENCURLY_CLOSE*
+  ACTION(33, COMMA) = reduceobject->CURLY_OPENCURLY_CLOSE*
+  ACTION(34, EOS) = reduceobject->CURLY_OPENmembersCURLY_CLOSE*
+  ACTION(35, STRING) = shift27
+  ACTION(36, ARRAY_OPEN) = shift45
+  ACTION(36, BOOLEAN) = shift49
+  ACTION(36, CURLY_OPEN) = shift46
+  ACTION(36, NULL) = shift50
+  ACTION(36, NUMBER) = shift48
+  ACTION(36, STRING) = shift47
+  ACTION(37, ARRAY_CLOSE) = reduceelements->elementCOMMAelements*
+  ACTION(38, ARRAY_CLOSE) = reducearray->ARRAY_OPENelementsARRAY_CLOSE*
+  ACTION(38, COMMA) = reducearray->ARRAY_OPENelementsARRAY_CLOSE*
+  ACTION(39, ARRAY_CLOSE) = reduceobject->CURLY_OPENmembersCURLY_CLOSE*
+  ACTION(39, COMMA) = reduceobject->CURLY_OPENmembersCURLY_CLOSE*
+  ACTION(40, CURLY_CLOSE) = reducemembers->memberCOMMAmembers*
+  ACTION(41, COMMA) = reducemember->STRINGCOLONelement*
+  ACTION(41, CURLY_CLOSE) = reducemember->STRINGCOLONelement*
+  ACTION(42, COMMA) = reduceelement->value*
+  ACTION(42, CURLY_CLOSE) = reduceelement->value*
+  ACTION(43, COMMA) = reducevalue->object*
+  ACTION(43, CURLY_CLOSE) = reducevalue->object*
+  ACTION(44, COMMA) = reducevalue->array*
+  ACTION(44, CURLY_CLOSE) = reducevalue->array*
+  ACTION(45, ARRAY_CLOSE) = shift52
+  ACTION(45, ARRAY_OPEN) = shift17
+  ACTION(45, BOOLEAN) = shift22
+  ACTION(45, CURLY_OPEN) = shift19
+  ACTION(45, NULL) = shift23
+  ACTION(45, NUMBER) = shift21
+  ACTION(45, STRING) = shift20
+  ACTION(46, CURLY_CLOSE) = shift54
+  ACTION(46, STRING) = shift27
+  ACTION(47, COMMA) = reducevalue->STRING*
+  ACTION(47, CURLY_CLOSE) = reducevalue->STRING*
+  ACTION(48, COMMA) = reducevalue->NUMBER*
+  ACTION(48, CURLY_CLOSE) = reducevalue->NUMBER*
+  ACTION(49, COMMA) = reducevalue->BOOLEAN*
+  ACTION(49, CURLY_CLOSE) = reducevalue->BOOLEAN*
+  ACTION(50, COMMA) = reducevalue->NULL*
+  ACTION(50, CURLY_CLOSE) = reducevalue->NULL*
+  ACTION(51, ARRAY_CLOSE) = shift55
+  ACTION(52, COMMA) = reducearray->ARRAY_OPENARRAY_CLOSE*
+  ACTION(52, CURLY_CLOSE) = reducearray->ARRAY_OPENARRAY_CLOSE*
+  ACTION(53, CURLY_CLOSE) = shift56
+  ACTION(54, COMMA) = reduceobject->CURLY_OPENCURLY_CLOSE*
+  ACTION(54, CURLY_CLOSE) = reduceobject->CURLY_OPENCURLY_CLOSE*
+  ACTION(55, COMMA) = reducearray->ARRAY_OPENelementsARRAY_CLOSE*
+  ACTION(55, CURLY_CLOSE) = reducearray->ARRAY_OPENelementsARRAY_CLOSE*
+  ACTION(56, COMMA) = reduceobject->CURLY_OPENmembersCURLY_CLOSE*
+  ACTION(56, CURLY_CLOSE) = reduceobject->CURLY_OPENmembersCURLY_CLOSE*
+________________________________________

@@ -576,7 +576,7 @@ void LR1Parser::constructParseTable() {
     }
 }
 
-bool LR1Parser::augmentGrammar() {
+void LR1Parser::augmentGrammar() {
     // add new starting state
     grammar.addVariable("S");
     grammar.addProduction(Production("S", {grammar.getStartState()}));
@@ -652,6 +652,68 @@ bool LR1Parser::parse(std::vector<std::string> input) {
             while (!reduceFrom.empty()) {
                 parserStack.pop(); // remove state
                 if (reduceFrom[0] != parserStack.top()) { /*std::cerr << "LR PARSER ERROR: reduce action error" << std::endl;*/ return false; }
+                parserStack.pop(); // pop symbol
+                reduceFrom.erase(reduceFrom.begin());
+            }
+            // get next state
+            int nextState = gotoTable[{std::stoi(parserStack.top()), reduceTO}];
+            parserStack.push(reduceTO);
+            parserStack.push(std::to_string(nextState));
+        }
+    }
+    return true; // action must be "accept" (it left the while loop)
+}
+
+bool LR1Parser::parse(std::vector<token> inputTokens) {
+    /// parse table constructed after constructor is called
+    /// parse:
+    parserStack.push("0"); // state
+    std::string inpTokenType = "";      // used for parsing with grammar (validating syntax of json file)
+    std::string inpTokenContent = "";   // used for creating the datastructure for conversion between JSON <-> EML
+    std::string action = "";
+
+    while (action != "accept") {
+        if (inputTokens.size() > 0) {
+            inpTokenType = inputTokens[0].type;
+            inpTokenContent = inputTokens[0].content;
+        } else {
+            inpTokenType = "EOS";
+            inpTokenContent = "";
+        }
+
+        if (inpTokenType != "EOS" and std::find(grammar.getTerminals().begin(), grammar.getTerminals().end(), inpTokenType) == grammar.getTerminals().end()) {
+            //std::cerr << "LR PARSER ERROR: parser input is not in the given grammar" << std::endl;
+            return false;
+        }
+
+        std::vector<std::string> event = actionTable[{std::stoi(parserStack.top()), inpTokenType}];
+        if (event.empty()) {
+            //std::cerr << "LR PARSER ERROR: parser input is not valid (action is empty, state + input symbol is not valid)" << std::endl;
+            return false;
+        }
+        action = event[0];
+
+        if (action == "shift") {
+            // push input onto stack, push new state onto stack
+            parserStack.push(inpTokenType);
+            parserStack.push(event[1]);
+            // remove input symbol from input
+            inputTokens.erase(inputTokens.begin());
+        }
+        else if (action == "reduce") {
+            std::string reduceTO = event[1]; // production head
+            std::vector<std::string> reduceFrom;
+            for (int i = event.size()-1; i > 2; i--) { // the production body is put in reverse
+                if (event[i] == "*") {continue;} // don't include "*" in production
+                reduceFrom.emplace_back(event[i]);
+            }
+            // reduce the stack
+            while (!reduceFrom.empty()) {
+                parserStack.pop(); // remove state
+                if (reduceFrom[0] != parserStack.top()) {
+                    //std::cerr << "LR PARSER ERROR: reduce action error" << std::endl;
+                    return false;
+                }
                 parserStack.pop(); // pop symbol
                 reduceFrom.erase(reduceFrom.begin());
             }
