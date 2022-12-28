@@ -31,6 +31,7 @@ public:
 
     /// print functions
     void printChart(std::ostream& out = std::cout) const;
+    void printChartToFile(const std::string& path) const;
 
     /// validation
     bool has_partial_parse(unsigned int index_chart) const;
@@ -39,7 +40,8 @@ public:
     bool validate(const std::vector<token>& input);
 
     /// error reporting
-    void getErrorReport(ML MarkUpLanguage, std::ostream& out = std::cout) const;
+    void printErrorReport(ML MarkUpLanguage, std::ostream& out = std::cout) const;
+    void printErrorReportToFile(ML MarkUpLanguage, const std::string& path) const;
 
     /// variables
     std::vector<StateSet> m_chart;

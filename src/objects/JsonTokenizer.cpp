@@ -42,6 +42,16 @@ void JsonTokenizer::printTokens(std::ostream& out) const {
     }
 }
 
+void JsonTokenizer::printTokensToFile(const std::string& path) const {
+    std::ofstream file(path);
+    if (file.is_open()){
+        printTokens(file);
+    }
+    else{
+        std::cout << "Unable to open file" << std::endl;
+    }
+}
+
 void JsonTokenizer::printStrings(std::ostream& out) const {
     for (auto& cur : strings) {
         out << cur << std::endl;
