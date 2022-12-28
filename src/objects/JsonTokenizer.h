@@ -3,10 +3,12 @@
 
 #include "Token.h"
 #include <iostream>
+#include <set>
 #include <vector>
 
 class JsonTokenizer {
 public:
+    JsonTokenizer();
     // divides file found in path into tokens and stores them into member 'tokens'
     void tokenize(const std::string& path);
 
@@ -36,6 +38,10 @@ public:
 private:
     void increaseRow(unsigned int& l, unsigned int& c, char ch) const;
     void fixNumberTokens();
+    void fixStringTokens();
+
+    void generateAllowedStringCharacters();
+    std::set<char> m_allowed_string_characters;
 };
 
 #endif // MB_GROEP_22_23_JSONTOKENIZER_H

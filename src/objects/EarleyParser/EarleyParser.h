@@ -16,6 +16,8 @@ public:
     /// constructors
     EarleyParser(const CFG& grammar);
 
+    EarleyParser(const std::string& path_to_grammar);
+
     /// initializer
     void init();
 
@@ -38,6 +40,9 @@ public:
     bool has_complete_parse() const;
     unsigned int get_index_last_partial_parse() const;
     bool validate(const std::vector<token>& input);
+
+    bool validateFile(const std::string& path,
+                      ML markUpLanguage); // tokenizes and validates (based on grammar in constructor)
 
     /// error reporting
     void printErrorReport(ML MarkUpLanguage, std::ostream& out = std::cout) const;

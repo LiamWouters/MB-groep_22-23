@@ -28,4 +28,8 @@ std::vector<std::string> stringToVector(const std::string& s);
 
 std::string stringForSpecialCharacters(const std::string& s);
 
+bool charInSet(const std::set<char>& s, const char ch);
+
+bool stringContainsInvalidChars(const std::set<char>& valid_chars, const std::string& s);
+
 #endif // CFG_UTILITIES_H

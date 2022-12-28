@@ -4,9 +4,12 @@
 
 #include "EarleyParser.h"
 #include "../../utilities/utilities.h"
+#include "../JsonTokenizer.h"
 #include <fstream>
 
 EarleyParser::EarleyParser(const CFG& grammar) : m_grammar{grammar} { init(); }
+
+EarleyParser::EarleyParser(const std::string& path_to_grammar) : m_grammar(path_to_grammar) { init(); }
 
 void EarleyParser::initChart() {
     // initialize first StateSet
@@ -80,10 +83,9 @@ void EarleyParser::printChart(std::ostream& out) const {
 
 void EarleyParser::printChartToFile(const std::string& path) const {
     std::ofstream file(path);
-    if (file.is_open()){
+    if (file.is_open()) {
         printChart(file);
-    }
-    else{
+    } else {
         std::cout << "Unable to open file" << std::endl;
     }
 }
@@ -120,6 +122,16 @@ bool EarleyParser::validate(const std::vector<token>& input) {
     return has_complete_parse();
 }
 
+bool EarleyParser::validateFile(const std::string& path, ML markUpLanguage) {
+    if (markUpLanguage == Json) {
+        JsonTokenizer tok;
+        tok.tokenize(path);
+        return validate(tok.tokens);
+    }
+    // if statements for other languages here
+    return false;
+}
+
 bool EarleyParser::has_partial_parse(unsigned int index_chart) const {
     for (unsigned int index_state_set = 0; index_state_set < m_chart[index_chart].m_set.size(); index_state_set++) {
         EarleyItem cur_item = getEarlyItem(index_chart, index_state_set);
@@ -150,10 +162,9 @@ void EarleyParser::printErrorReport(ML MarkUpLanguage, std::ostream& out) const 
 
 void EarleyParser::printErrorReportToFile(ML MarkUpLanguage, const std::string& path) const {
     std::ofstream file(path);
-    if (file.is_open()){
+    if (file.is_open()) {
         printErrorReport(MarkUpLanguage, file);
-    }
-    else{
+    } else {
         std::cout << "Unable to open file" << std::endl;
     }
 }
