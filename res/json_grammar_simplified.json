@@ -45,6 +45,13 @@
         {
             "body": [
                 "CURLY_OPEN",
+                "CURLY_CLOSE"
+            ],
+            "head": "object"
+        },
+        {
+            "body": [
+                "CURLY_OPEN",
                 "members",
                 "CURLY_CLOSE"
             ],
@@ -71,6 +78,13 @@
                 "element"
             ],
             "head": "member"
+        },
+        {
+            "body": [
+                "ARRAY_OPEN",
+                "ARRAY_CLOSE"
+            ],
+            "head": "array"
         },
         {
             "body": [

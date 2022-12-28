@@ -124,10 +124,10 @@ void JsonGrammarGenerator::simplifiedGenerate() {
 
     addProduction(j, "json", {"element"});
     addProductions(j, "value", {{"object"}, {"array"}, {"STRING"}, {"NUMBER"}, {"BOOLEAN"}, {"NULL"}});
-    addProduction(j, "object", {"CURLY_OPEN", "members", "CURLY_CLOSE"});
+    addProductions(j, "object", {{"CURLY_OPEN", "CURLY_CLOSE"}, {"CURLY_OPEN", "members", "CURLY_CLOSE"}});
     addProductions(j, "members", {{"member"}, {"member", "COMMA", "members"}});
     addProduction(j, "member", {"STRING", "COLON", "element"});
-    addProduction(j, "array", {"ARRAY_OPEN", "elements", "ARRAY_CLOSE"});
+    addProductions(j, "array", {{"ARRAY_OPEN", "ARRAY_CLOSE"},{"ARRAY_OPEN", "elements", "ARRAY_CLOSE"}});
     addProductions(j, "elements", {{"element"}, {"element", "COMMA", "elements"}});
     addProduction(j, "element", {"value"});
 
