@@ -36,6 +36,7 @@ struct token {
     token(std::string cont, unsigned int l, unsigned int c);
     token(std::string cont, const position& p);
     token(std::string cont, const position& p, std::string t);
+    token(std::string cont, unsigned int l, unsigned int c,  std::string t);
 
     // other functions
     void print(std::ostream& out) const;

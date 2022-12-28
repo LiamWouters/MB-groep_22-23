@@ -13,7 +13,7 @@ void JsonTokenizer::tokenize(const std::string& path) {
 
     // read input without skipping whitespaces
     while (infile >> std::noskipws >> ch) {
-        tokens.emplace_back(std::string(1, ch), l, c);
+        tokens.emplace_back(std::string(1, ch), l, c, std::string(1, ch));
         if (ch == '\n') {
             c = 1;
             l++;
