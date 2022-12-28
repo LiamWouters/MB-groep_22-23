@@ -16,6 +16,8 @@ public:
     /// constructors
     EarleyParser(const CFG& grammar);
 
+    EarleyParser(const std::string& path_to_grammar);
+
     /// initializer
     void init();
 
@@ -30,7 +32,8 @@ public:
     void addItemToChart(unsigned int index_chart, unsigned int index_state_set);
 
     /// print functions
-    void printChart(std::ostream& out) const;
+    void printChart(std::ostream& out = std::cout) const;
+    void printChartToFile(const std::string& path) const;
 
     /// validation
     bool has_partial_parse(unsigned int index_chart) const;
@@ -38,8 +41,12 @@ public:
     unsigned int get_index_last_partial_parse() const;
     bool validate(const std::vector<token>& input);
 
+    bool validateFile(const std::string& path,
+                      ML markUpLanguage); // tokenizes and validates (based on grammar in constructor)
+
     /// error reporting
-    void getErrorReport(ML MarkUpLanguage, std::ostream& out = std::cout) const;
+    void printErrorReport(ML MarkUpLanguage, std::ostream& out = std::cout) const;
+    void printErrorReportToFile(ML MarkUpLanguage, const std::string& path) const;
 
     /// variables
     std::vector<StateSet> m_chart;

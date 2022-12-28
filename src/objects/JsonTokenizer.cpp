@@ -2,8 +2,14 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <utility>
+
+#include "../utilities/utilities.h"
+
+JsonTokenizer::JsonTokenizer() { generateAllowedStringCharacters(); }
 
 void JsonTokenizer::tokenize(const std::string& path) {
+    tokens.clear();
     char ch;
     // lines and columns start at 1
     unsigned int l = 1, c = 1;
@@ -13,7 +19,7 @@ void JsonTokenizer::tokenize(const std::string& path) {
 
     // read input without skipping whitespaces
     while (infile >> std::noskipws >> ch) {
-        tokens.emplace_back(std::string(1, ch), l, c);
+        tokens.emplace_back(std::string(1, ch), l, c, std::string(1, ch));
         if (ch == '\n') {
             c = 1;
             l++;
@@ -25,6 +31,7 @@ void JsonTokenizer::tokenize(const std::string& path) {
 }
 
 void JsonTokenizer::split(const std::string& path) {
+    strings.clear();
     char ch;
     std::ifstream infile(path);
     if (!infile.is_open())
@@ -36,9 +43,18 @@ void JsonTokenizer::split(const std::string& path) {
     infile.close();
 }
 
-void JsonTokenizer::printTokens(std::ostream& out = std::cout) const {
+void JsonTokenizer::printTokens(std::ostream& out) const {
     for (auto& cur : tokens) {
         cur.print(out);
+    }
+}
+
+void JsonTokenizer::printTokensToFile(const std::string& path) const {
+    std::ofstream file(path);
+    if (file.is_open()) {
+        printTokens(file);
+    } else {
+        std::cout << "Unable to open file" << std::endl;
     }
 }
 
@@ -61,6 +77,7 @@ void JsonTokenizer::reset() {
 }
 
 void JsonTokenizer::tokenizeSimplified(const std::string& path) {
+    tokens.clear();
 
     bool inString = false;
     bool inNumber = false;
@@ -113,12 +130,13 @@ void JsonTokenizer::tokenizeSimplified(const std::string& path) {
 
         // keep adding characters to string, but if character is \n escape string and finish token
         if (inString) {
-            t.content += ch;
             if (ch == '\n') {
                 inString = false;
                 t.type = "INVALID_STRING_MISSING_QUOTE";
                 tokens.emplace_back(t);
                 t.reset();
+            } else {
+                t.content += ch;
             }
             increaseRow(l, c, ch);
             continue;
@@ -134,13 +152,15 @@ void JsonTokenizer::tokenizeSimplified(const std::string& path) {
             continue;
         }
 
-        if (inNumber and (((ch >= '0' and ch <= '9')) or ch == '.' or ch == 'e' or ch == 'E')) {
+        if (inNumber and
+            (((ch >= '0' and ch <= '9')) or ch == '.' or ch == 'e' or ch == 'E' or ch == '+' or ch == '-')) {
             t.content += ch;
             increaseRow(l, c, ch);
             continue;
         }
 
-        if (inNumber and !(((ch >= '0' and ch <= '9')) or ch == '.')) {
+        if (inNumber and
+            !(((ch >= '0' and ch <= '9')) or ch == '.' or ch == '+' or ch == '-' or ch == 'e' or ch == 'E')) {
             inNumber = false;
             tokens.emplace_back(t);
             t.reset();
@@ -272,10 +292,14 @@ void JsonTokenizer::tokenizeSimplified(const std::string& path) {
         increaseRow(l, c, ch);
         // count rows and columns
     }
-    if (inString or inNumber) {
+    if (inString) {
+        t.type = "INVALID_STRING_MISSING_QUOTE";
+        tokens.emplace_back(t);
+    } else if (inNumber) {
         tokens.emplace_back(t);
     }
     fixNumberTokens();
+    fixStringTokens();
     infile.close();
 }
 
@@ -403,4 +427,35 @@ bool JsonTokenizer::isJsonNumber(const std::string& s) const {
         return false;
     }
     return true;
+}
+
+void JsonTokenizer::fixStringTokens() {
+    for (auto& cur : tokens) {
+        std::string type = cur.type;
+        if (type == "STRING") {
+            if (stringContainsInvalidChars(m_allowed_string_characters, cur.content)) {
+                cur.type = "INVALID_STRING_DISALLOWED_CHARACTERS";
+            }
+        }
+    }
+}
+
+void JsonTokenizer::generateAllowedStringCharacters() {
+    for (char ch = '0'; ch <= '9'; ch++) {
+        m_allowed_string_characters.insert(ch);
+    }
+    for (char ch = 'A'; ch <= 'Z'; ch++) {
+        m_allowed_string_characters.insert(ch);
+    }
+    for (char ch = 'a'; ch <= 'z'; ch++) {
+        m_allowed_string_characters.insert(ch);
+    }
+    m_allowed_string_characters.insert('?');
+    m_allowed_string_characters.insert('!');
+    m_allowed_string_characters.insert('.');
+    m_allowed_string_characters.insert('+');
+    m_allowed_string_characters.insert('-');
+    m_allowed_string_characters.insert('(');
+    m_allowed_string_characters.insert(')');
+    m_allowed_string_characters.insert(' ');
 }

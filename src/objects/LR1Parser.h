@@ -10,6 +10,8 @@
 #include <sstream>
 #include "CFG.h"
 #include "Production.h"
+#include "Token.h"
+#include "FileConverter/Data.h"
 
 class LR1Parser {
 private:
@@ -34,6 +36,7 @@ private:
     //              vb: "accept" | "shift", "4"| "reduce", "A", "->", "b" (reduce A->b, A is head, b is body)
 
     std::stack<std::string> parserStack;
+    Data* dataStructure;
 
     ////////////////////////////////////////////////
     bool testUnique(const std::set<std::pair<Production, std::string>>* itemset1, const std::set<std::pair<Production, std::string>>* itemset2);
@@ -46,7 +49,7 @@ private:
     std::string getParsedSymbol(const std::pair<Production, std::string> item);
     bool augmentRule(Production& rule);
     bool shiftMarker(std::pair<Production, std::string>& item);
-    bool augmentGrammar();
+    void augmentGrammar();
 public:
     LR1Parser(const CFG &grammar, const bool debugprint = false); // normal constructor
     LR1Parser(const std::string &fileLocation, const CFG &grammar, const bool debugprint = false); // load constructor
@@ -56,7 +59,18 @@ public:
 
     void saveParser(std::string fileName);
 
+    /*
+     * this parse function is for general LR1 parser use
+     */
     bool parse(std::vector<std::string> input);
+
+    /*
+     * this parse function is for parsing JSON and EML files
+     */
+    bool parse(std::vector<token> inputTokens);
+
+    bool printToJSON();
+    bool printToEML();
 };
 
 

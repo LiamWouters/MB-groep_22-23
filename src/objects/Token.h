@@ -1,6 +1,7 @@
 #ifndef MB_GROEP_22_23_TOKEN_H
 #define MB_GROEP_22_23_TOKEN_H
 
+#include <iostream>
 #include <string>
 
 /*
@@ -36,12 +37,14 @@ struct token {
     token(std::string cont, unsigned int l, unsigned int c);
     token(std::string cont, const position& p);
     token(std::string cont, const position& p, std::string t);
+    token(std::string cont, unsigned int l, unsigned int c,  std::string t);
 
     // other functions
-    void print(std::ostream& out) const;
+    void print(std::ostream& out = std::cout) const;
     void reset();
 
     // variables
+    bool addedToStructure; // variable for creating data structure for file conversion (to avoid adding the token multiple time)
     std::string content;
     position pos;
     std::string type;

@@ -107,3 +107,17 @@ std::string stringForSpecialCharacters(const std::string& s) {
     }
     return s;
 };
+
+bool charInSet(const std::set<char>& s, const char ch) { return s.find(ch) != s.end(); }
+
+bool stringContainsInvalidChars(const std::set<char>& valid_chars, const std::string& s) {
+    for (unsigned int i = 0; i < s.size(); i++) {
+        if (!charInSet(valid_chars, s[i])) {
+            if (i == 0 or i == s.size() - 1) {
+                continue;
+            }
+            return true;
+        }
+    }
+    return false;
+}
