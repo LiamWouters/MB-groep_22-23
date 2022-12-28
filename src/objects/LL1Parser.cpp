@@ -4,9 +4,7 @@
 
 #include "LL1Parser.h"
 
-LL1Parser::LL1Parser(const CFG &c){
-    grammar = c;
-}
+LL1Parser::LL1Parser(const CFG &c) : grammar(c) {}
 
 bool LL1Parser::accepts(const std::vector<token> &input){
     /*
