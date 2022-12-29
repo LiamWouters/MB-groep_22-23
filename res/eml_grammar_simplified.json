@@ -1,0 +1,132 @@
+{
+    "Productions": [
+        {
+            "body": [
+                "ROOT_OPEN",
+                "element",
+                "ROOT_CLOSE"
+            ],
+            "head": "eml"
+        },
+        {
+            "body": [
+                "object"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "array"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "STRING"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "NUMBER"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "BOOLEAN"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "NULL"
+            ],
+            "head": "value"
+        },
+        {
+            "body": [
+                "TAG_OPEN",
+                "TAG_CLOSE"
+            ],
+            "head": "object"
+        },
+        {
+            "body": [
+                "TAG_OPEN",
+                "members",
+                "TAG_CLOSE"
+            ],
+            "head": "object"
+        },
+        {
+            "body": [
+                "member"
+            ],
+            "head": "members"
+        },
+        {
+            "body": [
+                "member",
+                "members"
+            ],
+            "head": "members"
+        },
+        {
+            "body": [
+                "element"
+            ],
+            "head": "member"
+        },
+        {
+            "body": [],
+            "head": "array"
+        },
+        {
+            "body": [
+                "elements"
+            ],
+            "head": "array"
+        },
+        {
+            "body": [
+                "element"
+            ],
+            "head": "elements"
+        },
+        {
+            "body": [
+                "element",
+                "elements"
+            ],
+            "head": "elements"
+        },
+        {
+            "body": [
+                "value"
+            ],
+            "head": "element"
+        }
+    ],
+    "Start": "eml",
+    "Terminals": [
+        "ROOT_OPEN",
+        "ROOT_CLOSE",
+        "TAG_OPEN",
+        "TAG_CLOSE",
+        "STRING",
+        "NUMBER",
+        "BOOLEAN",
+        "NULL"
+    ],
+    "Variables": [
+        "eml",
+        "value",
+        "object",
+        "members",
+        "member",
+        "array",
+        "elements",
+        "element"
+    ]
+}

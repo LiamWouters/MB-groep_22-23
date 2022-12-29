@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[]) {
     JsonGrammarGenerator::generate();
-    EMLGrammarGenerator::generate();
+    EMLGrammarGenerator::generateSimplified();
 
     /*  LR1 PARSER TEST
     CFG* grammar = new CFG("../tests/input/input-LR1_1.json");
