@@ -113,3 +113,24 @@ void EMLGrammarGenerator::addProductionsOneNine(nlohmann::json& j) {
         ;
     }
 }
+void EMLGrammarGenerator::generateSimplified(){
+    std::ofstream file("../res/eml_grammar_simplified.json");
+
+    nlohmann::json j;
+
+    j["Start"] = "eml";
+    j["Variables"] = {"eml", "value", "object", "members", "member", "array", "elements", "element"};
+    j["Terminals"] = {"ROOT_OPEN", "ROOT_CLOSE", "TAG_OPEN", "TAG_CLOSE", "STRING", "NUMBER", "BOOLEAN", "NULL"};
+
+    addProduction(j, "eml", {"ROOT_OPEN", "element", "ROOT_CLOSE"});
+    addProductions(j, "value", {{"object"}, {"array"}, {"STRING"}, {"NUMBER"}, {"BOOLEAN"}, {"NULL"}});
+    addProductions(j, "object", {{"TAG_OPEN", "TAG_CLOSE"}, {"TAG_OPEN", "members", "TAG_CLOSE"}});
+    addProductions(j, "members", {{"member"}, {"member", "members"}});
+    addProduction(j, "member", {"element"});
+    addProductions(j, "array", {{},{"elements"}});
+    addProductions(j, "elements", {{"element"}, {"element", "elements"}});
+    addProduction(j, "element", {"value"});
+
+    file << std::setw(4) << j;
+    file.close();
+}

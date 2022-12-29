@@ -12,6 +12,7 @@ public:
                             // a character can only be: a . z, A . Z, 0 . 9, '.', '?', '!', '+', '-', '
                             // '
                             // a ws can not be: \r
+    static void generateSimplified();
 private:
     static void generateStart(nlohmann::json& j);   // generate start symbol
     static void generateVariables(nlohmann::json& j);   // generate all variables for json
