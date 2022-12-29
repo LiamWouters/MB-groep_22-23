@@ -110,6 +110,15 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
     while (infile >> std::noskipws >> ch) {
 
         // detect if token is tag
+        if (ch == '[' and not inTag) {
+            inTag = true;
+            t.content += ch;
+            t.pos = {l, c};
+            increaseRow(l, c, ch);
+            continue;
+        }
+
+        // detect if token is array-tag
         if (ch == '<' and not inTag) {
             inTag = true;
             t.content += ch;
@@ -118,10 +127,18 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
             continue;
         }
 
-        if (ch == '>' and inTag) {
+        if (ch == ']' and inTag) {
             inTag = false;
             t.content += ch;
             std::string tagName;
+            if (t.content[0] == '<') {
+                t.type = "INVALID_TAG";
+                if (t.content[1] == '/') {
+                    tagStack.pop();
+                } else {
+                    tagStack.push("");
+                }
+            }
             if (t.content[1] == '/') {
                 tagName = t.content.substr(2, t.content.size()-3);
                 if (tagName == tagStack.top()) {
@@ -134,6 +151,37 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
                 tagName = t.content.substr(1, t.content.size()-2);
                 tagStack.push(tagName);
                 t.type = "TAG_OPEN";
+            }
+            tokens.emplace_back(t);
+            t.reset();
+            increaseRow(l, c, ch);
+            continue;
+        }
+
+        if (ch == '>' and inTag) {
+            inTag = false;
+            t.content += ch;
+            std::string tagName;
+            if (t.content[0] == '[') {
+                t.type = "INVALID_TAG";
+                if (t.content[1] == '/') {
+                    tagStack.pop();
+                } else {
+                    tagStack.push("");
+                }
+            }
+            if (t.content[1] == '/') {
+                tagName = t.content.substr(2, t.content.size()-3);
+                if (tagName == tagStack.top()) {
+                    t.type = "ARRAY_TAG_CLOSE";
+                } else {
+                    t.type = "UNMATCHING_TAG";
+                }
+                tagStack.pop();
+            } else {
+                tagName = t.content.substr(1, t.content.size()-2);
+                tagStack.push(tagName);
+                t.type = "ARRAY_TAG_OPEN";
             }
             tokens.emplace_back(t);
             t.reset();
@@ -316,12 +364,8 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
         }
 
         // handle single characters
-        if (ch == '<') {
-            t.type = "BRACK_OPEN";
-        } else if (ch == '>') {
-            t.type = "BRACK_CLOSE";
-        } else if (ch == '/') {
-            t.type = "SLASH";
+        if (ch == ',') {
+            t.type = "COMMA";
         }
         t.content = ch;
         t.pos = {l, c};
