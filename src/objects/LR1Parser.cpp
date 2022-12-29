@@ -19,6 +19,7 @@ LR1Parser::LR1Parser(const CFG &grammar, const bool debugprint) : grammar(gramma
     constructParseTable();
 }
 
+/*
 LR1Parser::LR1Parser(const std::string &fileLocation, const CFG &grammar, const bool debugprint) : grammar(grammar), debugprint(debugprint) {
     // load constructor
     printbuffer.str(std::string());
@@ -93,6 +94,7 @@ LR1Parser::LR1Parser(const std::string &fileLocation, const CFG &grammar, const 
         printbuffer << "________________________________________" << std::endl;
     }
 }
+*/
 
 ///////////////////////////////////////////////////////////////////////
 /*
@@ -667,6 +669,8 @@ bool LR1Parser::parse(std::vector<std::string> input) {
 }
 
 bool LR1Parser::parse(std::vector<token> inputTokens) {
+    auto terminals = grammar.getTerminals(); // without this we get invalid reads when using std::find
+    auto variables = grammar.getVariables();
     /// parse table constructed after constructor is called
     /// parse:
     parserStack.push("0"); // state
@@ -675,17 +679,9 @@ bool LR1Parser::parse(std::vector<token> inputTokens) {
     std::string action = "";
 
     // create data structure
-    /*
-{
-  "testnum": 1,
-  "testbool1": true,
-  "testbool2": false,
-  "testbool3": null,
-  "teststring": "testing testing 123",
-  "testarray": ["valueInContainerTest", "CHANGE THIS TO OBJECT", [1, 2]],
-  "testobject": "NOT YET"
-}
-     */
+    if (dataStructure != nullptr) {
+        delete dataStructure;
+    }
     dataStructure = new Data();
     std::string storedElementName = ""; // store name until we have value (so we know what element type it is)
     std::stack<containerElement*> currentElemContainers; // vector of array or object,
@@ -707,18 +703,19 @@ bool LR1Parser::parse(std::vector<token> inputTokens) {
             inputTokens[0].addedToStructure = true;
             bool wasName = false; // if token was name, skip the element creation if statement
             if (inpTokenType == "STRING" && storedElementName == "") {
-                if (currentElemContainers.empty()) {
+                if (currentElemContainers.empty() && inputTokens.size() > 1) {
                     // if no name is stored, store content as name
                     storedElementName = inpTokenContent;
                     wasName = true;
                 } else {
-                    if (currentElemContainers.top()->getType() != "array") {
-                        storedElementName = inpTokenType;
+                    if (!currentElemContainers.empty() && currentElemContainers.top()->getType() != "array") { // elements inside an array do NOT have names
+                        storedElementName = inpTokenContent;
                         wasName = true;
                     }
                 }
             }
 
+            // element creation (if statement)
             if (!wasName && (inpTokenType == "NUMBER" or inpTokenType == "STRING" or inpTokenType == "BOOLEAN" or inpTokenType == "NULL")) {
                 // value
                 valueElement *valElem = new valueElement();
@@ -727,7 +724,9 @@ bool LR1Parser::parse(std::vector<token> inputTokens) {
 
                 storedElementName = ""; // remove stored name
                 dataStructure->addElement(valElem, currentElemContainers);
-            } else if (inpTokenType == "ARRAY_OPEN") {
+            }
+            ////////////// JSON CONTAINERS //////////////
+            else if (inpTokenType == "ARRAY_OPEN") {
                 // array open
                 arrayElement *arrayElem = new arrayElement();
                 arrayElem->setName(storedElementName);
@@ -743,18 +742,49 @@ bool LR1Parser::parse(std::vector<token> inputTokens) {
                 containerElement *array = currentElemContainers.top();
                 currentElemContainers.pop(); // remove container from stack
                 dataStructure->addElement(array, currentElemContainers);
+            } else if (inpTokenType == "CURLY_OPEN") {
+                // object open
+                objectElement *objectElem = new objectElement();
+                objectElem->setName(storedElementName);
+
+                currentElemContainers.push(objectElem);
+                storedElementName = "";
+            } else if (inpTokenType == "CURLY_CLOSE") {
+                // object close
+                if (currentElemContainers.top()->getType() != "object") {
+                    std::cerr << "FILE CONVERTER ERROR: missing/wrong container closer ('}' with no open object)" << std::endl;
+                }
+                containerElement *object = currentElemContainers.top();
+                currentElemContainers.pop(); // remove container from stack
+                dataStructure->addElement(object, currentElemContainers);
             }
+            /////////////////////////////////////////////
+
         }
         /////////////////////////////
 
-        if (inpTokenType != "EOS" and std::find(grammar.getTerminals().begin(), grammar.getTerminals().end(), inpTokenType) == grammar.getTerminals().end()) {
+        if (inpTokenType != "EOS" and std::find(terminals.begin(), terminals.end(), inpTokenType) == terminals.end()) {
             //std::cerr << "LR PARSER ERROR: parser input is not in the given grammar" << std::endl;
+            delete dataStructure;
+            dataStructure = nullptr;
+            while (!currentElemContainers.empty()) {
+                Element* container = currentElemContainers.top();
+                currentElemContainers.pop();
+                delete container;
+            }
             return false;
         }
 
         std::vector<std::string> event = actionTable[{std::stoi(parserStack.top()), inpTokenType}];
         if (event.empty()) {
             //std::cerr << "LR PARSER ERROR: parser input is not valid (action is empty, state + input symbol is not valid)" << std::endl;
+            delete dataStructure;
+            dataStructure = nullptr;
+            while (!currentElemContainers.empty()) {
+                Element* container = currentElemContainers.top();
+                currentElemContainers.pop();
+                delete container;
+            }
             return false;
         }
         action = event[0];
@@ -778,6 +808,13 @@ bool LR1Parser::parse(std::vector<token> inputTokens) {
                 parserStack.pop(); // remove state
                 if (reduceFrom[0] != parserStack.top()) {
                     //std::cerr << "LR PARSER ERROR: reduce action error" << std::endl;
+                    delete dataStructure;
+                    dataStructure = nullptr;
+                    while (!currentElemContainers.empty()) {
+                        Element* container = currentElemContainers.top();
+                        currentElemContainers.pop();
+                        delete container;
+                    }
                     return false;
                 }
                 parserStack.pop(); // pop symbol
@@ -797,8 +834,10 @@ bool LR1Parser::printToJSON() {
         std::cerr << "MUST PARSE before trying to convert" << std::endl;
         return false;
     }
-    std::cout << dataStructure->writeToJSON() << std::endl;
-    return false;
+    std::ofstream file ("../res/JSON-conversion-output.json", std::ofstream::trunc);
+    file << dataStructure->writeToJSON() << std::endl;
+    file.close();
+    return true;
 }
 
 bool LR1Parser::printToEML() {
@@ -806,6 +845,11 @@ bool LR1Parser::printToEML() {
     return false;
 }
 
+LR1Parser::~LR1Parser() {
+    delete dataStructure;
+}
+
+/*
 void LR1Parser::saveParser(std::string fileName) {
     /*
      * this function is here to save time
@@ -815,7 +859,7 @@ void LR1Parser::saveParser(std::string fileName) {
      * Saves:   parserItemSets
      *          gotoTable
      *          actionTable
-     */
+     *
 
     /// parserItemSets
     nlohmann::json j;
@@ -863,3 +907,4 @@ void LR1Parser::saveParser(std::string fileName) {
     std::ofstream outputFile(destination);
     outputFile << std::setw(4) << j;
 }
+*/

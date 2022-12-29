@@ -52,12 +52,12 @@ private:
     void augmentGrammar();
 public:
     LR1Parser(const CFG &grammar, const bool debugprint = false); // normal constructor
-    LR1Parser(const std::string &fileLocation, const CFG &grammar, const bool debugprint = false); // load constructor
+    //LR1Parser(const std::string &fileLocation, const CFG &grammar, const bool debugprint = false); // load constructor
     const std::stringstream &getPrintbuffer() const;
 
     void constructParseTable();
 
-    void saveParser(std::string fileName);
+    //void saveParser(std::string fileName);
 
     /*
      * this parse function is for general LR1 parser use
@@ -71,6 +71,8 @@ public:
 
     bool printToJSON();
     bool printToEML();
+
+    virtual ~LR1Parser();
 };
 
 

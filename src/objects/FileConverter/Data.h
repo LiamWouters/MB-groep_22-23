@@ -15,11 +15,32 @@
 
 class Data {
 private:
-    std::vector<Element*> elements;
+    Element* element; // contains the file, is either a container or a value
+    /*
+     * example: json file could be:
+     *              {
+     *                  "data": 2,
+     *                  ...
+     *              }
+     *              OR
+     *              5
+     *              OR
+     *              ["data", 1, ...]
+     *              OR
+     *              "string"
+     *              OR
+     *              ... (remaining value types)
+     *          there is only 1 root element!
+     *              => you can never have:
+     *                      * example: {
+     *                                      ...
+     *                                 },
+     *                                 {}
+     */
 public:
     Data();
 
-    void addElement(Element* element, std::stack<containerElement*>& currentContainers);
+    void addElement(Element* elem, std::stack<containerElement*>& currentContainers);
 
     std::string writeToJSON() const;
     std::string writeToEML() const;

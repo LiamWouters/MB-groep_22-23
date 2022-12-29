@@ -30,3 +30,5 @@ std::string valueElement::writeElementToJSON() const {
         return name + ": " + value;
     }
 }
+
+valueElement::~valueElement() {}

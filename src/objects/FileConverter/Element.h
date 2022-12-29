@@ -17,6 +17,7 @@ public:
     Element(const std::string &type);
     std::string getType();
     virtual std::string writeElementToJSON() const =0;
+    virtual ~Element();
 };
 
 

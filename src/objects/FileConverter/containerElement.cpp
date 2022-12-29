@@ -5,3 +5,5 @@
 #include "containerElement.h"
 
 containerElement::containerElement(const std::string &type) : Element(type) {}
+
+containerElement::~containerElement() {}

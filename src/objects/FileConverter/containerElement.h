@@ -14,6 +14,7 @@ class containerElement : public Element {
 public:
     containerElement(const std::string &type);
     virtual void addElementToContainer(Element* e)=0;
+    virtual ~containerElement();
 };
 
 

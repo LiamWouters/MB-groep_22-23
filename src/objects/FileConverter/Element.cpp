@@ -9,3 +9,5 @@ Element::Element(const std::string &type) : type(type) {}
 std::string Element::getType() {
     return type;
 }
+
+Element::~Element() {}

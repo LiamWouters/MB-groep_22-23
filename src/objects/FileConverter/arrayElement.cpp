@@ -33,3 +33,9 @@ std::string arrayElement::writeElementToJSON() const {
     json += "]";
     return json;
 }
+
+arrayElement::~arrayElement() {
+    for (auto e : contents) {
+        delete e;
+    }
+}

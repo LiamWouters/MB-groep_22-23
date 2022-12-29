@@ -5,34 +5,40 @@
 #include <sstream>
 #include "Data.h"
 
-Data::Data() {}
+Data::Data() {
+    element = nullptr;
+}
 
-void Data::addElement(Element *element, std::stack<containerElement*> &currentContainers) {
-    if (currentContainers.empty()) {
-        elements.emplace_back(element);
+void Data::addElement(Element *elem, std::stack<containerElement*> &currentContainers) {
+    if (currentContainers.empty() && element == nullptr) {
+        element = elem;
     }
-    else {
-        currentContainers.top()->addElementToContainer(element);
+    else if (!currentContainers.empty()) {
+        currentContainers.top()->addElementToContainer(elem);
     }
 }
 
 std::string Data::writeToJSON() const {
-    // start string
     std::stringstream json;
-    json << "{\n";
-
-    // add elements to string
-    for (auto e : elements) {
-        json << (*e).writeElementToJSON();
-        if (e != *(elements.end()-1)) {
-            json << ",\n\t";
-        } else {
-            json << "\n";
+    if (element == nullptr) {return "";}
+    if (element->getType() == "object") {
+        // add elements to string
+        objectElement* object = dynamic_cast<objectElement*>(element);
+        json << "{\n\t";
+        for (auto e : object->getContents()) {
+            json << (*e).writeElementToJSON();
+            if (e != *(object->getContents().end() - 1)) {
+                json << ",\n\t";
+            } else {
+                json << "\n";
+            }
         }
+        json << "}";
+    }
+    else {
+        json << element->writeElementToJSON();
     }
 
-    // end string
-    json << "}";
     return json.str();
 }
 
@@ -42,7 +48,5 @@ std::string Data::writeToEML() const {
 }
 
 Data::~Data() {
-    for (auto e : elements) {
-        delete e;
-    }
+    delete element;
 }

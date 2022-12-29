@@ -7,7 +7,7 @@
 
 #include "Element.h"
 
-class valueElement : public Element{
+class valueElement : public Element {
     /*
      * Concrete class of Element: covers STRING, NUMBER, BOOLEAN and NULL
      */
@@ -19,6 +19,8 @@ public:
     void setName(const std::string& n);
     void setValue(const std::string& v);
     std::string writeElementToJSON() const;
+
+    ~valueElement();
 };
 
 

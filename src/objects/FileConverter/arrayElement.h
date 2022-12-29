@@ -10,16 +10,19 @@
 
 class arrayElement : public containerElement {
     /*
-     * Concrete class of Element
+     * Concrete class of container Element
      */
 private:
     std::string name;
     std::vector<Element*> contents;
 public:
     arrayElement();
+
     void setName(const std::string& n);
     void addElementToContainer(Element* e);
     std::string writeElementToJSON() const;
+
+    ~arrayElement();
 };
 
 
