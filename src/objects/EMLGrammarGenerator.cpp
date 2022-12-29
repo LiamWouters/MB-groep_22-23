@@ -119,12 +119,14 @@ void EMLGrammarGenerator::generateSimplified(){
     nlohmann::json j;
 
     j["Start"] = "eml";
-    j["Variables"] = {"eml", "value", "object", "members", "member", "array", "elements", "element"};
-    j["Terminals"] = {"ROOT_OPEN", "ROOT_CLOSE", "TAG_OPEN", "TAG_CLOSE", "STRING", "NUMBER", "BOOLEAN", "NULL"};
+    j["Variables"] = {"eml", "value", "object", "members", "member", "array", "elements", "element", "opentag", "closetag"};
+    j["Terminals"] = {"ROOT_OPEN", "ROOT_CLOSE", "OPEN_BRACK", "CLOSE_BRACK", "SLASH", "STRING", "NUMBER", "BOOLEAN", "NULL"};
 
     addProduction(j, "eml", {"ROOT_OPEN", "element", "ROOT_CLOSE"});
     addProductions(j, "value", {{"object"}, {"array"}, {"STRING"}, {"NUMBER"}, {"BOOLEAN"}, {"NULL"}});
-    addProductions(j, "object", {{"TAG_OPEN", "TAG_CLOSE"}, {"TAG_OPEN", "members", "TAG_CLOSE"}});
+    addProductions(j, "object", {{"opentag", "closetag"}, {"opentag", "members", "closetag"}});
+    addProductions(j, "opentag", {{"OPEN_BRACK", "STRING", "CLOSE_BRACK"}});
+    addProductions(j, "closetag", {{"OPEN_BRACK", "SLASH", "STRING", "CLOSE_BRACK"}});
     addProductions(j, "members", {{"member"}, {"member", "members"}});
     addProduction(j, "member", {"element"});
     addProductions(j, "array", {{},{"elements"}});

@@ -46,18 +46,35 @@
         },
         {
             "body": [
-                "TAG_OPEN",
-                "TAG_CLOSE"
+                "opentag",
+                "closetag"
             ],
             "head": "object"
         },
         {
             "body": [
-                "TAG_OPEN",
+                "opentag",
                 "members",
-                "TAG_CLOSE"
+                "closetag"
             ],
             "head": "object"
+        },
+        {
+            "body": [
+                "OPEN_BRACK",
+                "STRING",
+                "CLOSE_BRACK"
+            ],
+            "head": "opentag"
+        },
+        {
+            "body": [
+                "OPEN_BRACK",
+                "SLASH",
+                "STRING",
+                "CLOSE_BRACK"
+            ],
+            "head": "closetag"
         },
         {
             "body": [
@@ -112,8 +129,9 @@
     "Terminals": [
         "ROOT_OPEN",
         "ROOT_CLOSE",
-        "TAG_OPEN",
-        "TAG_CLOSE",
+        "OPEN_BRACK",
+        "CLOSE_BRACK",
+        "SLASH",
         "STRING",
         "NUMBER",
         "BOOLEAN",
@@ -127,6 +145,8 @@
         "member",
         "array",
         "elements",
-        "element"
+        "element",
+        "opentag",
+        "closetag"
     ]
 }
