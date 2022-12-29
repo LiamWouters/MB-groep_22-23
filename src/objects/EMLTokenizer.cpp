@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <utility>
+#include <stack>
 
 #include "../utilities/utilities.h"
 
@@ -20,12 +21,7 @@ void EMLTokenizer::tokenize(const std::string& path) {
     // read input without skipping whitespaces
     while (infile >> std::noskipws >> ch) {
         tokens.emplace_back(std::string(1, ch), l, c, std::string(1, ch));
-        if (ch == '\n') {
-            c = 1;
-            l++;
-        } else {
-            c++;
-        }
+        increaseRow(l, c, ch);
     }
     infile.close();
 }
@@ -79,6 +75,10 @@ void EMLTokenizer::reset() {
 void EMLTokenizer::tokenizeSimplified(const std::string& path) {
     tokens.clear();
 
+    std::stack<std::string> tagStack;
+
+    bool inTag = false;
+
     bool inString = false;
     bool inNumber = false;
 
@@ -108,6 +108,51 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
     token t("", 1, 1);
     // read input without skipping whitespaces
     while (infile >> std::noskipws >> ch) {
+
+        // detect if token is tag
+        if (ch == '<' and not inTag) {
+            inTag = true;
+            t.content += ch;
+            t.pos = {l, c};
+            increaseRow(l, c, ch);
+            continue;
+        }
+
+        if (ch == '>' and inTag) {
+            inTag = false;
+            t.content += ch;
+            std::string tagName;
+            if (t.content[1] == '/') {
+                tagName = t.content.substr(2, t.content.size()-3);
+                if (tagName == tagStack.top()) {
+                    t.type = "TAG_CLOSE";
+                } else {
+                    t.type = "UNMATCHING_TAG";
+                }
+                tagStack.pop();
+            } else {
+                tagName = t.content.substr(1, t.content.size()-2);
+                tagStack.push(tagName);
+                t.type = "TAG_OPEN";
+            }
+            tokens.emplace_back(t);
+            t.reset();
+            increaseRow(l, c, ch);
+            continue;
+        }
+
+        if (inTag) {
+            if (ch == '\n') {
+                inTag = false;
+                t.type = "INVALID_TAG";
+                tokens.emplace_back(t);
+                t.reset();
+            } else {
+                t.content += ch;
+            }
+            increaseRow(l, c, ch);
+            continue;
+        }
 
         // detect if token is string
         if (ch == '\"') {
@@ -142,7 +187,7 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
             continue;
         }
 
-        // detect if token is in number
+        // detect if token is number
         if ((ch == '-' or (ch >= '0' and ch <= '9')) and !inNumber) {
             inNumber = true;
             t.content = ch;
@@ -271,18 +316,12 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
         }
 
         // handle single characters
-        if (ch == '{') {
-            t.type = "CURLY_OPEN";
-        } else if (ch == '}') {
-            t.type = "CURLY_CLOSE";
-        } else if (ch == '[') {
-            t.type = "ARRAY_OPEN";
-        } else if (ch == ']') {
-            t.type = "ARRAY_CLOSE";
-        } else if (ch == ':') {
-            t.type = "COLON";
-        } else if (ch == ',') {
-            t.type = "COMMA";
+        if (ch == '<') {
+            t.type = "BRACK_OPEN";
+        } else if (ch == '>') {
+            t.type = "BRACK_CLOSE";
+        } else if (ch == '/') {
+            t.type = "SLASH";
         }
         t.content = ch;
         t.pos = {l, c};
