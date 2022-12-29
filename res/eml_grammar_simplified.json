@@ -74,17 +74,24 @@
         },
         {
             "body": [
-                "element"
+                "TAG_OPEN",
+                "element",
+                "TAG_CLOSE"
             ],
             "head": "member"
         },
         {
-            "body": [],
+            "body": [
+                "ARRAY_TAG_OPEN",
+                "ARRAY_TAG_CLOSE"
+            ],
             "head": "array"
         },
         {
             "body": [
-                "elements"
+                "ARRAY_TAG_OPEN",
+                "elements",
+                "ARRAY_TAG_CLOSE"
             ],
             "head": "array"
         },
@@ -97,6 +104,7 @@
         {
             "body": [
                 "element",
+                "COMMA",
                 "elements"
             ],
             "head": "elements"
@@ -114,7 +122,10 @@
         "ROOT_CLOSE",
         "TAG_OPEN",
         "TAG_CLOSE",
+        "ARRAY_TAG_OPEN",
+        "ARRAY_TAG_CLOSE",
         "SLASH",
+        "COMMA",
         "STRING",
         "NUMBER",
         "BOOLEAN",
