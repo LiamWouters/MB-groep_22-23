@@ -1,0 +1,21 @@
+Unexpected token of type 'BOOLEAN' with content 'true' at line 4 and column 3.
+
+[
+  {"key1": "hi"},
+  {"key2" :"val2"}
+  true
+
+Instead of a BOOLEAN, the parser expected a: 
+
+COMMA, based on:
+	elements -> `element COMMA elements`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	json -> `element`
+
+ARRAY_CLOSE, based on:
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	json -> `element`

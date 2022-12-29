@@ -126,7 +126,7 @@ bool EarleyParser::validate(const std::vector<token>& input) {
 bool EarleyParser::validateFile(const std::string& path, ML markUpLanguage) {
     if (markUpLanguage == Json) {
         JsonTokenizer tok;
-        tok.tokenize(path);
+        tok.tokenizeSimplified(path);
         return validate(tok.tokens);
     }
     // if statements for other languages here
@@ -200,8 +200,18 @@ void EarleyParser::getErrorReportJson(const std::string& fileWithError, std::ost
         if (m_grammar.isVariable(expected_token)) {
             continue;
         }
-
         // if symbol next to dot is a terminal, store rules we will explore in items_to_explore
+
+        // check if terminal is already encountered, if so: don't add to items_to_explore
+        bool already_encountered = false;
+        for (const auto& an_item : items_to_explore) {
+            if (item.getNextSymbol() == an_item.getNextSymbol()) {
+                already_encountered = true;
+            }
+        }
+        if (already_encountered) {
+            continue;
+        }
         items_to_explore.emplace_back(item);
     }
     // loop over items to explore:
@@ -214,9 +224,9 @@ void EarleyParser::getErrorReportJson(const std::string& fileWithError, std::ost
 
         unsigned int chart_index = chart_size - 1;
         bool not_reached_end = true;
-        std::unordered_set<std::string>
-            rules; // this set will contain all the rules to print as explanation for expected token
-        rules.insert(items_to_explore[i].m_production.toString()); // add rule to explore already to this set
+
+        std::vector<std::string> rules;
+        insertStringInVectorIfLastIsDifferent(rules, items_to_explore[i].m_production.toString());
 
         // while we have not found the start tag
         while (not_reached_end) {
@@ -227,7 +237,7 @@ void EarleyParser::getErrorReportJson(const std::string& fileWithError, std::ost
                         // new item to explore
                         cur_item = state_set_item;
                         // add rule of new item to rules
-                        rules.insert(cur_item.m_production.toString());
+                        insertStringInVectorIfLastIsDifferent(rules, cur_item.m_production.toString());
                         // if we have found the start tag, stop exploring
                         if (cur_item.m_production.head == m_grammar.s) {
                             not_reached_end = false;

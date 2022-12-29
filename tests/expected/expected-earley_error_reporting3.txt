@@ -1,0 +1,122 @@
+Unexpected token of type 'CURLY_CLOSE' with content '}' at line 2 and column 25.
+
+[
+  {"key1":  ["a", true, }
+
+Instead of a CURLY_CLOSE, the parser expected a: 
+
+STRING, based on:
+	value -> `STRING`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `STRING COLON element`
+	members -> `member`
+	object -> `CURLY_OPEN members CURLY_CLOSE`
+	value -> `object`
+	element -> `value`
+	elements -> `element`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	json -> `element`
+
+NUMBER, based on:
+	value -> `NUMBER`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `STRING COLON element`
+	members -> `member`
+	object -> `CURLY_OPEN members CURLY_CLOSE`
+	value -> `object`
+	element -> `value`
+	elements -> `element`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	json -> `element`
+
+BOOLEAN, based on:
+	value -> `BOOLEAN`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `STRING COLON element`
+	members -> `member`
+	object -> `CURLY_OPEN members CURLY_CLOSE`
+	value -> `object`
+	element -> `value`
+	elements -> `element`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	json -> `element`
+
+NULL, based on:
+	value -> `NULL`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `STRING COLON element`
+	members -> `member`
+	object -> `CURLY_OPEN members CURLY_CLOSE`
+	value -> `object`
+	element -> `value`
+	elements -> `element`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	json -> `element`
+
+CURLY_OPEN, based on:
+	object -> `CURLY_OPEN CURLY_CLOSE`
+	value -> `object`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `STRING COLON element`
+	members -> `member`
+	object -> `CURLY_OPEN members CURLY_CLOSE`
+	value -> `object`
+	element -> `value`
+	elements -> `element`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	json -> `element`
+
+ARRAY_OPEN, based on:
+	array -> `ARRAY_OPEN ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `STRING COLON element`
+	members -> `member`
+	object -> `CURLY_OPEN members CURLY_CLOSE`
+	value -> `object`
+	element -> `value`
+	elements -> `element`
+	array -> `ARRAY_OPEN elements ARRAY_CLOSE`
+	value -> `array`
+	element -> `value`
+	json -> `element`

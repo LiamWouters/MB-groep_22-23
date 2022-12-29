@@ -1,0 +1,14 @@
+[
+  {"key1": "hi"},
+  {"key2" :"val2"},
+  true,
+  false,
+  null,
+  "null",
+  false,
+  {"key3": 05.0},
+  [
+    {"key4": true},
+    "hello"
+  ]
+]

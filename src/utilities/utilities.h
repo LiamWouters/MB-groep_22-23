@@ -32,4 +32,6 @@ bool charInSet(const std::set<char>& s, const char ch);
 
 bool stringContainsInvalidChars(const std::set<char>& valid_chars, const std::string& s);
 
+void insertStringInVectorIfLastIsDifferent(std::vector<std::string>& vec, const std::string& to_insert);
+
 #endif // CFG_UTILITIES_H

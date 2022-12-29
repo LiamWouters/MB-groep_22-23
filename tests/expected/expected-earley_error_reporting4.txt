@@ -1,0 +1,16 @@
+Unexpected token of type 'INVALID_STRING_MISSING_QUOTE' with content '"key2 : [null]' at line 3 and column 3.
+
+{
+  "key1": true,
+  "key2 : [null]
+
+Instead of a INVALID_STRING_MISSING_QUOTE, the parser expected a: 
+
+STRING, based on:
+	member -> `STRING COLON element`
+	members -> `member`
+	members -> `member COMMA members`
+	object -> `CURLY_OPEN members CURLY_CLOSE`
+	value -> `object`
+	element -> `value`
+	json -> `element`

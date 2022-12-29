@@ -1,0 +1,150 @@
+=== 0 ===
+json                ->        • element                                       (0)
+element             ->        • value                                         (0)
+value               ->        • object                                        (0)
+value               ->        • array                                         (0)
+value               ->        • STRING                                        (0)
+value               ->        • NUMBER                                        (0)
+value               ->        • BOOLEAN                                       (0)
+value               ->        • NULL                                          (0)
+object              ->        • CURLY_OPEN CURLY_CLOSE                        (0)
+object              ->        • CURLY_OPEN members CURLY_CLOSE                (0)
+array               ->        • ARRAY_OPEN ARRAY_CLOSE                        (0)
+array               ->        • ARRAY_OPEN elements ARRAY_CLOSE               (0)
+
+=== 1 ===
+object              ->        CURLY_OPEN • CURLY_CLOSE                        (0)
+object              ->        CURLY_OPEN • members CURLY_CLOSE                (0)
+members             ->        • member                                        (1)
+members             ->        • member COMMA members                          (1)
+member              ->        • STRING COLON element                          (1)
+
+=== 2 ===
+member              ->        STRING • COLON element                          (1)
+
+=== 3 ===
+member              ->        STRING COLON • element                          (1)
+element             ->        • value                                         (3)
+value               ->        • object                                        (3)
+value               ->        • array                                         (3)
+value               ->        • STRING                                        (3)
+value               ->        • NUMBER                                        (3)
+value               ->        • BOOLEAN                                       (3)
+value               ->        • NULL                                          (3)
+object              ->        • CURLY_OPEN CURLY_CLOSE                        (3)
+object              ->        • CURLY_OPEN members CURLY_CLOSE                (3)
+array               ->        • ARRAY_OPEN ARRAY_CLOSE                        (3)
+array               ->        • ARRAY_OPEN elements ARRAY_CLOSE               (3)
+
+=== 4 ===
+object              ->        CURLY_OPEN • CURLY_CLOSE                        (3)
+object              ->        CURLY_OPEN • members CURLY_CLOSE                (3)
+members             ->        • member                                        (4)
+members             ->        • member COMMA members                          (4)
+member              ->        • STRING COLON element                          (4)
+
+=== 5 ===
+member              ->        STRING • COLON element                          (4)
+
+=== 6 ===
+member              ->        STRING COLON • element                          (4)
+element             ->        • value                                         (6)
+value               ->        • object                                        (6)
+value               ->        • array                                         (6)
+value               ->        • STRING                                        (6)
+value               ->        • NUMBER                                        (6)
+value               ->        • BOOLEAN                                       (6)
+value               ->        • NULL                                          (6)
+object              ->        • CURLY_OPEN CURLY_CLOSE                        (6)
+object              ->        • CURLY_OPEN members CURLY_CLOSE                (6)
+array               ->        • ARRAY_OPEN ARRAY_CLOSE                        (6)
+array               ->        • ARRAY_OPEN elements ARRAY_CLOSE               (6)
+
+=== 7 ===
+value               ->        STRING •                                        (6)
+element             ->        value •                                         (6)
+member              ->        STRING COLON element •                          (4)
+members             ->        member •                                        (4)
+members             ->        member • COMMA members                          (4)
+object              ->        CURLY_OPEN members • CURLY_CLOSE                (3)
+
+=== 8 ===
+members             ->        member COMMA • members                          (4)
+members             ->        • member                                        (8)
+members             ->        • member COMMA members                          (8)
+member              ->        • STRING COLON element                          (8)
+
+=== 9 ===
+member              ->        STRING • COLON element                          (8)
+
+=== 10 ===
+member              ->        STRING COLON • element                          (8)
+element             ->        • value                                         (10)
+value               ->        • object                                        (10)
+value               ->        • array                                         (10)
+value               ->        • STRING                                        (10)
+value               ->        • NUMBER                                        (10)
+value               ->        • BOOLEAN                                       (10)
+value               ->        • NULL                                          (10)
+object              ->        • CURLY_OPEN CURLY_CLOSE                        (10)
+object              ->        • CURLY_OPEN members CURLY_CLOSE                (10)
+array               ->        • ARRAY_OPEN ARRAY_CLOSE                        (10)
+array               ->        • ARRAY_OPEN elements ARRAY_CLOSE               (10)
+
+=== 11 ===
+value               ->        NUMBER •                                        (10)
+element             ->        value •                                         (10)
+member              ->        STRING COLON element •                          (8)
+members             ->        member •                                        (8)
+members             ->        member • COMMA members                          (8)
+members             ->        member COMMA members •                          (4)
+object              ->        CURLY_OPEN members • CURLY_CLOSE                (3)
+
+=== 12 ===
+members             ->        member COMMA • members                          (8)
+members             ->        • member                                        (12)
+members             ->        • member COMMA members                          (12)
+member              ->        • STRING COLON element                          (12)
+
+=== 13 ===
+member              ->        STRING • COLON element                          (12)
+
+=== 14 ===
+member              ->        STRING COLON • element                          (12)
+element             ->        • value                                         (14)
+value               ->        • object                                        (14)
+value               ->        • array                                         (14)
+value               ->        • STRING                                        (14)
+value               ->        • NUMBER                                        (14)
+value               ->        • BOOLEAN                                       (14)
+value               ->        • NULL                                          (14)
+object              ->        • CURLY_OPEN CURLY_CLOSE                        (14)
+object              ->        • CURLY_OPEN members CURLY_CLOSE                (14)
+array               ->        • ARRAY_OPEN ARRAY_CLOSE                        (14)
+array               ->        • ARRAY_OPEN elements ARRAY_CLOSE               (14)
+
+=== 15 ===
+value               ->        BOOLEAN •                                       (14)
+element             ->        value •                                         (14)
+member              ->        STRING COLON element •                          (12)
+members             ->        member •                                        (12)
+members             ->        member • COMMA members                          (12)
+members             ->        member COMMA members •                          (8)
+members             ->        member COMMA members •                          (4)
+object              ->        CURLY_OPEN members • CURLY_CLOSE                (3)
+
+=== 16 ===
+object              ->        CURLY_OPEN members CURLY_CLOSE •                (3)
+value               ->        object •                                        (3)
+element             ->        value •                                         (3)
+member              ->        STRING COLON element •                          (1)
+members             ->        member •                                        (1)
+members             ->        member • COMMA members                          (1)
+object              ->        CURLY_OPEN members • CURLY_CLOSE                (0)
+
+=== 17 ===
+object              ->        CURLY_OPEN members CURLY_CLOSE •                (0)
+value               ->        object •                                        (0)
+element             ->        value •                                         (0)
+json                ->        element •                                       (0)
+

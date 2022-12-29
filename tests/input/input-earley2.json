@@ -1,0 +1,5 @@
+[
+  "string1",
+  {"key1":  ["string2", false]},
+  -0.25E-3
+]

@@ -121,3 +121,13 @@ bool stringContainsInvalidChars(const std::set<char>& valid_chars, const std::st
     }
     return false;
 }
+
+void insertStringInVectorIfLastIsDifferent(std::vector<std::string>& vec, const std::string& to_insert) {
+    if (vec.empty()) {
+        vec.emplace_back(to_insert);
+    } else {
+        if (vec.back() != to_insert) {
+            vec.emplace_back(to_insert);
+        }
+    }
+};
