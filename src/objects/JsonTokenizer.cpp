@@ -458,4 +458,5 @@ void JsonTokenizer::generateAllowedStringCharacters() {
     m_allowed_string_characters.insert('(');
     m_allowed_string_characters.insert(')');
     m_allowed_string_characters.insert(' ');
+    m_allowed_string_characters.insert('_');
 }
