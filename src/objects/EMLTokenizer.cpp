@@ -142,7 +142,11 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
             if (t.content[1] == '/') {
                 tagName = t.content.substr(2, t.content.size()-3);
                 if (tagName == tagStack.top()) {
-                    t.type = "TAG_CLOSE";
+                    if (tagName == "root") {
+                        t.type = "ROOT_CLOSE";
+                    } else {
+                        t.type = "TAG_CLOSE";
+                    }
                 } else {
                     t.type = "UNMATCHING_TAG";
                 }
@@ -150,7 +154,11 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
             } else {
                 tagName = t.content.substr(1, t.content.size()-2);
                 tagStack.push(tagName);
-                t.type = "TAG_OPEN";
+                if (tagName == "root") {
+                    t.type = "ROOT_OPEN";
+                } else {
+                    t.type = "TAG_OPEN";
+                }
             }
             tokens.emplace_back(t);
             t.reset();
