@@ -3,6 +3,8 @@
 #include <sstream>
 #include <algorithm>
 #include "../src/objects/JsonTokenizer.h"
+#include "../src/objects/EMLTokenizer.h"
+#include "../src/objects/EMLGrammarGenerator.h"
 #include "../src/objects/LR1Parser.h"
 
 TEST_SUITE("LR1 Parser Tests") {
@@ -105,9 +107,9 @@ TEST_SUITE("LR1 Parser Tests") {
         CHECK(parser->parse(j1.tokens));
 
         // parse even bigger json file
-        //JsonTokenizer j2;
-        //j2.tokenizeSimplified("../tests/input/input-LR1-large-file.json"); // large file found online, source: look at README, should parse
-        //CHECK(parser->parse(j2.tokens));
+        JsonTokenizer j2;
+        j2.tokenizeSimplified("../tests/input/input-LR1-large-file.json"); // large file found online, source: look at README, should parse
+        CHECK(parser->parse(j2.tokens));
 
         delete parser;
         delete grammar;
@@ -165,26 +167,6 @@ TEST_SUITE("LR1 Parser Tests") {
         CFG* grammar = new CFG("../res/eml_grammar_simplified.json");
         LR1Parser* parser = new LR1Parser(*grammar, true);
         //parser->saveParser("saved_JSON_LR1ParseTable");
-        /*
-        for (Production prod : grammar->getProductions()) {
-            std::cout << prod.head << " -> ";
-            for (std::string b : prod.body) {
-                if (b == "\n") {
-                    std::cout << "/n ";
-                    continue;
-                }
-                else if (b == "\t") {
-                    std::cout << "/t ";
-                    continue;
-                }
-                else if (b == " ") {
-                    std::cout << "SPACE ";
-                    continue;
-                }
-                std::cout << b << " ";
-            }
-            std::cout << std::endl;
-        }*/
 
         std::ofstream file ("../tests/expected/testPrint.txt");
         file << parser->getPrintbuffer().str();
@@ -196,6 +178,66 @@ TEST_SUITE("LR1 Parser Tests") {
 
         CHECK_EQ(parser->getPrintbuffer().str(), expected.str());
 
+        delete parser;
+        delete grammar;
+    }
+    TEST_CASE("[LR1 Parser Tests] test_eml-parse0") {
+        CFG* grammar = new CFG("../res/eml_grammar_simplified.json");
+        LR1Parser* parser = new LR1Parser(*grammar, true);
+
+        // parse basic json file (a CFG file)
+        EMLTokenizer e;
+        e.tokenizeSimplified("../tests/input/input-LR1_1.eml"); // CFG input file, is valid eml, it should parse
+        CHECK(parser->parse(e.tokens));
+
+        /*
+[root]
+  [Variables] "Expr" [/Variables]
+  [Variables] "Term" [/Variables]
+  [Variables] "Factor" [/Variables]
+  [Terminals] "-" [/Terminals]
+  [Terminals] "x" [/Terminals]
+  [Terminals] "ident" [/Terminals]
+  <Productions>
+    [prod1]
+        [head] "Expr" [/head]
+        [bodyArray] <body> "Term", "-", "Expr" </body> [/bodyArray]
+    [/prod1]
+    ,
+    [prod2]
+        [head] "Expr" [/head]
+        [bodyArray] <body> "Term" </body> [/bodyArray]
+    [/prod2]
+    ,
+    [prod3]
+        [head] "Term" [/head]
+        [bodyArray] <body> "Factor", "x", "Term" </body> [/bodyArray]
+    [/prod3]
+    ,
+    [prod4]
+        [head] "Term" [/head]
+        [bodyArray] <body> "Factor" </body> [/bodyArray]
+    [/prod4]
+    ,
+    [prod5]
+        [head] "Factor" [/head]
+        [bodyArray] <body> "ident" </body> [/bodyArray]
+    [/prod5]
+  </Productions>
+  [Start] "Expr" [/Start]
+[/root]
+         */
+        /*
+        // parse bigger json file (json grammar simplified)
+        JsonTokenizer j1;
+        j1.tokenizeSimplified("../res/eml_grammar_simplified.json"); // bigger CFG input file, should parse
+        CHECK(parser->parse(j1.tokens));
+
+        // parse even bigger json file
+        JsonTokenizer j2;
+        j2.tokenizeSimplified("../tests/input/input-LR1-large-file.json"); // large file found online, source: look at README, should parse
+        CHECK(parser->parse(j2.tokens));
+        */
         delete parser;
         delete grammar;
     }

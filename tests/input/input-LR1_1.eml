@@ -1,0 +1,35 @@
+[root]
+  [Variables] "Expr" [/Variables]
+  [Variables] "Term" [/Variables]
+  [Variables] "Factor" [/Variables]
+  [Terminals] "-" [/Terminals]
+  [Terminals] "x" [/Terminals]
+  [Terminals] "ident" [/Terminals]
+  <Productions>
+    [prod1]
+        [head] "Expr" [/head]
+        [bodyArray] <body> "Term", "-", "Expr" </body> [/bodyArray]
+    [/prod1]
+    ,
+    [prod2]
+        [head] "Expr" [/head]
+        [bodyArray] <body> "Term" </body> [/bodyArray]
+    [/prod2]
+    ,
+    [prod3]
+        [head] "Term" [/head]
+        [bodyArray] <body> "Factor", "x", "Term" </body> [/bodyArray]
+    [/prod3]
+    ,
+    [prod4]
+        [head] "Term" [/head]
+        [bodyArray] <body> "Factor" </body> [/bodyArray]
+    [/prod4]
+    ,
+    [prod5]
+        [head] "Factor" [/head]
+        [bodyArray] <body> "ident" </body> [/bodyArray]
+    [/prod5]
+  </Productions>
+  [Start] "Expr" [/Start]
+[/root]

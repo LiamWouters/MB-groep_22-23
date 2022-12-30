@@ -596,6 +596,7 @@ const std::stringstream &LR1Parser::getPrintbuffer() const {
 }
 
 bool LR1Parser::parse(std::vector<std::string> input) {
+    if (input.empty()) {return false;} // input can not be empty
     if (debugprint) {
         printbuffer.str(std::string());
         printbuffer << "PARSER INPUT: ";
@@ -671,6 +672,9 @@ bool LR1Parser::parse(std::vector<std::string> input) {
 bool LR1Parser::parse(std::vector<token> inputTokens) {
     auto terminals = grammar.getTerminals(); // without this we get invalid reads when using std::find
     auto variables = grammar.getVariables();
+
+    if (inputTokens.empty()) {return true;} // always a valid json/eml file (empty)
+
     /// parse table constructed after constructor is called
     /// parse:
     parserStack.push("0"); // state

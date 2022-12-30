@@ -122,11 +122,11 @@ void EMLGrammarGenerator::generateSimplified(){
     j["Variables"] = {"eml", "value", "object", "members", "member", "array", "elements", "element"};
     j["Terminals"] = {"ROOT_OPEN", "ROOT_CLOSE", "TAG_OPEN", "TAG_CLOSE", "ARRAY_TAG_OPEN", "ARRAY_TAG_CLOSE", "SLASH", "COMMA", "STRING", "NUMBER", "BOOLEAN", "NULL"};
 
-    addProduction(j, "eml", {"ROOT_OPEN", "element", "ROOT_CLOSE"});
+    addProduction(j, "eml", {"ROOT_OPEN", "members", "ROOT_CLOSE"});
     addProductions(j, "value", {{"object"}, {"array"}, {"STRING"}, {"NUMBER"}, {"BOOLEAN"}, {"NULL"}});
     addProductions(j, "object", {{"TAG_OPEN", "TAG_CLOSE"}, {"TAG_OPEN", "members", "TAG_CLOSE"}});
     addProductions(j, "members", {{"member"}, {"member", "members"}});
-    addProduction(j, "member", {"TAG_OPEN", "element", "TAG_CLOSE"});
+    addProduction(j, "member", {"element"});
     addProductions(j, "array", {{"ARRAY_TAG_OPEN", "ARRAY_TAG_CLOSE"},{"ARRAY_TAG_OPEN", "elements", "ARRAY_TAG_CLOSE"}});
     addProductions(j, "elements", {{"element"}, {"element", "COMMA", "elements"}});
     addProduction(j, "element", {"value"});

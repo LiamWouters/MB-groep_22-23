@@ -3,7 +3,7 @@
         {
             "body": [
                 "ROOT_OPEN",
-                "element",
+                "members",
                 "ROOT_CLOSE"
             ],
             "head": "eml"
@@ -74,9 +74,7 @@
         },
         {
             "body": [
-                "TAG_OPEN",
-                "element",
-                "TAG_CLOSE"
+                "element"
             ],
             "head": "member"
         },
