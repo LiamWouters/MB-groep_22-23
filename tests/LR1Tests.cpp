@@ -159,4 +159,44 @@ TEST_SUITE("LR1 Parser Tests") {
         delete parser;
         delete grammar;
     }
+
+    TEST_CASE("[LR1 Parser Tests] test_emlParseTable") {
+        // json parse table TEST
+        CFG* grammar = new CFG("../res/eml_grammar_simplified.json");
+        LR1Parser* parser = new LR1Parser(*grammar, true);
+        //parser->saveParser("saved_JSON_LR1ParseTable");
+        /*
+        for (Production prod : grammar->getProductions()) {
+            std::cout << prod.head << " -> ";
+            for (std::string b : prod.body) {
+                if (b == "\n") {
+                    std::cout << "/n ";
+                    continue;
+                }
+                else if (b == "\t") {
+                    std::cout << "/t ";
+                    continue;
+                }
+                else if (b == " ") {
+                    std::cout << "SPACE ";
+                    continue;
+                }
+                std::cout << b << " ";
+            }
+            std::cout << std::endl;
+        }*/
+
+        std::ofstream file ("../tests/expected/testPrint.txt");
+        file << parser->getPrintbuffer().str();
+        file.close();
+
+        const std::ifstream expectedFile("../tests/expected/expected-LR1-emlSimplifiedparseTable.txt");
+        std::stringstream expected;
+        expected << expectedFile.rdbuf();
+
+        CHECK_EQ(parser->getPrintbuffer().str(), expected.str());
+
+        delete parser;
+        delete grammar;
+    }
 }
