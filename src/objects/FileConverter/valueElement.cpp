@@ -19,16 +19,29 @@ void valueElement::setValue(const std::string &v) {
 
 std::string valueElement::writeElementToJSON() const {
     if (value == "") {
-        std::cerr << "FILE CONVERSION ERROR: incomplete data element" << std::endl;
-        return "ERROR";
+        // moet komen van een EML, json kan niet iets zoals '"name": ' hebben
+        return "\""+name+"\"" + ": \"\"";
     }
+    return "\""+name+"\"" + ": " + value;
+}
 
-    if (name == "") {
-        return value;
+std::string valueElement::writeElementToJSONnoName() const {
+    if (value == "") {
+        return "\"\"";
     }
-    else {
-        return name + ": " + value;
+    return value;
+}
+
+std::string valueElement::writeElementToEML() const {
+    std::string n = name;
+    if (n == "") {
+        n = "v";
     }
+    return "["+n+"] "+value+" [/"+n+"]";
+}
+
+std::string valueElement::writeElementToEMLnoName() const {
+    return value;
 }
 
 valueElement::~valueElement() {}

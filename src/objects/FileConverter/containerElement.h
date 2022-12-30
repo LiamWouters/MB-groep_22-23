@@ -13,6 +13,7 @@ class containerElement : public Element {
      */
 public:
     containerElement(const std::string &type);
+    virtual std::string getName() const =0;
     virtual void addElementToContainer(Element* e)=0;
     virtual ~containerElement();
 };

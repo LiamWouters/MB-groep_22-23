@@ -6,7 +6,7 @@
 
 Element::Element(const std::string &type) : type(type) {}
 
-std::string Element::getType() {
+std::string Element::getType() const {
     return type;
 }
 

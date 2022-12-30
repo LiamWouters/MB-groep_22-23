@@ -36,9 +36,13 @@ private:
     //              vb: "accept" | "shift", "4"| "reduce", "A", "->", "b" (reduce A->b, A is head, b is body)
 
     std::stack<std::string> parserStack;
-    Data* dataStructure;
 
-    ////////////////////////////////////////////////
+    std::string parsedFileType;
+    Data* dataStructure;
+    std::string storedElementName;
+    std::stack<containerElement*> currentElemContainers;
+
+    ///////// PARSE TABLE CONSTRUCTION FUNCTIONS /////////
     bool testUnique(const std::set<std::pair<Production, std::string>>* itemset1, const std::set<std::pair<Production, std::string>>* itemset2);
     std::set<std::pair<Production, std::string>> GOTO(const std::set<std::pair<Production, std::string>>* itemSet, const std::string symbol);
     void computeGOTO();
@@ -50,14 +54,19 @@ private:
     bool augmentRule(Production& rule);
     bool shiftMarker(std::pair<Production, std::string>& item);
     void augmentGrammar();
+    //////////////////////////////////////////////////////
+    ///// DATA STRUCTURE (file conversion) FUNCTIONS /////
+    void clearString(std::string &string) const;
+    bool checkJSONElementName(const std::string& tokenType, const std::string& tokenContent, const int& remainingTokens);
+    void jsonContainerElementCreation(const std::string& tokenType, std::string tokenContent);
+    void emlContainerElementCreation(const std::string& tokenType, std::string tokenContent);
+    void addToDataStructure(const std::string& tokenType, std::string tokenContent, const int& remainingTokens);
+    //////////////////////////////////////////////////////
 public:
     LR1Parser(const CFG &grammar, const bool debugprint = false); // normal constructor
-    //LR1Parser(const std::string &fileLocation, const CFG &grammar, const bool debugprint = false); // load constructor
     const std::stringstream &getPrintbuffer() const;
 
     void constructParseTable();
-
-    //void saveParser(std::string fileName);
 
     /*
      * this parse function is for general LR1 parser use

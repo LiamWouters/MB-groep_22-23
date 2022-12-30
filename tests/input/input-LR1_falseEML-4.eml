@@ -19,7 +19,7 @@
         [head] "Expr" [/head]
         [bodyArray] <body> "Term" </body> [/bodyArray]
     [/prod2]
-    ,
+
     [prod3]
         [head] "Term" [/head]
         [bodyArray] <body> "Factor", "x", "Term" </body> [/bodyArray]

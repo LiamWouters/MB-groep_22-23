@@ -2,8 +2,8 @@ First Set:
   FIRST(eml) = { 'ROOT_OPEN' }
   FIRST(value) = { 'ARRAY_TAG_OPEN' 'BOOLEAN' 'NULL' 'NUMBER' 'STRING' 'TAG_OPEN' }
   FIRST(object) = { 'TAG_OPEN' }
-  FIRST(members) = { 'TAG_OPEN' }
-  FIRST(member) = { 'TAG_OPEN' }
+  FIRST(members) = { 'ARRAY_TAG_OPEN' 'BOOLEAN' 'NULL' 'NUMBER' 'STRING' 'TAG_OPEN' }
+  FIRST(member) = { 'ARRAY_TAG_OPEN' 'BOOLEAN' 'NULL' 'NUMBER' 'STRING' 'TAG_OPEN' }
   FIRST(array) = { 'ARRAY_TAG_OPEN' }
   FIRST(elements) = { 'ARRAY_TAG_OPEN' 'BOOLEAN' 'NULL' 'NUMBER' 'STRING' 'TAG_OPEN' }
   FIRST(element) = { 'ARRAY_TAG_OPEN' 'BOOLEAN' 'NULL' 'NUMBER' 'STRING' 'TAG_OPEN' }
@@ -12,52 +12,350 @@ ________________________________________
 ALL ITEM SETS:
 Item Set 0 :
   [S -> *eml, EOS]
-  [eml -> *ROOT_OPENelementROOT_CLOSE, EOS]
+  [eml -> *ROOT_OPENmembersROOT_CLOSE, EOS]
 ________________________________________
 Item Set 1 :
   [S -> eml*, EOS]
 ________________________________________
 Item Set 2 :
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NUMBER]
   [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ROOT_CLOSE]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NUMBER]
   [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ROOT_CLOSE]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_OPEN]
+  [element -> *value, ARRAY_TAG_OPEN]
+  [element -> *value, BOOLEAN]
+  [element -> *value, NULL]
+  [element -> *value, NUMBER]
   [element -> *value, ROOT_CLOSE]
-  [eml -> ROOT_OPEN*elementROOT_CLOSE, EOS]
+  [element -> *value, STRING]
+  [element -> *value, TAG_OPEN]
+  [eml -> ROOT_OPEN*membersROOT_CLOSE, EOS]
+  [member -> *element, ARRAY_TAG_OPEN]
+  [member -> *element, BOOLEAN]
+  [member -> *element, NULL]
+  [member -> *element, NUMBER]
+  [member -> *element, ROOT_CLOSE]
+  [member -> *element, STRING]
+  [member -> *element, TAG_OPEN]
+  [members -> *member, ROOT_CLOSE]
+  [members -> *membermembers, ROOT_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENTAG_CLOSE, NULL]
+  [object -> *TAG_OPENTAG_CLOSE, NUMBER]
   [object -> *TAG_OPENTAG_CLOSE, ROOT_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, STRING]
+  [object -> *TAG_OPENTAG_CLOSE, TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NULL]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NUMBER]
   [object -> *TAG_OPENmembersTAG_CLOSE, ROOT_CLOSE]
+  [object -> *TAG_OPENmembersTAG_CLOSE, STRING]
+  [object -> *TAG_OPENmembersTAG_CLOSE, TAG_OPEN]
+  [value -> *BOOLEAN, ARRAY_TAG_OPEN]
+  [value -> *BOOLEAN, BOOLEAN]
+  [value -> *BOOLEAN, NULL]
+  [value -> *BOOLEAN, NUMBER]
   [value -> *BOOLEAN, ROOT_CLOSE]
+  [value -> *BOOLEAN, STRING]
+  [value -> *BOOLEAN, TAG_OPEN]
+  [value -> *NULL, ARRAY_TAG_OPEN]
+  [value -> *NULL, BOOLEAN]
+  [value -> *NULL, NULL]
+  [value -> *NULL, NUMBER]
   [value -> *NULL, ROOT_CLOSE]
+  [value -> *NULL, STRING]
+  [value -> *NULL, TAG_OPEN]
+  [value -> *NUMBER, ARRAY_TAG_OPEN]
+  [value -> *NUMBER, BOOLEAN]
+  [value -> *NUMBER, NULL]
+  [value -> *NUMBER, NUMBER]
   [value -> *NUMBER, ROOT_CLOSE]
+  [value -> *NUMBER, STRING]
+  [value -> *NUMBER, TAG_OPEN]
+  [value -> *STRING, ARRAY_TAG_OPEN]
+  [value -> *STRING, BOOLEAN]
+  [value -> *STRING, NULL]
+  [value -> *STRING, NUMBER]
   [value -> *STRING, ROOT_CLOSE]
+  [value -> *STRING, STRING]
+  [value -> *STRING, TAG_OPEN]
+  [value -> *array, ARRAY_TAG_OPEN]
+  [value -> *array, BOOLEAN]
+  [value -> *array, NULL]
+  [value -> *array, NUMBER]
   [value -> *array, ROOT_CLOSE]
+  [value -> *array, STRING]
+  [value -> *array, TAG_OPEN]
+  [value -> *object, ARRAY_TAG_OPEN]
+  [value -> *object, BOOLEAN]
+  [value -> *object, NULL]
+  [value -> *object, NUMBER]
   [value -> *object, ROOT_CLOSE]
+  [value -> *object, STRING]
+  [value -> *object, TAG_OPEN]
 ________________________________________
 Item Set 3 :
+  [element -> value*, ARRAY_TAG_OPEN]
+  [element -> value*, BOOLEAN]
+  [element -> value*, NULL]
+  [element -> value*, NUMBER]
   [element -> value*, ROOT_CLOSE]
+  [element -> value*, STRING]
+  [element -> value*, TAG_OPEN]
 ________________________________________
 Item Set 4 :
+  [value -> object*, ARRAY_TAG_OPEN]
+  [value -> object*, BOOLEAN]
+  [value -> object*, NULL]
+  [value -> object*, NUMBER]
   [value -> object*, ROOT_CLOSE]
+  [value -> object*, STRING]
+  [value -> object*, TAG_OPEN]
 ________________________________________
 Item Set 5 :
-  [value -> array*, ROOT_CLOSE]
+  [eml -> ROOT_OPENmembers*ROOT_CLOSE, EOS]
 ________________________________________
 Item Set 6 :
-  [eml -> ROOT_OPENelement*ROOT_CLOSE, EOS]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ROOT_CLOSE]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ROOT_CLOSE]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_OPEN]
+  [element -> *value, ARRAY_TAG_OPEN]
+  [element -> *value, BOOLEAN]
+  [element -> *value, NULL]
+  [element -> *value, NUMBER]
+  [element -> *value, ROOT_CLOSE]
+  [element -> *value, STRING]
+  [element -> *value, TAG_OPEN]
+  [member -> *element, ARRAY_TAG_OPEN]
+  [member -> *element, BOOLEAN]
+  [member -> *element, NULL]
+  [member -> *element, NUMBER]
+  [member -> *element, ROOT_CLOSE]
+  [member -> *element, STRING]
+  [member -> *element, TAG_OPEN]
+  [members -> *member, ROOT_CLOSE]
+  [members -> *membermembers, ROOT_CLOSE]
+  [members -> member*, ROOT_CLOSE]
+  [members -> member*members, ROOT_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENTAG_CLOSE, NULL]
+  [object -> *TAG_OPENTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENTAG_CLOSE, ROOT_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, STRING]
+  [object -> *TAG_OPENTAG_CLOSE, TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NULL]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENmembersTAG_CLOSE, ROOT_CLOSE]
+  [object -> *TAG_OPENmembersTAG_CLOSE, STRING]
+  [object -> *TAG_OPENmembersTAG_CLOSE, TAG_OPEN]
+  [value -> *BOOLEAN, ARRAY_TAG_OPEN]
+  [value -> *BOOLEAN, BOOLEAN]
+  [value -> *BOOLEAN, NULL]
+  [value -> *BOOLEAN, NUMBER]
+  [value -> *BOOLEAN, ROOT_CLOSE]
+  [value -> *BOOLEAN, STRING]
+  [value -> *BOOLEAN, TAG_OPEN]
+  [value -> *NULL, ARRAY_TAG_OPEN]
+  [value -> *NULL, BOOLEAN]
+  [value -> *NULL, NULL]
+  [value -> *NULL, NUMBER]
+  [value -> *NULL, ROOT_CLOSE]
+  [value -> *NULL, STRING]
+  [value -> *NULL, TAG_OPEN]
+  [value -> *NUMBER, ARRAY_TAG_OPEN]
+  [value -> *NUMBER, BOOLEAN]
+  [value -> *NUMBER, NULL]
+  [value -> *NUMBER, NUMBER]
+  [value -> *NUMBER, ROOT_CLOSE]
+  [value -> *NUMBER, STRING]
+  [value -> *NUMBER, TAG_OPEN]
+  [value -> *STRING, ARRAY_TAG_OPEN]
+  [value -> *STRING, BOOLEAN]
+  [value -> *STRING, NULL]
+  [value -> *STRING, NUMBER]
+  [value -> *STRING, ROOT_CLOSE]
+  [value -> *STRING, STRING]
+  [value -> *STRING, TAG_OPEN]
+  [value -> *array, ARRAY_TAG_OPEN]
+  [value -> *array, BOOLEAN]
+  [value -> *array, NULL]
+  [value -> *array, NUMBER]
+  [value -> *array, ROOT_CLOSE]
+  [value -> *array, STRING]
+  [value -> *array, TAG_OPEN]
+  [value -> *object, ARRAY_TAG_OPEN]
+  [value -> *object, BOOLEAN]
+  [value -> *object, NULL]
+  [value -> *object, NUMBER]
+  [value -> *object, ROOT_CLOSE]
+  [value -> *object, STRING]
+  [value -> *object, TAG_OPEN]
 ________________________________________
 Item Set 7 :
-  [member -> *TAG_OPENelementTAG_CLOSE, TAG_CLOSE]
-  [member -> *TAG_OPENelementTAG_CLOSE, TAG_OPEN]
-  [members -> *member, TAG_CLOSE]
-  [members -> *membermembers, TAG_CLOSE]
-  [object -> TAG_OPEN*TAG_CLOSE, ROOT_CLOSE]
-  [object -> TAG_OPEN*membersTAG_CLOSE, ROOT_CLOSE]
+  [value -> array*, ARRAY_TAG_OPEN]
+  [value -> array*, BOOLEAN]
+  [value -> array*, NULL]
+  [value -> array*, NUMBER]
+  [value -> array*, ROOT_CLOSE]
+  [value -> array*, STRING]
+  [value -> array*, TAG_OPEN]
 ________________________________________
 Item Set 8 :
+  [member -> element*, ARRAY_TAG_OPEN]
+  [member -> element*, BOOLEAN]
+  [member -> element*, NULL]
+  [member -> element*, NUMBER]
+  [member -> element*, ROOT_CLOSE]
+  [member -> element*, STRING]
+  [member -> element*, TAG_OPEN]
+________________________________________
+Item Set 9 :
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_OPEN]
+  [element -> *value, ARRAY_TAG_OPEN]
+  [element -> *value, BOOLEAN]
+  [element -> *value, NULL]
+  [element -> *value, NUMBER]
+  [element -> *value, STRING]
+  [element -> *value, TAG_CLOSE]
+  [element -> *value, TAG_OPEN]
+  [member -> *element, ARRAY_TAG_OPEN]
+  [member -> *element, BOOLEAN]
+  [member -> *element, NULL]
+  [member -> *element, NUMBER]
+  [member -> *element, STRING]
+  [member -> *element, TAG_CLOSE]
+  [member -> *element, TAG_OPEN]
+  [members -> *member, TAG_CLOSE]
+  [members -> *membermembers, TAG_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENTAG_CLOSE, NULL]
+  [object -> *TAG_OPENTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENTAG_CLOSE, STRING]
+  [object -> *TAG_OPENTAG_CLOSE, TAG_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NULL]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENmembersTAG_CLOSE, STRING]
+  [object -> *TAG_OPENmembersTAG_CLOSE, TAG_CLOSE]
+  [object -> *TAG_OPENmembersTAG_CLOSE, TAG_OPEN]
+  [object -> TAG_OPEN*TAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> TAG_OPEN*TAG_CLOSE, BOOLEAN]
+  [object -> TAG_OPEN*TAG_CLOSE, NULL]
+  [object -> TAG_OPEN*TAG_CLOSE, NUMBER]
+  [object -> TAG_OPEN*TAG_CLOSE, ROOT_CLOSE]
+  [object -> TAG_OPEN*TAG_CLOSE, STRING]
+  [object -> TAG_OPEN*TAG_CLOSE, TAG_OPEN]
+  [object -> TAG_OPEN*membersTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> TAG_OPEN*membersTAG_CLOSE, BOOLEAN]
+  [object -> TAG_OPEN*membersTAG_CLOSE, NULL]
+  [object -> TAG_OPEN*membersTAG_CLOSE, NUMBER]
+  [object -> TAG_OPEN*membersTAG_CLOSE, ROOT_CLOSE]
+  [object -> TAG_OPEN*membersTAG_CLOSE, STRING]
+  [object -> TAG_OPEN*membersTAG_CLOSE, TAG_OPEN]
+  [value -> *BOOLEAN, ARRAY_TAG_OPEN]
+  [value -> *BOOLEAN, BOOLEAN]
+  [value -> *BOOLEAN, NULL]
+  [value -> *BOOLEAN, NUMBER]
+  [value -> *BOOLEAN, STRING]
+  [value -> *BOOLEAN, TAG_CLOSE]
+  [value -> *BOOLEAN, TAG_OPEN]
+  [value -> *NULL, ARRAY_TAG_OPEN]
+  [value -> *NULL, BOOLEAN]
+  [value -> *NULL, NULL]
+  [value -> *NULL, NUMBER]
+  [value -> *NULL, STRING]
+  [value -> *NULL, TAG_CLOSE]
+  [value -> *NULL, TAG_OPEN]
+  [value -> *NUMBER, ARRAY_TAG_OPEN]
+  [value -> *NUMBER, BOOLEAN]
+  [value -> *NUMBER, NULL]
+  [value -> *NUMBER, NUMBER]
+  [value -> *NUMBER, STRING]
+  [value -> *NUMBER, TAG_CLOSE]
+  [value -> *NUMBER, TAG_OPEN]
+  [value -> *STRING, ARRAY_TAG_OPEN]
+  [value -> *STRING, BOOLEAN]
+  [value -> *STRING, NULL]
+  [value -> *STRING, NUMBER]
+  [value -> *STRING, STRING]
+  [value -> *STRING, TAG_CLOSE]
+  [value -> *STRING, TAG_OPEN]
+  [value -> *array, ARRAY_TAG_OPEN]
+  [value -> *array, BOOLEAN]
+  [value -> *array, NULL]
+  [value -> *array, NUMBER]
+  [value -> *array, STRING]
+  [value -> *array, TAG_CLOSE]
+  [value -> *array, TAG_OPEN]
+  [value -> *object, ARRAY_TAG_OPEN]
+  [value -> *object, BOOLEAN]
+  [value -> *object, NULL]
+  [value -> *object, NUMBER]
+  [value -> *object, STRING]
+  [value -> *object, TAG_CLOSE]
+  [value -> *object, TAG_OPEN]
+________________________________________
+Item Set 10 :
   [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
   [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, COMMA]
   [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
   [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, COMMA]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, NULL]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, NUMBER]
   [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, ROOT_CLOSE]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, STRING]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, TAG_OPEN]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, NULL]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, NUMBER]
   [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, ROOT_CLOSE]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, STRING]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, TAG_OPEN]
   [element -> *value, ARRAY_TAG_CLOSE]
   [element -> *value, COMMA]
   [elements -> *element, ARRAY_TAG_CLOSE]
@@ -79,80 +377,488 @@ Item Set 8 :
   [value -> *object, ARRAY_TAG_CLOSE]
   [value -> *object, COMMA]
 ________________________________________
-Item Set 9 :
-  [value -> STRING*, ROOT_CLOSE]
-________________________________________
-Item Set 10 :
-  [value -> NUMBER*, ROOT_CLOSE]
-________________________________________
 Item Set 11 :
-  [value -> BOOLEAN*, ROOT_CLOSE]
+  [value -> STRING*, ARRAY_TAG_OPEN]
+  [value -> STRING*, BOOLEAN]
+  [value -> STRING*, NULL]
+  [value -> STRING*, NUMBER]
+  [value -> STRING*, ROOT_CLOSE]
+  [value -> STRING*, STRING]
+  [value -> STRING*, TAG_OPEN]
 ________________________________________
 Item Set 12 :
-  [value -> NULL*, ROOT_CLOSE]
+  [value -> NUMBER*, ARRAY_TAG_OPEN]
+  [value -> NUMBER*, BOOLEAN]
+  [value -> NUMBER*, NULL]
+  [value -> NUMBER*, NUMBER]
+  [value -> NUMBER*, ROOT_CLOSE]
+  [value -> NUMBER*, STRING]
+  [value -> NUMBER*, TAG_OPEN]
 ________________________________________
 Item Set 13 :
-  [eml -> ROOT_OPENelementROOT_CLOSE*, EOS]
+  [value -> BOOLEAN*, ARRAY_TAG_OPEN]
+  [value -> BOOLEAN*, BOOLEAN]
+  [value -> BOOLEAN*, NULL]
+  [value -> BOOLEAN*, NUMBER]
+  [value -> BOOLEAN*, ROOT_CLOSE]
+  [value -> BOOLEAN*, STRING]
+  [value -> BOOLEAN*, TAG_OPEN]
 ________________________________________
 Item Set 14 :
-  [object -> TAG_OPENmembers*TAG_CLOSE, ROOT_CLOSE]
+  [value -> NULL*, ARRAY_TAG_OPEN]
+  [value -> NULL*, BOOLEAN]
+  [value -> NULL*, NULL]
+  [value -> NULL*, NUMBER]
+  [value -> NULL*, ROOT_CLOSE]
+  [value -> NULL*, STRING]
+  [value -> NULL*, TAG_OPEN]
 ________________________________________
 Item Set 15 :
-  [member -> *TAG_OPENelementTAG_CLOSE, TAG_CLOSE]
-  [member -> *TAG_OPENelementTAG_CLOSE, TAG_OPEN]
+  [eml -> ROOT_OPENmembersROOT_CLOSE*, EOS]
+________________________________________
+Item Set 16 :
+  [members -> membermembers*, ROOT_CLOSE]
+________________________________________
+Item Set 17 :
+  [element -> value*, ARRAY_TAG_OPEN]
+  [element -> value*, BOOLEAN]
+  [element -> value*, NULL]
+  [element -> value*, NUMBER]
+  [element -> value*, STRING]
+  [element -> value*, TAG_CLOSE]
+  [element -> value*, TAG_OPEN]
+________________________________________
+Item Set 18 :
+  [value -> object*, ARRAY_TAG_OPEN]
+  [value -> object*, BOOLEAN]
+  [value -> object*, NULL]
+  [value -> object*, NUMBER]
+  [value -> object*, STRING]
+  [value -> object*, TAG_CLOSE]
+  [value -> object*, TAG_OPEN]
+________________________________________
+Item Set 19 :
+  [object -> TAG_OPENmembers*TAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> TAG_OPENmembers*TAG_CLOSE, BOOLEAN]
+  [object -> TAG_OPENmembers*TAG_CLOSE, NULL]
+  [object -> TAG_OPENmembers*TAG_CLOSE, NUMBER]
+  [object -> TAG_OPENmembers*TAG_CLOSE, ROOT_CLOSE]
+  [object -> TAG_OPENmembers*TAG_CLOSE, STRING]
+  [object -> TAG_OPENmembers*TAG_CLOSE, TAG_OPEN]
+________________________________________
+Item Set 20 :
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_OPEN]
+  [element -> *value, ARRAY_TAG_OPEN]
+  [element -> *value, BOOLEAN]
+  [element -> *value, NULL]
+  [element -> *value, NUMBER]
+  [element -> *value, STRING]
+  [element -> *value, TAG_CLOSE]
+  [element -> *value, TAG_OPEN]
+  [member -> *element, ARRAY_TAG_OPEN]
+  [member -> *element, BOOLEAN]
+  [member -> *element, NULL]
+  [member -> *element, NUMBER]
+  [member -> *element, STRING]
+  [member -> *element, TAG_CLOSE]
+  [member -> *element, TAG_OPEN]
   [members -> *member, TAG_CLOSE]
   [members -> *membermembers, TAG_CLOSE]
   [members -> member*, TAG_CLOSE]
   [members -> member*members, TAG_CLOSE]
-________________________________________
-Item Set 16 :
-  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_CLOSE]
-  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_CLOSE]
-  [element -> *value, TAG_CLOSE]
-  [member -> TAG_OPEN*elementTAG_CLOSE, TAG_CLOSE]
-  [member -> TAG_OPEN*elementTAG_CLOSE, TAG_OPEN]
+  [object -> *TAG_OPENTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENTAG_CLOSE, NULL]
+  [object -> *TAG_OPENTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENTAG_CLOSE, STRING]
   [object -> *TAG_OPENTAG_CLOSE, TAG_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NULL]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENmembersTAG_CLOSE, STRING]
   [object -> *TAG_OPENmembersTAG_CLOSE, TAG_CLOSE]
+  [object -> *TAG_OPENmembersTAG_CLOSE, TAG_OPEN]
+  [value -> *BOOLEAN, ARRAY_TAG_OPEN]
+  [value -> *BOOLEAN, BOOLEAN]
+  [value -> *BOOLEAN, NULL]
+  [value -> *BOOLEAN, NUMBER]
+  [value -> *BOOLEAN, STRING]
   [value -> *BOOLEAN, TAG_CLOSE]
+  [value -> *BOOLEAN, TAG_OPEN]
+  [value -> *NULL, ARRAY_TAG_OPEN]
+  [value -> *NULL, BOOLEAN]
+  [value -> *NULL, NULL]
+  [value -> *NULL, NUMBER]
+  [value -> *NULL, STRING]
   [value -> *NULL, TAG_CLOSE]
+  [value -> *NULL, TAG_OPEN]
+  [value -> *NUMBER, ARRAY_TAG_OPEN]
+  [value -> *NUMBER, BOOLEAN]
+  [value -> *NUMBER, NULL]
+  [value -> *NUMBER, NUMBER]
+  [value -> *NUMBER, STRING]
   [value -> *NUMBER, TAG_CLOSE]
+  [value -> *NUMBER, TAG_OPEN]
+  [value -> *STRING, ARRAY_TAG_OPEN]
+  [value -> *STRING, BOOLEAN]
+  [value -> *STRING, NULL]
+  [value -> *STRING, NUMBER]
+  [value -> *STRING, STRING]
   [value -> *STRING, TAG_CLOSE]
+  [value -> *STRING, TAG_OPEN]
+  [value -> *array, ARRAY_TAG_OPEN]
+  [value -> *array, BOOLEAN]
+  [value -> *array, NULL]
+  [value -> *array, NUMBER]
+  [value -> *array, STRING]
   [value -> *array, TAG_CLOSE]
+  [value -> *array, TAG_OPEN]
+  [value -> *object, ARRAY_TAG_OPEN]
+  [value -> *object, BOOLEAN]
+  [value -> *object, NULL]
+  [value -> *object, NUMBER]
+  [value -> *object, STRING]
   [value -> *object, TAG_CLOSE]
+  [value -> *object, TAG_OPEN]
 ________________________________________
-Item Set 17 :
+Item Set 21 :
+  [value -> array*, ARRAY_TAG_OPEN]
+  [value -> array*, BOOLEAN]
+  [value -> array*, NULL]
+  [value -> array*, NUMBER]
+  [value -> array*, STRING]
+  [value -> array*, TAG_CLOSE]
+  [value -> array*, TAG_OPEN]
+________________________________________
+Item Set 22 :
+  [member -> element*, ARRAY_TAG_OPEN]
+  [member -> element*, BOOLEAN]
+  [member -> element*, NULL]
+  [member -> element*, NUMBER]
+  [member -> element*, STRING]
+  [member -> element*, TAG_CLOSE]
+  [member -> element*, TAG_OPEN]
+________________________________________
+Item Set 23 :
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_OPEN]
+  [element -> *value, ARRAY_TAG_OPEN]
+  [element -> *value, BOOLEAN]
+  [element -> *value, NULL]
+  [element -> *value, NUMBER]
+  [element -> *value, STRING]
+  [element -> *value, TAG_CLOSE]
+  [element -> *value, TAG_OPEN]
+  [member -> *element, ARRAY_TAG_OPEN]
+  [member -> *element, BOOLEAN]
+  [member -> *element, NULL]
+  [member -> *element, NUMBER]
+  [member -> *element, STRING]
+  [member -> *element, TAG_CLOSE]
+  [member -> *element, TAG_OPEN]
+  [members -> *member, TAG_CLOSE]
+  [members -> *membermembers, TAG_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENTAG_CLOSE, NULL]
+  [object -> *TAG_OPENTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENTAG_CLOSE, STRING]
+  [object -> *TAG_OPENTAG_CLOSE, TAG_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NULL]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENmembersTAG_CLOSE, STRING]
+  [object -> *TAG_OPENmembersTAG_CLOSE, TAG_CLOSE]
+  [object -> *TAG_OPENmembersTAG_CLOSE, TAG_OPEN]
+  [object -> TAG_OPEN*TAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> TAG_OPEN*TAG_CLOSE, BOOLEAN]
+  [object -> TAG_OPEN*TAG_CLOSE, NULL]
+  [object -> TAG_OPEN*TAG_CLOSE, NUMBER]
+  [object -> TAG_OPEN*TAG_CLOSE, STRING]
+  [object -> TAG_OPEN*TAG_CLOSE, TAG_CLOSE]
+  [object -> TAG_OPEN*TAG_CLOSE, TAG_OPEN]
+  [object -> TAG_OPEN*membersTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> TAG_OPEN*membersTAG_CLOSE, BOOLEAN]
+  [object -> TAG_OPEN*membersTAG_CLOSE, NULL]
+  [object -> TAG_OPEN*membersTAG_CLOSE, NUMBER]
+  [object -> TAG_OPEN*membersTAG_CLOSE, STRING]
+  [object -> TAG_OPEN*membersTAG_CLOSE, TAG_CLOSE]
+  [object -> TAG_OPEN*membersTAG_CLOSE, TAG_OPEN]
+  [value -> *BOOLEAN, ARRAY_TAG_OPEN]
+  [value -> *BOOLEAN, BOOLEAN]
+  [value -> *BOOLEAN, NULL]
+  [value -> *BOOLEAN, NUMBER]
+  [value -> *BOOLEAN, STRING]
+  [value -> *BOOLEAN, TAG_CLOSE]
+  [value -> *BOOLEAN, TAG_OPEN]
+  [value -> *NULL, ARRAY_TAG_OPEN]
+  [value -> *NULL, BOOLEAN]
+  [value -> *NULL, NULL]
+  [value -> *NULL, NUMBER]
+  [value -> *NULL, STRING]
+  [value -> *NULL, TAG_CLOSE]
+  [value -> *NULL, TAG_OPEN]
+  [value -> *NUMBER, ARRAY_TAG_OPEN]
+  [value -> *NUMBER, BOOLEAN]
+  [value -> *NUMBER, NULL]
+  [value -> *NUMBER, NUMBER]
+  [value -> *NUMBER, STRING]
+  [value -> *NUMBER, TAG_CLOSE]
+  [value -> *NUMBER, TAG_OPEN]
+  [value -> *STRING, ARRAY_TAG_OPEN]
+  [value -> *STRING, BOOLEAN]
+  [value -> *STRING, NULL]
+  [value -> *STRING, NUMBER]
+  [value -> *STRING, STRING]
+  [value -> *STRING, TAG_CLOSE]
+  [value -> *STRING, TAG_OPEN]
+  [value -> *array, ARRAY_TAG_OPEN]
+  [value -> *array, BOOLEAN]
+  [value -> *array, NULL]
+  [value -> *array, NUMBER]
+  [value -> *array, STRING]
+  [value -> *array, TAG_CLOSE]
+  [value -> *array, TAG_OPEN]
+  [value -> *object, ARRAY_TAG_OPEN]
+  [value -> *object, BOOLEAN]
+  [value -> *object, NULL]
+  [value -> *object, NUMBER]
+  [value -> *object, STRING]
+  [value -> *object, TAG_CLOSE]
+  [value -> *object, TAG_OPEN]
+________________________________________
+Item Set 24 :
+  [object -> TAG_OPENTAG_CLOSE*, ARRAY_TAG_OPEN]
+  [object -> TAG_OPENTAG_CLOSE*, BOOLEAN]
+  [object -> TAG_OPENTAG_CLOSE*, NULL]
+  [object -> TAG_OPENTAG_CLOSE*, NUMBER]
   [object -> TAG_OPENTAG_CLOSE*, ROOT_CLOSE]
+  [object -> TAG_OPENTAG_CLOSE*, STRING]
+  [object -> TAG_OPENTAG_CLOSE*, TAG_OPEN]
 ________________________________________
-Item Set 18 :
+Item Set 25 :
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, COMMA]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, COMMA]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, NULL]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, NUMBER]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, STRING]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, TAG_OPEN]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, NULL]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, NUMBER]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, STRING]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, TAG_OPEN]
+  [element -> *value, ARRAY_TAG_CLOSE]
+  [element -> *value, COMMA]
+  [elements -> *element, ARRAY_TAG_CLOSE]
+  [elements -> *elementCOMMAelements, ARRAY_TAG_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, ARRAY_TAG_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, COMMA]
+  [object -> *TAG_OPENmembersTAG_CLOSE, ARRAY_TAG_CLOSE]
+  [object -> *TAG_OPENmembersTAG_CLOSE, COMMA]
+  [value -> *BOOLEAN, ARRAY_TAG_CLOSE]
+  [value -> *BOOLEAN, COMMA]
+  [value -> *NULL, ARRAY_TAG_CLOSE]
+  [value -> *NULL, COMMA]
+  [value -> *NUMBER, ARRAY_TAG_CLOSE]
+  [value -> *NUMBER, COMMA]
+  [value -> *STRING, ARRAY_TAG_CLOSE]
+  [value -> *STRING, COMMA]
+  [value -> *array, ARRAY_TAG_CLOSE]
+  [value -> *array, COMMA]
+  [value -> *object, ARRAY_TAG_CLOSE]
+  [value -> *object, COMMA]
+________________________________________
+Item Set 26 :
+  [value -> STRING*, ARRAY_TAG_OPEN]
+  [value -> STRING*, BOOLEAN]
+  [value -> STRING*, NULL]
+  [value -> STRING*, NUMBER]
+  [value -> STRING*, STRING]
+  [value -> STRING*, TAG_CLOSE]
+  [value -> STRING*, TAG_OPEN]
+________________________________________
+Item Set 27 :
+  [value -> NUMBER*, ARRAY_TAG_OPEN]
+  [value -> NUMBER*, BOOLEAN]
+  [value -> NUMBER*, NULL]
+  [value -> NUMBER*, NUMBER]
+  [value -> NUMBER*, STRING]
+  [value -> NUMBER*, TAG_CLOSE]
+  [value -> NUMBER*, TAG_OPEN]
+________________________________________
+Item Set 28 :
+  [value -> BOOLEAN*, ARRAY_TAG_OPEN]
+  [value -> BOOLEAN*, BOOLEAN]
+  [value -> BOOLEAN*, NULL]
+  [value -> BOOLEAN*, NUMBER]
+  [value -> BOOLEAN*, STRING]
+  [value -> BOOLEAN*, TAG_CLOSE]
+  [value -> BOOLEAN*, TAG_OPEN]
+________________________________________
+Item Set 29 :
+  [value -> NULL*, ARRAY_TAG_OPEN]
+  [value -> NULL*, BOOLEAN]
+  [value -> NULL*, NULL]
+  [value -> NULL*, NUMBER]
+  [value -> NULL*, STRING]
+  [value -> NULL*, TAG_CLOSE]
+  [value -> NULL*, TAG_OPEN]
+________________________________________
+Item Set 30 :
   [element -> value*, ARRAY_TAG_CLOSE]
   [element -> value*, COMMA]
 ________________________________________
-Item Set 19 :
+Item Set 31 :
   [value -> object*, ARRAY_TAG_CLOSE]
   [value -> object*, COMMA]
 ________________________________________
-Item Set 20 :
+Item Set 32 :
   [value -> array*, ARRAY_TAG_CLOSE]
   [value -> array*, COMMA]
 ________________________________________
-Item Set 21 :
+Item Set 33 :
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, NULL]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, NUMBER]
   [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, ROOT_CLOSE]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, STRING]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, TAG_OPEN]
 ________________________________________
-Item Set 22 :
+Item Set 34 :
   [elements -> element*, ARRAY_TAG_CLOSE]
   [elements -> element*COMMAelements, ARRAY_TAG_CLOSE]
 ________________________________________
-Item Set 23 :
-  [member -> *TAG_OPENelementTAG_CLOSE, TAG_CLOSE]
-  [member -> *TAG_OPENelementTAG_CLOSE, TAG_OPEN]
+Item Set 35 :
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NULL]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, NUMBER]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, STRING]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, TAG_OPEN]
+  [element -> *value, ARRAY_TAG_OPEN]
+  [element -> *value, BOOLEAN]
+  [element -> *value, NULL]
+  [element -> *value, NUMBER]
+  [element -> *value, STRING]
+  [element -> *value, TAG_CLOSE]
+  [element -> *value, TAG_OPEN]
+  [member -> *element, ARRAY_TAG_OPEN]
+  [member -> *element, BOOLEAN]
+  [member -> *element, NULL]
+  [member -> *element, NUMBER]
+  [member -> *element, STRING]
+  [member -> *element, TAG_CLOSE]
+  [member -> *element, TAG_OPEN]
   [members -> *member, TAG_CLOSE]
   [members -> *membermembers, TAG_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENTAG_CLOSE, NULL]
+  [object -> *TAG_OPENTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENTAG_CLOSE, STRING]
+  [object -> *TAG_OPENTAG_CLOSE, TAG_CLOSE]
+  [object -> *TAG_OPENTAG_CLOSE, TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, BOOLEAN]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NULL]
+  [object -> *TAG_OPENmembersTAG_CLOSE, NUMBER]
+  [object -> *TAG_OPENmembersTAG_CLOSE, STRING]
+  [object -> *TAG_OPENmembersTAG_CLOSE, TAG_CLOSE]
+  [object -> *TAG_OPENmembersTAG_CLOSE, TAG_OPEN]
   [object -> TAG_OPEN*TAG_CLOSE, ARRAY_TAG_CLOSE]
   [object -> TAG_OPEN*TAG_CLOSE, COMMA]
   [object -> TAG_OPEN*membersTAG_CLOSE, ARRAY_TAG_CLOSE]
   [object -> TAG_OPEN*membersTAG_CLOSE, COMMA]
+  [value -> *BOOLEAN, ARRAY_TAG_OPEN]
+  [value -> *BOOLEAN, BOOLEAN]
+  [value -> *BOOLEAN, NULL]
+  [value -> *BOOLEAN, NUMBER]
+  [value -> *BOOLEAN, STRING]
+  [value -> *BOOLEAN, TAG_CLOSE]
+  [value -> *BOOLEAN, TAG_OPEN]
+  [value -> *NULL, ARRAY_TAG_OPEN]
+  [value -> *NULL, BOOLEAN]
+  [value -> *NULL, NULL]
+  [value -> *NULL, NUMBER]
+  [value -> *NULL, STRING]
+  [value -> *NULL, TAG_CLOSE]
+  [value -> *NULL, TAG_OPEN]
+  [value -> *NUMBER, ARRAY_TAG_OPEN]
+  [value -> *NUMBER, BOOLEAN]
+  [value -> *NUMBER, NULL]
+  [value -> *NUMBER, NUMBER]
+  [value -> *NUMBER, STRING]
+  [value -> *NUMBER, TAG_CLOSE]
+  [value -> *NUMBER, TAG_OPEN]
+  [value -> *STRING, ARRAY_TAG_OPEN]
+  [value -> *STRING, BOOLEAN]
+  [value -> *STRING, NULL]
+  [value -> *STRING, NUMBER]
+  [value -> *STRING, STRING]
+  [value -> *STRING, TAG_CLOSE]
+  [value -> *STRING, TAG_OPEN]
+  [value -> *array, ARRAY_TAG_OPEN]
+  [value -> *array, BOOLEAN]
+  [value -> *array, NULL]
+  [value -> *array, NUMBER]
+  [value -> *array, STRING]
+  [value -> *array, TAG_CLOSE]
+  [value -> *array, TAG_OPEN]
+  [value -> *object, ARRAY_TAG_OPEN]
+  [value -> *object, BOOLEAN]
+  [value -> *object, NULL]
+  [value -> *object, NUMBER]
+  [value -> *object, STRING]
+  [value -> *object, TAG_CLOSE]
+  [value -> *object, TAG_OPEN]
 ________________________________________
-Item Set 24 :
+Item Set 36 :
   [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
   [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, COMMA]
   [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
@@ -182,96 +888,89 @@ Item Set 24 :
   [value -> *object, ARRAY_TAG_CLOSE]
   [value -> *object, COMMA]
 ________________________________________
-Item Set 25 :
+Item Set 37 :
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, BOOLEAN]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, NULL]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, NUMBER]
   [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, ROOT_CLOSE]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, STRING]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, TAG_OPEN]
 ________________________________________
-Item Set 26 :
+Item Set 38 :
   [value -> STRING*, ARRAY_TAG_CLOSE]
   [value -> STRING*, COMMA]
 ________________________________________
-Item Set 27 :
+Item Set 39 :
   [value -> NUMBER*, ARRAY_TAG_CLOSE]
   [value -> NUMBER*, COMMA]
 ________________________________________
-Item Set 28 :
+Item Set 40 :
   [value -> BOOLEAN*, ARRAY_TAG_CLOSE]
   [value -> BOOLEAN*, COMMA]
 ________________________________________
-Item Set 29 :
+Item Set 41 :
   [value -> NULL*, ARRAY_TAG_CLOSE]
   [value -> NULL*, COMMA]
 ________________________________________
-Item Set 30 :
-  [object -> TAG_OPENmembersTAG_CLOSE*, ROOT_CLOSE]
-________________________________________
-Item Set 31 :
-  [members -> membermembers*, TAG_CLOSE]
-________________________________________
-Item Set 32 :
-  [element -> value*, TAG_CLOSE]
-________________________________________
-Item Set 33 :
-  [value -> object*, TAG_CLOSE]
-________________________________________
-Item Set 34 :
-  [value -> array*, TAG_CLOSE]
-________________________________________
-Item Set 35 :
-  [member -> TAG_OPENelement*TAG_CLOSE, TAG_CLOSE]
-  [member -> TAG_OPENelement*TAG_CLOSE, TAG_OPEN]
-________________________________________
-Item Set 36 :
-  [member -> *TAG_OPENelementTAG_CLOSE, TAG_CLOSE]
-  [member -> *TAG_OPENelementTAG_CLOSE, TAG_OPEN]
-  [members -> *member, TAG_CLOSE]
-  [members -> *membermembers, TAG_CLOSE]
-  [object -> TAG_OPEN*TAG_CLOSE, TAG_CLOSE]
-  [object -> TAG_OPEN*membersTAG_CLOSE, TAG_CLOSE]
-________________________________________
-Item Set 37 :
-  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
-  [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, COMMA]
-  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
-  [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, COMMA]
-  [array -> ARRAY_TAG_OPEN*ARRAY_TAG_CLOSE, TAG_CLOSE]
-  [array -> ARRAY_TAG_OPEN*elementsARRAY_TAG_CLOSE, TAG_CLOSE]
-  [element -> *value, ARRAY_TAG_CLOSE]
-  [element -> *value, COMMA]
-  [elements -> *element, ARRAY_TAG_CLOSE]
-  [elements -> *elementCOMMAelements, ARRAY_TAG_CLOSE]
-  [object -> *TAG_OPENTAG_CLOSE, ARRAY_TAG_CLOSE]
-  [object -> *TAG_OPENTAG_CLOSE, COMMA]
-  [object -> *TAG_OPENmembersTAG_CLOSE, ARRAY_TAG_CLOSE]
-  [object -> *TAG_OPENmembersTAG_CLOSE, COMMA]
-  [value -> *BOOLEAN, ARRAY_TAG_CLOSE]
-  [value -> *BOOLEAN, COMMA]
-  [value -> *NULL, ARRAY_TAG_CLOSE]
-  [value -> *NULL, COMMA]
-  [value -> *NUMBER, ARRAY_TAG_CLOSE]
-  [value -> *NUMBER, COMMA]
-  [value -> *STRING, ARRAY_TAG_CLOSE]
-  [value -> *STRING, COMMA]
-  [value -> *array, ARRAY_TAG_CLOSE]
-  [value -> *array, COMMA]
-  [value -> *object, ARRAY_TAG_CLOSE]
-  [value -> *object, COMMA]
-________________________________________
-Item Set 38 :
-  [value -> STRING*, TAG_CLOSE]
-________________________________________
-Item Set 39 :
-  [value -> NUMBER*, TAG_CLOSE]
-________________________________________
-Item Set 40 :
-  [value -> BOOLEAN*, TAG_CLOSE]
-________________________________________
-Item Set 41 :
-  [value -> NULL*, TAG_CLOSE]
-________________________________________
 Item Set 42 :
-  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, ROOT_CLOSE]
+  [object -> TAG_OPENmembersTAG_CLOSE*, ARRAY_TAG_OPEN]
+  [object -> TAG_OPENmembersTAG_CLOSE*, BOOLEAN]
+  [object -> TAG_OPENmembersTAG_CLOSE*, NULL]
+  [object -> TAG_OPENmembersTAG_CLOSE*, NUMBER]
+  [object -> TAG_OPENmembersTAG_CLOSE*, ROOT_CLOSE]
+  [object -> TAG_OPENmembersTAG_CLOSE*, STRING]
+  [object -> TAG_OPENmembersTAG_CLOSE*, TAG_OPEN]
 ________________________________________
 Item Set 43 :
+  [members -> membermembers*, TAG_CLOSE]
+________________________________________
+Item Set 44 :
+  [object -> TAG_OPENmembers*TAG_CLOSE, ARRAY_TAG_OPEN]
+  [object -> TAG_OPENmembers*TAG_CLOSE, BOOLEAN]
+  [object -> TAG_OPENmembers*TAG_CLOSE, NULL]
+  [object -> TAG_OPENmembers*TAG_CLOSE, NUMBER]
+  [object -> TAG_OPENmembers*TAG_CLOSE, STRING]
+  [object -> TAG_OPENmembers*TAG_CLOSE, TAG_CLOSE]
+  [object -> TAG_OPENmembers*TAG_CLOSE, TAG_OPEN]
+________________________________________
+Item Set 45 :
+  [object -> TAG_OPENTAG_CLOSE*, ARRAY_TAG_OPEN]
+  [object -> TAG_OPENTAG_CLOSE*, BOOLEAN]
+  [object -> TAG_OPENTAG_CLOSE*, NULL]
+  [object -> TAG_OPENTAG_CLOSE*, NUMBER]
+  [object -> TAG_OPENTAG_CLOSE*, STRING]
+  [object -> TAG_OPENTAG_CLOSE*, TAG_CLOSE]
+  [object -> TAG_OPENTAG_CLOSE*, TAG_OPEN]
+________________________________________
+Item Set 46 :
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, BOOLEAN]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, NULL]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, NUMBER]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, STRING]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, TAG_CLOSE]
+  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, TAG_OPEN]
+________________________________________
+Item Set 47 :
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, BOOLEAN]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, NULL]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, NUMBER]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, STRING]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, TAG_CLOSE]
+  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, TAG_OPEN]
+________________________________________
+Item Set 48 :
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, BOOLEAN]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, NULL]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, NUMBER]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, ROOT_CLOSE]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, STRING]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, TAG_OPEN]
+________________________________________
+Item Set 49 :
   [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
   [array -> *ARRAY_TAG_OPENARRAY_TAG_CLOSE, COMMA]
   [array -> *ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
@@ -298,257 +997,457 @@ Item Set 43 :
   [value -> *object, ARRAY_TAG_CLOSE]
   [value -> *object, COMMA]
 ________________________________________
-Item Set 44 :
+Item Set 50 :
   [object -> TAG_OPENmembers*TAG_CLOSE, ARRAY_TAG_CLOSE]
   [object -> TAG_OPENmembers*TAG_CLOSE, COMMA]
 ________________________________________
-Item Set 45 :
+Item Set 51 :
   [object -> TAG_OPENTAG_CLOSE*, ARRAY_TAG_CLOSE]
   [object -> TAG_OPENTAG_CLOSE*, COMMA]
 ________________________________________
-Item Set 46 :
+Item Set 52 :
   [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, ARRAY_TAG_CLOSE]
   [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, COMMA]
 ________________________________________
-Item Set 47 :
+Item Set 53 :
   [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, ARRAY_TAG_CLOSE]
   [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, COMMA]
 ________________________________________
-Item Set 48 :
-  [member -> TAG_OPENelementTAG_CLOSE*, TAG_CLOSE]
-  [member -> TAG_OPENelementTAG_CLOSE*, TAG_OPEN]
+Item Set 54 :
+  [object -> TAG_OPENmembersTAG_CLOSE*, ARRAY_TAG_OPEN]
+  [object -> TAG_OPENmembersTAG_CLOSE*, BOOLEAN]
+  [object -> TAG_OPENmembersTAG_CLOSE*, NULL]
+  [object -> TAG_OPENmembersTAG_CLOSE*, NUMBER]
+  [object -> TAG_OPENmembersTAG_CLOSE*, STRING]
+  [object -> TAG_OPENmembersTAG_CLOSE*, TAG_CLOSE]
+  [object -> TAG_OPENmembersTAG_CLOSE*, TAG_OPEN]
 ________________________________________
-Item Set 49 :
-  [object -> TAG_OPENmembers*TAG_CLOSE, TAG_CLOSE]
+Item Set 55 :
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, ARRAY_TAG_OPEN]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, BOOLEAN]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, NULL]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, NUMBER]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, STRING]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, TAG_CLOSE]
+  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, TAG_OPEN]
 ________________________________________
-Item Set 50 :
-  [object -> TAG_OPENTAG_CLOSE*, TAG_CLOSE]
-________________________________________
-Item Set 51 :
-  [array -> ARRAY_TAG_OPENelements*ARRAY_TAG_CLOSE, TAG_CLOSE]
-________________________________________
-Item Set 52 :
-  [array -> ARRAY_TAG_OPENARRAY_TAG_CLOSE*, TAG_CLOSE]
-________________________________________
-Item Set 53 :
+Item Set 56 :
   [elements -> elementCOMMAelements*, ARRAY_TAG_CLOSE]
 ________________________________________
-Item Set 54 :
+Item Set 57 :
   [object -> TAG_OPENmembersTAG_CLOSE*, ARRAY_TAG_CLOSE]
   [object -> TAG_OPENmembersTAG_CLOSE*, COMMA]
 ________________________________________
-Item Set 55 :
+Item Set 58 :
   [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, ARRAY_TAG_CLOSE]
   [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, COMMA]
-________________________________________
-Item Set 56 :
-  [object -> TAG_OPENmembersTAG_CLOSE*, TAG_CLOSE]
-________________________________________
-Item Set 57 :
-  [array -> ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*, TAG_CLOSE]
 ________________________________________
 GOTO TABLE:
   GOTO(0, ROOT_OPEN) = 2
   GOTO(0, eml) = 1
-  GOTO(2, ARRAY_TAG_OPEN) = 8
-  GOTO(2, BOOLEAN) = 11
-  GOTO(2, NULL) = 12
-  GOTO(2, NUMBER) = 10
-  GOTO(2, STRING) = 9
-  GOTO(2, TAG_OPEN) = 7
-  GOTO(2, array) = 5
-  GOTO(2, element) = 6
+  GOTO(2, ARRAY_TAG_OPEN) = 10
+  GOTO(2, BOOLEAN) = 13
+  GOTO(2, NULL) = 14
+  GOTO(2, NUMBER) = 12
+  GOTO(2, STRING) = 11
+  GOTO(2, TAG_OPEN) = 9
+  GOTO(2, array) = 7
+  GOTO(2, element) = 8
+  GOTO(2, member) = 6
+  GOTO(2, members) = 5
   GOTO(2, object) = 4
   GOTO(2, value) = 3
-  GOTO(6, ROOT_CLOSE) = 13
-  GOTO(7, TAG_CLOSE) = 17
-  GOTO(7, TAG_OPEN) = 16
-  GOTO(7, member) = 15
-  GOTO(7, members) = 14
-  GOTO(8, ARRAY_TAG_CLOSE) = 25
-  GOTO(8, ARRAY_TAG_OPEN) = 24
-  GOTO(8, BOOLEAN) = 28
-  GOTO(8, NULL) = 29
-  GOTO(8, NUMBER) = 27
-  GOTO(8, STRING) = 26
-  GOTO(8, TAG_OPEN) = 23
-  GOTO(8, array) = 20
-  GOTO(8, element) = 22
-  GOTO(8, elements) = 21
-  GOTO(8, object) = 19
-  GOTO(8, value) = 18
-  GOTO(14, TAG_CLOSE) = 30
-  GOTO(15, TAG_OPEN) = 16
-  GOTO(15, member) = 15
-  GOTO(15, members) = 31
-  GOTO(16, ARRAY_TAG_OPEN) = 37
-  GOTO(16, BOOLEAN) = 40
-  GOTO(16, NULL) = 41
-  GOTO(16, NUMBER) = 39
-  GOTO(16, STRING) = 38
-  GOTO(16, TAG_OPEN) = 36
-  GOTO(16, array) = 34
-  GOTO(16, element) = 35
-  GOTO(16, object) = 33
-  GOTO(16, value) = 32
-  GOTO(21, ARRAY_TAG_CLOSE) = 42
-  GOTO(22, COMMA) = 43
+  GOTO(5, ROOT_CLOSE) = 15
+  GOTO(6, ARRAY_TAG_OPEN) = 10
+  GOTO(6, BOOLEAN) = 13
+  GOTO(6, NULL) = 14
+  GOTO(6, NUMBER) = 12
+  GOTO(6, STRING) = 11
+  GOTO(6, TAG_OPEN) = 9
+  GOTO(6, array) = 7
+  GOTO(6, element) = 8
+  GOTO(6, member) = 6
+  GOTO(6, members) = 16
+  GOTO(6, object) = 4
+  GOTO(6, value) = 3
+  GOTO(9, ARRAY_TAG_OPEN) = 25
+  GOTO(9, BOOLEAN) = 28
+  GOTO(9, NULL) = 29
+  GOTO(9, NUMBER) = 27
+  GOTO(9, STRING) = 26
+  GOTO(9, TAG_CLOSE) = 24
+  GOTO(9, TAG_OPEN) = 23
+  GOTO(9, array) = 21
+  GOTO(9, element) = 22
+  GOTO(9, member) = 20
+  GOTO(9, members) = 19
+  GOTO(9, object) = 18
+  GOTO(9, value) = 17
+  GOTO(10, ARRAY_TAG_CLOSE) = 37
+  GOTO(10, ARRAY_TAG_OPEN) = 36
+  GOTO(10, BOOLEAN) = 40
+  GOTO(10, NULL) = 41
+  GOTO(10, NUMBER) = 39
+  GOTO(10, STRING) = 38
+  GOTO(10, TAG_OPEN) = 35
+  GOTO(10, array) = 32
+  GOTO(10, element) = 34
+  GOTO(10, elements) = 33
+  GOTO(10, object) = 31
+  GOTO(10, value) = 30
+  GOTO(19, TAG_CLOSE) = 42
+  GOTO(20, ARRAY_TAG_OPEN) = 25
+  GOTO(20, BOOLEAN) = 28
+  GOTO(20, NULL) = 29
+  GOTO(20, NUMBER) = 27
+  GOTO(20, STRING) = 26
+  GOTO(20, TAG_OPEN) = 23
+  GOTO(20, array) = 21
+  GOTO(20, element) = 22
+  GOTO(20, member) = 20
+  GOTO(20, members) = 43
+  GOTO(20, object) = 18
+  GOTO(20, value) = 17
+  GOTO(23, ARRAY_TAG_OPEN) = 25
+  GOTO(23, BOOLEAN) = 28
+  GOTO(23, NULL) = 29
+  GOTO(23, NUMBER) = 27
+  GOTO(23, STRING) = 26
   GOTO(23, TAG_CLOSE) = 45
-  GOTO(23, TAG_OPEN) = 16
-  GOTO(23, member) = 15
+  GOTO(23, TAG_OPEN) = 23
+  GOTO(23, array) = 21
+  GOTO(23, element) = 22
+  GOTO(23, member) = 20
   GOTO(23, members) = 44
-  GOTO(24, ARRAY_TAG_CLOSE) = 47
-  GOTO(24, ARRAY_TAG_OPEN) = 24
-  GOTO(24, BOOLEAN) = 28
-  GOTO(24, NULL) = 29
-  GOTO(24, NUMBER) = 27
-  GOTO(24, STRING) = 26
-  GOTO(24, TAG_OPEN) = 23
-  GOTO(24, array) = 20
-  GOTO(24, element) = 22
-  GOTO(24, elements) = 46
-  GOTO(24, object) = 19
-  GOTO(24, value) = 18
-  GOTO(35, TAG_CLOSE) = 48
-  GOTO(36, TAG_CLOSE) = 50
-  GOTO(36, TAG_OPEN) = 16
-  GOTO(36, member) = 15
-  GOTO(36, members) = 49
-  GOTO(37, ARRAY_TAG_CLOSE) = 52
-  GOTO(37, ARRAY_TAG_OPEN) = 24
-  GOTO(37, BOOLEAN) = 28
-  GOTO(37, NULL) = 29
-  GOTO(37, NUMBER) = 27
-  GOTO(37, STRING) = 26
-  GOTO(37, TAG_OPEN) = 23
-  GOTO(37, array) = 20
-  GOTO(37, element) = 22
-  GOTO(37, elements) = 51
-  GOTO(37, object) = 19
-  GOTO(37, value) = 18
-  GOTO(43, ARRAY_TAG_OPEN) = 24
-  GOTO(43, BOOLEAN) = 28
-  GOTO(43, NULL) = 29
-  GOTO(43, NUMBER) = 27
-  GOTO(43, STRING) = 26
-  GOTO(43, TAG_OPEN) = 23
-  GOTO(43, array) = 20
-  GOTO(43, element) = 22
-  GOTO(43, elements) = 53
-  GOTO(43, object) = 19
-  GOTO(43, value) = 18
+  GOTO(23, object) = 18
+  GOTO(23, value) = 17
+  GOTO(25, ARRAY_TAG_CLOSE) = 47
+  GOTO(25, ARRAY_TAG_OPEN) = 36
+  GOTO(25, BOOLEAN) = 40
+  GOTO(25, NULL) = 41
+  GOTO(25, NUMBER) = 39
+  GOTO(25, STRING) = 38
+  GOTO(25, TAG_OPEN) = 35
+  GOTO(25, array) = 32
+  GOTO(25, element) = 34
+  GOTO(25, elements) = 46
+  GOTO(25, object) = 31
+  GOTO(25, value) = 30
+  GOTO(33, ARRAY_TAG_CLOSE) = 48
+  GOTO(34, COMMA) = 49
+  GOTO(35, ARRAY_TAG_OPEN) = 25
+  GOTO(35, BOOLEAN) = 28
+  GOTO(35, NULL) = 29
+  GOTO(35, NUMBER) = 27
+  GOTO(35, STRING) = 26
+  GOTO(35, TAG_CLOSE) = 51
+  GOTO(35, TAG_OPEN) = 23
+  GOTO(35, array) = 21
+  GOTO(35, element) = 22
+  GOTO(35, member) = 20
+  GOTO(35, members) = 50
+  GOTO(35, object) = 18
+  GOTO(35, value) = 17
+  GOTO(36, ARRAY_TAG_CLOSE) = 53
+  GOTO(36, ARRAY_TAG_OPEN) = 36
+  GOTO(36, BOOLEAN) = 40
+  GOTO(36, NULL) = 41
+  GOTO(36, NUMBER) = 39
+  GOTO(36, STRING) = 38
+  GOTO(36, TAG_OPEN) = 35
+  GOTO(36, array) = 32
+  GOTO(36, element) = 34
+  GOTO(36, elements) = 52
+  GOTO(36, object) = 31
+  GOTO(36, value) = 30
   GOTO(44, TAG_CLOSE) = 54
   GOTO(46, ARRAY_TAG_CLOSE) = 55
-  GOTO(49, TAG_CLOSE) = 56
-  GOTO(51, ARRAY_TAG_CLOSE) = 57
+  GOTO(49, ARRAY_TAG_OPEN) = 36
+  GOTO(49, BOOLEAN) = 40
+  GOTO(49, NULL) = 41
+  GOTO(49, NUMBER) = 39
+  GOTO(49, STRING) = 38
+  GOTO(49, TAG_OPEN) = 35
+  GOTO(49, array) = 32
+  GOTO(49, element) = 34
+  GOTO(49, elements) = 56
+  GOTO(49, object) = 31
+  GOTO(49, value) = 30
+  GOTO(50, TAG_CLOSE) = 57
+  GOTO(52, ARRAY_TAG_CLOSE) = 58
 ________________________________________
 ACTION TABLE:
   ACTION(0, ROOT_OPEN) = shift2
   ACTION(1, EOS) = accept
-  ACTION(2, ARRAY_TAG_OPEN) = shift8
-  ACTION(2, BOOLEAN) = shift11
-  ACTION(2, NULL) = shift12
-  ACTION(2, NUMBER) = shift10
-  ACTION(2, STRING) = shift9
-  ACTION(2, TAG_OPEN) = shift7
+  ACTION(2, ARRAY_TAG_OPEN) = shift10
+  ACTION(2, BOOLEAN) = shift13
+  ACTION(2, NULL) = shift14
+  ACTION(2, NUMBER) = shift12
+  ACTION(2, STRING) = shift11
+  ACTION(2, TAG_OPEN) = shift9
+  ACTION(3, ARRAY_TAG_OPEN) = reduceelement->value*
+  ACTION(3, BOOLEAN) = reduceelement->value*
+  ACTION(3, NULL) = reduceelement->value*
+  ACTION(3, NUMBER) = reduceelement->value*
   ACTION(3, ROOT_CLOSE) = reduceelement->value*
+  ACTION(3, STRING) = reduceelement->value*
+  ACTION(3, TAG_OPEN) = reduceelement->value*
+  ACTION(4, ARRAY_TAG_OPEN) = reducevalue->object*
+  ACTION(4, BOOLEAN) = reducevalue->object*
+  ACTION(4, NULL) = reducevalue->object*
+  ACTION(4, NUMBER) = reducevalue->object*
   ACTION(4, ROOT_CLOSE) = reducevalue->object*
-  ACTION(5, ROOT_CLOSE) = reducevalue->array*
-  ACTION(6, ROOT_CLOSE) = shift13
-  ACTION(7, TAG_CLOSE) = shift17
-  ACTION(7, TAG_OPEN) = shift16
-  ACTION(8, ARRAY_TAG_CLOSE) = shift25
-  ACTION(8, ARRAY_TAG_OPEN) = shift24
-  ACTION(8, BOOLEAN) = shift28
-  ACTION(8, NULL) = shift29
-  ACTION(8, NUMBER) = shift27
-  ACTION(8, STRING) = shift26
-  ACTION(8, TAG_OPEN) = shift23
-  ACTION(9, ROOT_CLOSE) = reducevalue->STRING*
-  ACTION(10, ROOT_CLOSE) = reducevalue->NUMBER*
-  ACTION(11, ROOT_CLOSE) = reducevalue->BOOLEAN*
-  ACTION(12, ROOT_CLOSE) = reducevalue->NULL*
-  ACTION(13, EOS) = reduceeml->ROOT_OPENelementROOT_CLOSE*
-  ACTION(14, TAG_CLOSE) = shift30
-  ACTION(15, TAG_CLOSE) = reducemembers->member*
-  ACTION(15, TAG_OPEN) = shift16
-  ACTION(16, ARRAY_TAG_OPEN) = shift37
-  ACTION(16, BOOLEAN) = shift40
-  ACTION(16, NULL) = shift41
-  ACTION(16, NUMBER) = shift39
-  ACTION(16, STRING) = shift38
-  ACTION(16, TAG_OPEN) = shift36
-  ACTION(17, ROOT_CLOSE) = reduceobject->TAG_OPENTAG_CLOSE*
-  ACTION(18, ARRAY_TAG_CLOSE) = reduceelement->value*
-  ACTION(18, COMMA) = reduceelement->value*
-  ACTION(19, ARRAY_TAG_CLOSE) = reducevalue->object*
-  ACTION(19, COMMA) = reducevalue->object*
-  ACTION(20, ARRAY_TAG_CLOSE) = reducevalue->array*
-  ACTION(20, COMMA) = reducevalue->array*
-  ACTION(21, ARRAY_TAG_CLOSE) = shift42
-  ACTION(22, ARRAY_TAG_CLOSE) = reduceelements->element*
-  ACTION(22, COMMA) = shift43
+  ACTION(4, STRING) = reducevalue->object*
+  ACTION(4, TAG_OPEN) = reducevalue->object*
+  ACTION(5, ROOT_CLOSE) = shift15
+  ACTION(6, ARRAY_TAG_OPEN) = shift10
+  ACTION(6, BOOLEAN) = shift13
+  ACTION(6, NULL) = shift14
+  ACTION(6, NUMBER) = shift12
+  ACTION(6, ROOT_CLOSE) = reducemembers->member*
+  ACTION(6, STRING) = shift11
+  ACTION(6, TAG_OPEN) = shift9
+  ACTION(7, ARRAY_TAG_OPEN) = reducevalue->array*
+  ACTION(7, BOOLEAN) = reducevalue->array*
+  ACTION(7, NULL) = reducevalue->array*
+  ACTION(7, NUMBER) = reducevalue->array*
+  ACTION(7, ROOT_CLOSE) = reducevalue->array*
+  ACTION(7, STRING) = reducevalue->array*
+  ACTION(7, TAG_OPEN) = reducevalue->array*
+  ACTION(8, ARRAY_TAG_OPEN) = reducemember->element*
+  ACTION(8, BOOLEAN) = reducemember->element*
+  ACTION(8, NULL) = reducemember->element*
+  ACTION(8, NUMBER) = reducemember->element*
+  ACTION(8, ROOT_CLOSE) = reducemember->element*
+  ACTION(8, STRING) = reducemember->element*
+  ACTION(8, TAG_OPEN) = reducemember->element*
+  ACTION(9, ARRAY_TAG_OPEN) = shift25
+  ACTION(9, BOOLEAN) = shift28
+  ACTION(9, NULL) = shift29
+  ACTION(9, NUMBER) = shift27
+  ACTION(9, STRING) = shift26
+  ACTION(9, TAG_CLOSE) = shift24
+  ACTION(9, TAG_OPEN) = shift23
+  ACTION(10, ARRAY_TAG_CLOSE) = shift37
+  ACTION(10, ARRAY_TAG_OPEN) = shift36
+  ACTION(10, BOOLEAN) = shift40
+  ACTION(10, NULL) = shift41
+  ACTION(10, NUMBER) = shift39
+  ACTION(10, STRING) = shift38
+  ACTION(10, TAG_OPEN) = shift35
+  ACTION(11, ARRAY_TAG_OPEN) = reducevalue->STRING*
+  ACTION(11, BOOLEAN) = reducevalue->STRING*
+  ACTION(11, NULL) = reducevalue->STRING*
+  ACTION(11, NUMBER) = reducevalue->STRING*
+  ACTION(11, ROOT_CLOSE) = reducevalue->STRING*
+  ACTION(11, STRING) = reducevalue->STRING*
+  ACTION(11, TAG_OPEN) = reducevalue->STRING*
+  ACTION(12, ARRAY_TAG_OPEN) = reducevalue->NUMBER*
+  ACTION(12, BOOLEAN) = reducevalue->NUMBER*
+  ACTION(12, NULL) = reducevalue->NUMBER*
+  ACTION(12, NUMBER) = reducevalue->NUMBER*
+  ACTION(12, ROOT_CLOSE) = reducevalue->NUMBER*
+  ACTION(12, STRING) = reducevalue->NUMBER*
+  ACTION(12, TAG_OPEN) = reducevalue->NUMBER*
+  ACTION(13, ARRAY_TAG_OPEN) = reducevalue->BOOLEAN*
+  ACTION(13, BOOLEAN) = reducevalue->BOOLEAN*
+  ACTION(13, NULL) = reducevalue->BOOLEAN*
+  ACTION(13, NUMBER) = reducevalue->BOOLEAN*
+  ACTION(13, ROOT_CLOSE) = reducevalue->BOOLEAN*
+  ACTION(13, STRING) = reducevalue->BOOLEAN*
+  ACTION(13, TAG_OPEN) = reducevalue->BOOLEAN*
+  ACTION(14, ARRAY_TAG_OPEN) = reducevalue->NULL*
+  ACTION(14, BOOLEAN) = reducevalue->NULL*
+  ACTION(14, NULL) = reducevalue->NULL*
+  ACTION(14, NUMBER) = reducevalue->NULL*
+  ACTION(14, ROOT_CLOSE) = reducevalue->NULL*
+  ACTION(14, STRING) = reducevalue->NULL*
+  ACTION(14, TAG_OPEN) = reducevalue->NULL*
+  ACTION(15, EOS) = reduceeml->ROOT_OPENmembersROOT_CLOSE*
+  ACTION(16, ROOT_CLOSE) = reducemembers->membermembers*
+  ACTION(17, ARRAY_TAG_OPEN) = reduceelement->value*
+  ACTION(17, BOOLEAN) = reduceelement->value*
+  ACTION(17, NULL) = reduceelement->value*
+  ACTION(17, NUMBER) = reduceelement->value*
+  ACTION(17, STRING) = reduceelement->value*
+  ACTION(17, TAG_CLOSE) = reduceelement->value*
+  ACTION(17, TAG_OPEN) = reduceelement->value*
+  ACTION(18, ARRAY_TAG_OPEN) = reducevalue->object*
+  ACTION(18, BOOLEAN) = reducevalue->object*
+  ACTION(18, NULL) = reducevalue->object*
+  ACTION(18, NUMBER) = reducevalue->object*
+  ACTION(18, STRING) = reducevalue->object*
+  ACTION(18, TAG_CLOSE) = reducevalue->object*
+  ACTION(18, TAG_OPEN) = reducevalue->object*
+  ACTION(19, TAG_CLOSE) = shift42
+  ACTION(20, ARRAY_TAG_OPEN) = shift25
+  ACTION(20, BOOLEAN) = shift28
+  ACTION(20, NULL) = shift29
+  ACTION(20, NUMBER) = shift27
+  ACTION(20, STRING) = shift26
+  ACTION(20, TAG_CLOSE) = reducemembers->member*
+  ACTION(20, TAG_OPEN) = shift23
+  ACTION(21, ARRAY_TAG_OPEN) = reducevalue->array*
+  ACTION(21, BOOLEAN) = reducevalue->array*
+  ACTION(21, NULL) = reducevalue->array*
+  ACTION(21, NUMBER) = reducevalue->array*
+  ACTION(21, STRING) = reducevalue->array*
+  ACTION(21, TAG_CLOSE) = reducevalue->array*
+  ACTION(21, TAG_OPEN) = reducevalue->array*
+  ACTION(22, ARRAY_TAG_OPEN) = reducemember->element*
+  ACTION(22, BOOLEAN) = reducemember->element*
+  ACTION(22, NULL) = reducemember->element*
+  ACTION(22, NUMBER) = reducemember->element*
+  ACTION(22, STRING) = reducemember->element*
+  ACTION(22, TAG_CLOSE) = reducemember->element*
+  ACTION(22, TAG_OPEN) = reducemember->element*
+  ACTION(23, ARRAY_TAG_OPEN) = shift25
+  ACTION(23, BOOLEAN) = shift28
+  ACTION(23, NULL) = shift29
+  ACTION(23, NUMBER) = shift27
+  ACTION(23, STRING) = shift26
   ACTION(23, TAG_CLOSE) = shift45
-  ACTION(23, TAG_OPEN) = shift16
-  ACTION(24, ARRAY_TAG_CLOSE) = shift47
-  ACTION(24, ARRAY_TAG_OPEN) = shift24
-  ACTION(24, BOOLEAN) = shift28
-  ACTION(24, NULL) = shift29
-  ACTION(24, NUMBER) = shift27
-  ACTION(24, STRING) = shift26
-  ACTION(24, TAG_OPEN) = shift23
-  ACTION(25, ROOT_CLOSE) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
-  ACTION(26, ARRAY_TAG_CLOSE) = reducevalue->STRING*
-  ACTION(26, COMMA) = reducevalue->STRING*
-  ACTION(27, ARRAY_TAG_CLOSE) = reducevalue->NUMBER*
-  ACTION(27, COMMA) = reducevalue->NUMBER*
-  ACTION(28, ARRAY_TAG_CLOSE) = reducevalue->BOOLEAN*
-  ACTION(28, COMMA) = reducevalue->BOOLEAN*
-  ACTION(29, ARRAY_TAG_CLOSE) = reducevalue->NULL*
-  ACTION(29, COMMA) = reducevalue->NULL*
-  ACTION(30, ROOT_CLOSE) = reduceobject->TAG_OPENmembersTAG_CLOSE*
-  ACTION(31, TAG_CLOSE) = reducemembers->membermembers*
-  ACTION(32, TAG_CLOSE) = reduceelement->value*
-  ACTION(33, TAG_CLOSE) = reducevalue->object*
-  ACTION(34, TAG_CLOSE) = reducevalue->array*
-  ACTION(35, TAG_CLOSE) = shift48
-  ACTION(36, TAG_CLOSE) = shift50
-  ACTION(36, TAG_OPEN) = shift16
-  ACTION(37, ARRAY_TAG_CLOSE) = shift52
-  ACTION(37, ARRAY_TAG_OPEN) = shift24
-  ACTION(37, BOOLEAN) = shift28
-  ACTION(37, NULL) = shift29
-  ACTION(37, NUMBER) = shift27
-  ACTION(37, STRING) = shift26
-  ACTION(37, TAG_OPEN) = shift23
-  ACTION(38, TAG_CLOSE) = reducevalue->STRING*
-  ACTION(39, TAG_CLOSE) = reducevalue->NUMBER*
-  ACTION(40, TAG_CLOSE) = reducevalue->BOOLEAN*
-  ACTION(41, TAG_CLOSE) = reducevalue->NULL*
-  ACTION(42, ROOT_CLOSE) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
-  ACTION(43, ARRAY_TAG_OPEN) = shift24
-  ACTION(43, BOOLEAN) = shift28
-  ACTION(43, NULL) = shift29
-  ACTION(43, NUMBER) = shift27
-  ACTION(43, STRING) = shift26
-  ACTION(43, TAG_OPEN) = shift23
+  ACTION(23, TAG_OPEN) = shift23
+  ACTION(24, ARRAY_TAG_OPEN) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(24, BOOLEAN) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(24, NULL) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(24, NUMBER) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(24, ROOT_CLOSE) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(24, STRING) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(24, TAG_OPEN) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(25, ARRAY_TAG_CLOSE) = shift47
+  ACTION(25, ARRAY_TAG_OPEN) = shift36
+  ACTION(25, BOOLEAN) = shift40
+  ACTION(25, NULL) = shift41
+  ACTION(25, NUMBER) = shift39
+  ACTION(25, STRING) = shift38
+  ACTION(25, TAG_OPEN) = shift35
+  ACTION(26, ARRAY_TAG_OPEN) = reducevalue->STRING*
+  ACTION(26, BOOLEAN) = reducevalue->STRING*
+  ACTION(26, NULL) = reducevalue->STRING*
+  ACTION(26, NUMBER) = reducevalue->STRING*
+  ACTION(26, STRING) = reducevalue->STRING*
+  ACTION(26, TAG_CLOSE) = reducevalue->STRING*
+  ACTION(26, TAG_OPEN) = reducevalue->STRING*
+  ACTION(27, ARRAY_TAG_OPEN) = reducevalue->NUMBER*
+  ACTION(27, BOOLEAN) = reducevalue->NUMBER*
+  ACTION(27, NULL) = reducevalue->NUMBER*
+  ACTION(27, NUMBER) = reducevalue->NUMBER*
+  ACTION(27, STRING) = reducevalue->NUMBER*
+  ACTION(27, TAG_CLOSE) = reducevalue->NUMBER*
+  ACTION(27, TAG_OPEN) = reducevalue->NUMBER*
+  ACTION(28, ARRAY_TAG_OPEN) = reducevalue->BOOLEAN*
+  ACTION(28, BOOLEAN) = reducevalue->BOOLEAN*
+  ACTION(28, NULL) = reducevalue->BOOLEAN*
+  ACTION(28, NUMBER) = reducevalue->BOOLEAN*
+  ACTION(28, STRING) = reducevalue->BOOLEAN*
+  ACTION(28, TAG_CLOSE) = reducevalue->BOOLEAN*
+  ACTION(28, TAG_OPEN) = reducevalue->BOOLEAN*
+  ACTION(29, ARRAY_TAG_OPEN) = reducevalue->NULL*
+  ACTION(29, BOOLEAN) = reducevalue->NULL*
+  ACTION(29, NULL) = reducevalue->NULL*
+  ACTION(29, NUMBER) = reducevalue->NULL*
+  ACTION(29, STRING) = reducevalue->NULL*
+  ACTION(29, TAG_CLOSE) = reducevalue->NULL*
+  ACTION(29, TAG_OPEN) = reducevalue->NULL*
+  ACTION(30, ARRAY_TAG_CLOSE) = reduceelement->value*
+  ACTION(30, COMMA) = reduceelement->value*
+  ACTION(31, ARRAY_TAG_CLOSE) = reducevalue->object*
+  ACTION(31, COMMA) = reducevalue->object*
+  ACTION(32, ARRAY_TAG_CLOSE) = reducevalue->array*
+  ACTION(32, COMMA) = reducevalue->array*
+  ACTION(33, ARRAY_TAG_CLOSE) = shift48
+  ACTION(34, ARRAY_TAG_CLOSE) = reduceelements->element*
+  ACTION(34, COMMA) = shift49
+  ACTION(35, ARRAY_TAG_OPEN) = shift25
+  ACTION(35, BOOLEAN) = shift28
+  ACTION(35, NULL) = shift29
+  ACTION(35, NUMBER) = shift27
+  ACTION(35, STRING) = shift26
+  ACTION(35, TAG_CLOSE) = shift51
+  ACTION(35, TAG_OPEN) = shift23
+  ACTION(36, ARRAY_TAG_CLOSE) = shift53
+  ACTION(36, ARRAY_TAG_OPEN) = shift36
+  ACTION(36, BOOLEAN) = shift40
+  ACTION(36, NULL) = shift41
+  ACTION(36, NUMBER) = shift39
+  ACTION(36, STRING) = shift38
+  ACTION(36, TAG_OPEN) = shift35
+  ACTION(37, ARRAY_TAG_OPEN) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(37, BOOLEAN) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(37, NULL) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(37, NUMBER) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(37, ROOT_CLOSE) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(37, STRING) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(37, TAG_OPEN) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(38, ARRAY_TAG_CLOSE) = reducevalue->STRING*
+  ACTION(38, COMMA) = reducevalue->STRING*
+  ACTION(39, ARRAY_TAG_CLOSE) = reducevalue->NUMBER*
+  ACTION(39, COMMA) = reducevalue->NUMBER*
+  ACTION(40, ARRAY_TAG_CLOSE) = reducevalue->BOOLEAN*
+  ACTION(40, COMMA) = reducevalue->BOOLEAN*
+  ACTION(41, ARRAY_TAG_CLOSE) = reducevalue->NULL*
+  ACTION(41, COMMA) = reducevalue->NULL*
+  ACTION(42, ARRAY_TAG_OPEN) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(42, BOOLEAN) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(42, NULL) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(42, NUMBER) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(42, ROOT_CLOSE) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(42, STRING) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(42, TAG_OPEN) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(43, TAG_CLOSE) = reducemembers->membermembers*
   ACTION(44, TAG_CLOSE) = shift54
-  ACTION(45, ARRAY_TAG_CLOSE) = reduceobject->TAG_OPENTAG_CLOSE*
-  ACTION(45, COMMA) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(45, ARRAY_TAG_OPEN) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(45, BOOLEAN) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(45, NULL) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(45, NUMBER) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(45, STRING) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(45, TAG_CLOSE) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(45, TAG_OPEN) = reduceobject->TAG_OPENTAG_CLOSE*
   ACTION(46, ARRAY_TAG_CLOSE) = shift55
-  ACTION(47, ARRAY_TAG_CLOSE) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
-  ACTION(47, COMMA) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
-  ACTION(48, TAG_CLOSE) = reducemember->TAG_OPENelementTAG_CLOSE*
-  ACTION(48, TAG_OPEN) = reducemember->TAG_OPENelementTAG_CLOSE*
-  ACTION(49, TAG_CLOSE) = shift56
-  ACTION(50, TAG_CLOSE) = reduceobject->TAG_OPENTAG_CLOSE*
-  ACTION(51, ARRAY_TAG_CLOSE) = shift57
-  ACTION(52, TAG_CLOSE) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
-  ACTION(53, ARRAY_TAG_CLOSE) = reduceelements->elementCOMMAelements*
-  ACTION(54, ARRAY_TAG_CLOSE) = reduceobject->TAG_OPENmembersTAG_CLOSE*
-  ACTION(54, COMMA) = reduceobject->TAG_OPENmembersTAG_CLOSE*
-  ACTION(55, ARRAY_TAG_CLOSE) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
-  ACTION(55, COMMA) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
-  ACTION(56, TAG_CLOSE) = reduceobject->TAG_OPENmembersTAG_CLOSE*
-  ACTION(57, TAG_CLOSE) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(47, ARRAY_TAG_OPEN) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(47, BOOLEAN) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(47, NULL) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(47, NUMBER) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(47, STRING) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(47, TAG_CLOSE) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(47, TAG_OPEN) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(48, ARRAY_TAG_OPEN) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(48, BOOLEAN) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(48, NULL) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(48, NUMBER) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(48, ROOT_CLOSE) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(48, STRING) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(48, TAG_OPEN) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(49, ARRAY_TAG_OPEN) = shift36
+  ACTION(49, BOOLEAN) = shift40
+  ACTION(49, NULL) = shift41
+  ACTION(49, NUMBER) = shift39
+  ACTION(49, STRING) = shift38
+  ACTION(49, TAG_OPEN) = shift35
+  ACTION(50, TAG_CLOSE) = shift57
+  ACTION(51, ARRAY_TAG_CLOSE) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(51, COMMA) = reduceobject->TAG_OPENTAG_CLOSE*
+  ACTION(52, ARRAY_TAG_CLOSE) = shift58
+  ACTION(53, ARRAY_TAG_CLOSE) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(53, COMMA) = reducearray->ARRAY_TAG_OPENARRAY_TAG_CLOSE*
+  ACTION(54, ARRAY_TAG_OPEN) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(54, BOOLEAN) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(54, NULL) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(54, NUMBER) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(54, STRING) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(54, TAG_CLOSE) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(54, TAG_OPEN) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(55, ARRAY_TAG_OPEN) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(55, BOOLEAN) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(55, NULL) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(55, NUMBER) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(55, STRING) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(55, TAG_CLOSE) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(55, TAG_OPEN) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(56, ARRAY_TAG_CLOSE) = reduceelements->elementCOMMAelements*
+  ACTION(57, ARRAY_TAG_CLOSE) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(57, COMMA) = reduceobject->TAG_OPENmembersTAG_CLOSE*
+  ACTION(58, ARRAY_TAG_CLOSE) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
+  ACTION(58, COMMA) = reducearray->ARRAY_TAG_OPENelementsARRAY_TAG_CLOSE*
 ________________________________________

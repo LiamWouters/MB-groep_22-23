@@ -16,9 +16,13 @@ private:
     std::string value; // value in string form
 public:
     valueElement();
+
     void setName(const std::string& n);
     void setValue(const std::string& v);
     std::string writeElementToJSON() const;
+    std::string writeElementToEML() const;
+    std::string writeElementToJSONnoName() const;
+    std::string writeElementToEMLnoName() const;
 
     ~valueElement();
 };

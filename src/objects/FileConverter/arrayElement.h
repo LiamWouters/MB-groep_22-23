@@ -19,8 +19,12 @@ public:
     arrayElement();
 
     void setName(const std::string& n);
+    std::string getName() const;
     void addElementToContainer(Element* e);
     std::string writeElementToJSON() const;
+    std::string writeElementToEML() const;
+    std::string writeElementToJSONnoName() const;
+    std::string writeElementToEMLnoName() const;
 
     ~arrayElement();
 };

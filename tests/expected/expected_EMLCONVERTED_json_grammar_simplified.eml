@@ -1,0 +1,95 @@
+[root]
+	<Productions>
+	    [o]
+	        <body> "element" </body>
+	        [head] "json" [/head]
+	    [/o],
+	    [o]
+            <body> "object" </body>
+            [head] "value" [/head]
+	    [/o],
+	    [o]
+            <body> "array" </body>
+            [head] "value" [/head]
+	    [/o],
+	    [o]
+            <body> "STRING" </body>
+            [head] "value" [/head]
+	    [/o],
+	    [o]
+            <body> "NUMBER" </body>
+            [head] "value" [/head]
+	    [/o],
+	    [o]
+            <body> "BOOLEAN" </body>
+            [head] "value" [/head]
+	    [/o],
+	    [o]
+            <body> "NULL" </body>
+            [head] "value" [/head]
+	    [/o],
+	    [o]
+            <body> "CURLY_OPEN", "CURLY_CLOSE" </body>
+            [head] "object" [/head]
+	    [/o],
+	    [o]
+            <body> "CURLY_OPEN", "members", "CURLY_CLOSE" </body>
+            [head] "object" [/head]
+	    [/o],
+	    [o]
+            <body> "member" </body>
+            [head] "members" [/head]
+	    [/o],
+	    [o]
+            <body> "member", "COMMA", "members" </body>
+            [head] "members" [/head]
+	    [/o],
+	    [o]
+            <body> "STRING", "COLON", "element" </body>
+            [head] "member" [/head]
+	    [/o],
+	    [o]
+            <body> "ARRAY_OPEN", "ARRAY_CLOSE" </body>
+            [head] "array" [/head]
+	    [/o],
+	    [o]
+            <body> "ARRAY_OPEN", "elements", "ARRAY_CLOSE" </body>
+            [head] "array" [/head]
+	    [/o],
+	    [o]
+            <body> "element" </body>
+            [head] "elements" [/head]
+	    [/o],
+	    [o]
+            <body> "element", "COMMA", "elements" </body>
+            [head] "elements" [/head]
+	    [/o],
+	    [o]
+            <body> "value" </body>
+            [head] "element" [/head]
+	    [/o]
+    </Productions>
+	[Start] "json" [/Start]
+	<Terminals>
+        "ARRAY_OPEN",
+        "ARRAY_CLOSE",
+        "CURLY_OPEN",
+        "CURLY_CLOSE",
+        "COLON",
+        "COMMA",
+        "STRING",
+        "NUMBER",
+        "BOOLEAN",
+        "NULL"
+	</Terminals>
+	<Variables>
+	    "json",
+	    "element",
+	    "value",
+	    "object",
+	    "array",
+	    "members",
+	    "member",
+	    "elements"
+    </Variables>
+[/root]

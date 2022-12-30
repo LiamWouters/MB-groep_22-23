@@ -19,83 +19,6 @@ LR1Parser::LR1Parser(const CFG &grammar, const bool debugprint) : grammar(gramma
     constructParseTable();
 }
 
-/*
-LR1Parser::LR1Parser(const std::string &fileLocation, const CFG &grammar, const bool debugprint) : grammar(grammar), debugprint(debugprint) {
-    // load constructor
-    printbuffer.str(std::string());
-    dataStructure = nullptr;
-    // NOT CONSTRUCTING PARSE TABLE
-    // we do need to augment the grammar
-    augmentGrammar();
-
-    /// load parser
-    std::ifstream input(fileLocation);
-    nlohmann::json j;
-    input >> j;
-
-    // fill parserItemSets
-    for (int i = 0; i < j["parserItemSets"].size(); i++) {
-        std::set<std::pair<Production, std::string>> itemSet;
-        for (int item = 0; item < j["parserItemSets"][i]["itemSet"].size(); item++) {
-            Production prod(j["parserItemSets"][i]["itemSet"][item]["head"], j["parserItemSets"][i]["itemSet"][item]["body"].get<std::vector<std::string>>());
-            std::string lookahead = j["parserItemSets"][i]["itemSet"][item]["lookahead"];
-            std::pair<Production, std::string> itemObject = std::make_pair(prod, lookahead);
-            itemSet.insert(itemObject);
-        }
-
-        parserItemSets.insert(std::make_pair(j["parserItemSets"][i]["itemSetNumber"], itemSet));
-    }
-    // fill gotoTable
-    for (int i = 0; i < j["gotoTable"].size(); i++) {
-        std::pair<int, std::string> key = std::make_pair(j["gotoTable"][i]["key"]["parentItemSetNumber"], j["gotoTable"][i]["key"]["recognizedSymbol"]);
-        gotoTable[key] = j["gotoTable"][i]["gotoSetNumber"];
-    }
-    // fill actionTable
-    for (int i = 0; i < j["actionTable"].size(); i++) {
-        std::pair<int, std::string> key = std::make_pair(j["actionTable"][i]["key"]["parentItemSetNumber"], j["actionTable"][i]["key"]["recognizedSymbol"]);
-        std::vector<std::string> action = j["actionTable"][i]["action"].get<std::vector<std::string>>();
-        actionTable[key] = action;
-    }
-
-    // debug print
-    if (debugprint) {
-        printbuffer << "ALL ITEM SETS:" << std::endl;
-        for (int i = 0; i<parserItemSets.size(); i++) {
-            printbuffer << "Item Set " << i << " :" << std::endl;
-            for (std::pair<Production, std::string> item: parserItemSets[i]) {
-                printbuffer << "  [" << item.first.head << " -> ";
-                for (std::string symbol: item.first.body) {
-                    printbuffer << symbol;
-                }
-                if (item.second != "") {
-                    printbuffer << ", " << item.second;
-                } else {
-                    printbuffer << ", NONE";
-                }
-                printbuffer << "]" << std::endl;
-            }
-            printbuffer << "________________________________________" << std::endl;
-        }
-        ///+++///
-        printbuffer << "GOTO TABLE:" << std::endl;
-        for (auto tableEntry : gotoTable) {
-            printbuffer << "  GOTO(" << tableEntry.first.first << ", " << tableEntry.first.second << ") = " << tableEntry.second << std::endl;
-        }
-        printbuffer << "________________________________________" << std::endl;
-        ///+++///
-        printbuffer << "ACTION TABLE:" << std::endl;
-        for (auto tableEntry : actionTable) {
-            printbuffer << "  ACTION(" << tableEntry.first.first << ", " << tableEntry.first.second << ") = ";
-            for (std::string b : tableEntry.second) {
-                printbuffer << b;
-            }
-            printbuffer << std::endl;
-        }
-        printbuffer << "________________________________________" << std::endl;
-    }
-}
-*/
-
 ///////////////////////////////////////////////////////////////////////
 /*
  * PRIVATE FUNCTIONS
@@ -587,6 +510,216 @@ void LR1Parser::augmentGrammar() {
     grammar.setStartState("S");
 }
 
+////// DATA STRUCTURE FUNCTIONS //////
+
+void LR1Parser::clearString(std::string &string) const {
+    // remove any ", [, ], /, ... from string
+    if (string == "") {return;}
+    string.erase(remove(string.begin(), string.end(), '\"'), string.end());
+    string.erase(remove(string.begin(), string.end(), '['), string.end());
+    string.erase(remove(string.begin(), string.end(), ']'), string.end());
+    string.erase(remove(string.begin(), string.end(), '/'), string.end());
+    string.erase(remove(string.begin(), string.end(), '<'), string.end());
+    string.erase(remove(string.begin(), string.end(), '>'), string.end());
+}
+
+bool LR1Parser::checkJSONElementName(const std::string &tokenType, const std::string &tokenContent, const int& remainingTokens) {
+    /*
+     * in JSON the name of the constructed element is not inside the same token as the actual element
+     * example: "name": value
+     * the content of name will be stored in storedElementName
+     *
+     * return:  true if this token does not create an element (skip creation), (it is the name of an element)
+     *          false if this token does create an element (don't skip creation) (it is an element, not a name)
+     */
+    /// JSON
+    if (storedElementName == "" and tokenType == "STRING") {
+        if (currentElemContainers.empty() and remainingTokens > 1) {
+            // no name is stored and more than 1 token remaining ("value" is a valid JSON file, in this case the string element has no name)
+            storedElementName = tokenContent;
+            return true;
+        } else {
+            if (!currentElemContainers.empty() and currentElemContainers.top()->getType() == "object") {
+                // elements inside an array do NOT have names, elements in objects do
+                storedElementName = tokenContent;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void LR1Parser::jsonContainerElementCreation(const std::string &tokenType, std::string tokenContent) {
+    if (tokenType == "NUMBER" or tokenType == "STRING" or tokenType == "BOOLEAN" or tokenType == "NULL") {
+        // value
+        valueElement *valElem = new valueElement();
+        clearString(storedElementName);
+        valElem->setName(storedElementName);
+        valElem->setValue(tokenContent);
+
+        storedElementName = ""; // remove stored name (for json)
+        dataStructure->addElement(valElem, currentElemContainers);
+    }
+        /// CONTAINERS
+    else if (tokenType == "ARRAY_OPEN") {
+        // array open
+        arrayElement *arrayElem = new arrayElement();
+        clearString(storedElementName);
+        arrayElem->setName(storedElementName);
+
+        currentElemContainers.push(arrayElem);
+        storedElementName = "";
+    } else if (tokenType == "ARRAY_CLOSE") {
+        // array close
+        if (currentElemContainers.empty() or currentElemContainers.top()->getType() != "array") {
+            std::cerr << "FILE CONVERTER ERROR: missing/wrong container closer (']' with no open array)" << std::endl;
+            return;
+        }
+        containerElement *array = currentElemContainers.top();
+        currentElemContainers.pop(); // remove container from stack
+        dataStructure->addElement(array, currentElemContainers);
+    } else if (tokenType == "CURLY_OPEN") {
+        // object open
+        objectElement *objectElem = new objectElement();
+        clearString(storedElementName);
+        objectElem->setName(storedElementName);
+
+        currentElemContainers.push(objectElem);
+        storedElementName = "";
+    } else if (tokenType == "CURLY_CLOSE") {
+        // object close
+        if (currentElemContainers.empty() or currentElemContainers.top()->getType() != "object") {
+            std::cerr << "FILE CONVERTER ERROR: missing/wrong container closer ('}' with no open object)" << std::endl;
+            return;
+        }
+        containerElement *object = currentElemContainers.top();
+        currentElemContainers.pop(); // remove container from stack
+        dataStructure->addElement(object, currentElemContainers);
+    }
+}
+
+void LR1Parser::emlContainerElementCreation(const std::string &tokenType, std::string tokenContent) {
+    if (tokenType == "NUMBER" or tokenType == "STRING" or tokenType == "BOOLEAN" or tokenType == "NULL") {
+        // if there is stored name (from a previous 'TAG_OPEN')
+        // then: the stored name can be removed (its a value)
+        // if there isn't, also just add to the structure
+        valueElement *valElem = new valueElement();
+        clearString(storedElementName);
+        valElem->setName(storedElementName); // name inside TAG_OPEN token
+        valElem->setValue(tokenContent);
+
+        storedElementName = ""; // remove stored name
+        dataStructure->addElement(valElem, currentElemContainers);
+    }
+    /// CONTAINERS
+    else if (tokenType == "ROOT_OPEN") {
+        // object open
+        objectElement *objectElem = new objectElement();
+        clearString(tokenContent);
+        objectElem->setName(tokenContent);
+
+        currentElemContainers.push(objectElem);
+        storedElementName = "";
+    } else if (tokenType == "ROOT_CLOSE") {
+        // object close
+        if (currentElemContainers.empty() or currentElemContainers.top()->getType() != "object") {
+            std::cerr << "FILE CONVERTER ERROR: missing/wrong container closer ('ROOT_CLOSE' with no open object)" << std::endl;
+            return;
+        }
+        containerElement *object = currentElemContainers.top();
+        currentElemContainers.pop(); // remove container from stack
+        dataStructure->addElement(object, currentElemContainers);
+    } else if (tokenType == "TAG_OPEN") {
+        if (storedElementName == "") {
+            // there is no stored name,
+            // this could be either an object OR a value element
+            storedElementName = tokenContent; // store name, the created element will depend on the next token
+        }
+        else {
+            // there is a stored name
+            // that stored name MUST belong to an object because there is another 'TAG_OPEN'
+            objectElement *objectElem = new objectElement(); // create object from stored name
+            clearString(storedElementName);
+            objectElem->setName(storedElementName);
+
+            currentElemContainers.push(objectElem);
+            storedElementName = tokenContent; // now we don't know if the CURRENT 'TAG_OPEN' belongs to a value or object, this will again depend on the next token
+        }
+    } else if (tokenType == "TAG_CLOSE") {
+        // we don't know if this belongs to an object or a value
+        // if its from a value we can ignore it
+        if (storedElementName != "") {
+            // there was a 'TAG_OPEN' before this,
+            // we need to create an empty value
+            valueElement *valElem = new valueElement();
+            clearString(storedElementName);
+            valElem->setName(storedElementName); // name inside TAG_OPEN token
+            valElem->setValue(""); // empty value
+
+            storedElementName = ""; // remove stored name
+            dataStructure->addElement(valElem, currentElemContainers);
+        }
+        else if (!currentElemContainers.empty() and currentElemContainers.top()->getType() == "object") {
+            // we only pop if the container has the same name
+            clearString(tokenContent);
+            if (currentElemContainers.top()->getName() != tokenContent) {
+                // does not have the same name
+                // this means: 1) the file is invalid (wrong tag_close), parser will handle it
+                //             2) the tag_close belongs to a value (not an object)
+                return;
+            }
+            containerElement *object = currentElemContainers.top();
+            currentElemContainers.pop(); // remove container from stack
+            dataStructure->addElement(object, currentElemContainers);
+        }
+        else {
+            std::cerr << "FILE CONVERTER ERROR: missing/wrong container closer ('TAG_CLOSE' with no open object)" << std::endl;
+            return;
+        }
+    } else if (tokenType == "ARRAY_TAG_OPEN") {
+        if (storedElementName != "") {
+            // array is inside an object (there was a 'TAG_OPEN' before this)
+            // create object, THEN create array
+            objectElement *objectElem = new objectElement(); // create object from stored name
+            clearString(storedElementName);
+            objectElem->setName(storedElementName);
+
+            currentElemContainers.push(objectElem);
+            storedElementName = ""; // reset stored name
+        }
+        // array open
+        arrayElement *arrayElem = new arrayElement();
+        clearString(tokenContent);
+        arrayElem->setName(tokenContent);
+
+        currentElemContainers.push(arrayElem);
+        storedElementName = "";
+    } else if (tokenType == "ARRAY_TAG_CLOSE") {
+        // array close
+        if (currentElemContainers.empty() or currentElemContainers.top()->getType() != "array") {
+            std::cerr << "FILE CONVERTER ERROR: missing/wrong container closer ('ARRAY_TAG_CLOSE' with no open array)" << std::endl;
+            return;
+        }
+        containerElement *array = currentElemContainers.top();
+        currentElemContainers.pop(); // remove container from stack
+        dataStructure->addElement(array, currentElemContainers);
+    }
+}
+
+void LR1Parser::addToDataStructure(const std::string& tokenType, std::string tokenContent, const int& remainingTokens) {
+    if (parsedFileType == "JSON" and checkJSONElementName(tokenType, tokenContent, remainingTokens)) {
+        return; // checkElementName will return true if the token was a name, storedElementName will now also store that name
+    }
+
+    if (parsedFileType == "JSON") {
+        jsonContainerElementCreation(tokenType, tokenContent);
+    }
+    else if (parsedFileType == "EML") {
+        emlContainerElementCreation(tokenType, tokenContent);
+    }
+}
+
+
 ///////////////////////////////////////////////////////////////////////
 /*
  * PUBLIC FUNCTIONS
@@ -687,83 +820,25 @@ bool LR1Parser::parse(std::vector<token> inputTokens) {
         delete dataStructure;
     }
     dataStructure = new Data();
-    std::string storedElementName = ""; // store name until we have value (so we know what element type it is)
-    std::stack<containerElement*> currentElemContainers; // vector of array or object,
-    bool tokenAlreadyAdded = true;
+    parsedFileType = "JSON"; // if ROOT_OPEN is not the first token it is either a json or an invalid EML (parse will fail, (invalid) data structure will be deleted if partially created)
+    if (inputTokens[0].type == "ROOT_OPEN") {
+        parsedFileType = "EML";
+    }
+    storedElementName = ""; // store name until we have value (so we know what element type it is)
 
     while (action != "accept") {
         if (inputTokens.size() > 0) {
             inpTokenType = inputTokens[0].type;
             inpTokenContent = inputTokens[0].content;
-            tokenAlreadyAdded = inputTokens[0].addedToStructure;
         } else {
             inpTokenType = "EOS";
             inpTokenContent = "";
-            tokenAlreadyAdded = false;
         }
 
         /// CREATE DATA STRUCTURE ///
-        if (!tokenAlreadyAdded) {
+        if (!inputTokens.empty() and !inputTokens[0].addedToStructure) {
             inputTokens[0].addedToStructure = true;
-            bool wasName = false; // if token was name, skip the element creation if statement
-            if (inpTokenType == "STRING" && storedElementName == "") {
-                if (currentElemContainers.empty() && inputTokens.size() > 1) {
-                    // if no name is stored, store content as name
-                    storedElementName = inpTokenContent;
-                    wasName = true;
-                } else {
-                    if (!currentElemContainers.empty() && currentElemContainers.top()->getType() != "array") { // elements inside an array do NOT have names
-                        storedElementName = inpTokenContent;
-                        wasName = true;
-                    }
-                }
-            }
-
-            // element creation (if statement)
-            if (!wasName && (inpTokenType == "NUMBER" or inpTokenType == "STRING" or inpTokenType == "BOOLEAN" or inpTokenType == "NULL")) {
-                // value
-                valueElement *valElem = new valueElement();
-                valElem->setName(storedElementName);
-                valElem->setValue(inpTokenContent);
-
-                storedElementName = ""; // remove stored name
-                dataStructure->addElement(valElem, currentElemContainers);
-            }
-            ////////////// JSON CONTAINERS //////////////
-            else if (inpTokenType == "ARRAY_OPEN") {
-                // array open
-                arrayElement *arrayElem = new arrayElement();
-                arrayElem->setName(storedElementName);
-
-                currentElemContainers.push(arrayElem);
-                storedElementName = "";
-            } else if (inpTokenType == "ARRAY_CLOSE") {
-                // array close
-                if (currentElemContainers.top()->getType() != "array") {
-                    std::cerr << "FILE CONVERTER ERROR: missing/wrong container closer (']' with no open array)"
-                              << std::endl;
-                }
-                containerElement *array = currentElemContainers.top();
-                currentElemContainers.pop(); // remove container from stack
-                dataStructure->addElement(array, currentElemContainers);
-            } else if (inpTokenType == "CURLY_OPEN") {
-                // object open
-                objectElement *objectElem = new objectElement();
-                objectElem->setName(storedElementName);
-
-                currentElemContainers.push(objectElem);
-                storedElementName = "";
-            } else if (inpTokenType == "CURLY_CLOSE") {
-                // object close
-                if (currentElemContainers.top()->getType() != "object") {
-                    std::cerr << "FILE CONVERTER ERROR: missing/wrong container closer ('}' with no open object)" << std::endl;
-                }
-                containerElement *object = currentElemContainers.top();
-                currentElemContainers.pop(); // remove container from stack
-                dataStructure->addElement(object, currentElemContainers);
-            }
-            /////////////////////////////////////////////
-
+            addToDataStructure(inpTokenType, inpTokenContent, inputTokens.size());
         }
         /////////////////////////////
 
@@ -845,70 +920,16 @@ bool LR1Parser::printToJSON() {
 }
 
 bool LR1Parser::printToEML() {
-    std::cout << "ERROR: PRINTING TO EML NOT SUPPORTED YET" << std::endl;
-    return false;
+    if (dataStructure == nullptr) {
+        std::cerr << "MUST PARSE before trying to convert" << std::endl;
+        return false;
+    }
+    std::ofstream file ("../res/EML-conversion-output.eml", std::ofstream::trunc);
+    file << dataStructure->writeToEML() << std::endl;
+    file.close();
+    return true;
 }
 
 LR1Parser::~LR1Parser() {
     delete dataStructure;
 }
-
-/*
-void LR1Parser::saveParser(std::string fileName) {
-    /*
-     * this function is here to save time
-     * it saves the constructed LR1 parser into file format
-     * it is not needed for the functionality of the parser
-     *
-     * Saves:   parserItemSets
-     *          gotoTable
-     *          actionTable
-     *
-
-    /// parserItemSets
-    nlohmann::json j;
-    for (auto itemSet : parserItemSets) {
-        nlohmann::json itemSetObject;
-        itemSetObject["itemSetNumber"] = itemSet.first;
-        for (auto item : itemSet.second) {
-            nlohmann::json itemObject;
-            itemObject["head"] = item.first.head;
-            itemObject["body"] = item.first.body;
-            itemObject["lookahead"] = item.second;
-            itemSetObject["itemSet"].emplace_back(itemObject);
-        }
-
-        j["parserItemSets"].emplace_back(itemSetObject);
-    }
-    /// gotoTable
-    for (auto tableEntry : gotoTable) {
-        nlohmann::json tableEntryObject;
-        nlohmann::json tableEntryKeyObject;
-        tableEntryKeyObject["parentItemSetNumber"] = tableEntry.first.first;
-        tableEntryKeyObject["recognizedSymbol"] = tableEntry.first.second;
-
-        tableEntryObject["key"] = tableEntryKeyObject;
-        tableEntryObject["gotoSetNumber"] = tableEntry.second;
-
-        j["gotoTable"].emplace_back(tableEntryObject);
-    }
-    /// actionTable
-    for (auto tableEntry : actionTable) {
-        nlohmann::json tableEntryObject;
-        nlohmann::json tableEntryKeyObject;
-        tableEntryKeyObject["parentItemSetNumber"] = tableEntry.first.first;
-        tableEntryKeyObject["recognizedSymbol"] = tableEntry.first.second;
-
-        tableEntryObject["key"] = tableEntryKeyObject;
-        tableEntryObject["action"] = tableEntry.second;
-
-        j["actionTable"].emplace_back(tableEntryObject);
-    }
-
-    /// print to file
-    std::string destination = "../res/";
-    destination += fileName + ".json";
-    std::ofstream outputFile(destination);
-    outputFile << std::setw(4) << j;
-}
-*/

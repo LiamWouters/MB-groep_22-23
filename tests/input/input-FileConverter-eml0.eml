@@ -1,0 +1,21 @@
+[root]
+    [testnum] 1 [/testnum]
+    [testbool1] true [/testbool1]
+    [testbool2] false [/testbool2]
+    [testbool3] null [/testbool3]
+    [teststring] "testing testing 123" [/teststring]
+    <testarray>
+        "valueInContainerTest",
+        [o]
+            [inObject] 1 [/inObject]
+            [boolinObject] true [/boolinObject]
+        [/o],
+        <a>
+            1,
+            2
+        </a>
+    </testarray>
+    [testobject]
+        [valueInObject] 20 [/valueInObject]
+    [/testobject]
+[/root]

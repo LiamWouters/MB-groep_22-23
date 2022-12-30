@@ -15,8 +15,11 @@ private:
     std::string type;
 public:
     Element(const std::string &type);
-    std::string getType();
+    std::string getType() const;
     virtual std::string writeElementToJSON() const =0;
+    virtual std::string writeElementToEML() const =0;
+    virtual std::string writeElementToJSONnoName() const =0;
+    virtual std::string writeElementToEMLnoName() const =0;
     virtual ~Element();
 };
 
