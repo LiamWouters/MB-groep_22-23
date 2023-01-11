@@ -56,8 +56,10 @@ bool LL1Parser::accepts(const std::vector<token> &input){
             token currentSymbol = current[c][0];
             if(parseTable[std::make_pair(currentSymbol.content, currentChar.type)] == error){
                 if(c == current.size()-1){
-                    std::pair<unsigned int, unsigned int> most = mostProgress(totalMatches);
-                    printErrorReport(std::make_pair(current[most.first], progress[most.first]), lastSymbols[c].content);
+                    std::vector<unsigned int> most = mostProgress(totalMatches, progress);
+                    std::vector<std::string> strings;
+                    for(auto &i: most){strings.emplace_back(lastSymbols[i].content);}
+                    printErrorReport(std::make_pair(current, progress), strings, most);
                     return false;
                 }
                 Break = true; break;
@@ -82,8 +84,10 @@ bool LL1Parser::accepts(const std::vector<token> &input){
                 int matches = match(progress[c], current[c]);
                 if(matches == 0){
                     if(c == current.size()-1){
-                        std::pair<unsigned int, unsigned int> most = mostProgress(totalMatches);
-                        printErrorReport(std::make_pair(current[most.first], progress[most.first]), lastSymbols[c].content);
+                        std::vector<unsigned int> most = mostProgress(totalMatches, progress);
+                        std::vector<std::string> strings;
+                        for(auto &i: most){strings.emplace_back(lastSymbols[i].content);}
+                        printErrorReport(std::make_pair(current, progress), strings, most);
                         return false;
                     }
                     Break = true; break;
@@ -92,8 +96,10 @@ bool LL1Parser::accepts(const std::vector<token> &input){
             }
             if(current.empty() && !progress[c].empty()){
                 if(c == current.size()-1){
-                    std::pair<unsigned int, unsigned int> most = mostProgress(totalMatches);
-                    printErrorReport(std::make_pair(current[most.first], progress[most.first]), lastSymbols[c].content);
+                    std::vector<unsigned int> most = mostProgress(totalMatches, progress);
+                    std::vector<std::string> strings;
+                    for(auto &i: most){strings.emplace_back(lastSymbols[i].content);}
+                    printErrorReport(std::make_pair(current, progress), strings, most);
                     return false;
                 }
                 Break = true; break;
@@ -112,7 +118,7 @@ int LL1Parser::match(std::vector<token>& input, std::vector<token>& current){
         matches += 1;
         pop_front(input);
         pop_front(current);
-        if(input.empty() && current.empty()){return true;}
+        if(input.empty() && current.empty()){return 1;}
     }
     return matches;
 }
@@ -123,22 +129,44 @@ void LL1Parser::pop_front(std::vector<token> &v){
     std::reverse(v.begin(), v.end());
 }
 
-std::pair<unsigned int, unsigned int> LL1Parser::mostProgress(std::map<int, int> &totalMatches){
-    unsigned int progress = 0;
+std::vector<unsigned int> LL1Parser::mostProgress(std::map<int, int> &totalMatches, std::vector<std::vector<token>>& v){
     unsigned int index = 0;
-    for(auto &t: totalMatches){
-        if(t.second > progress){
-            progress = t.second;
-            index = t.first;
+    for(int t = 1; t < v.size(); t++){
+        token one = v[t][0];
+        token two = v[index][0];
+        bool greaterLine = one.pos.line > two.pos.line;
+        bool greaterColumn = one.pos.line == two.pos.line && one.pos.column > two.pos.column;
+        if(greaterLine || greaterColumn){index = t;}
+    }
+    unsigned int mostProgress = v[index].size();
+    std::vector<unsigned int> indexes{};
+    for(int i = 0; i < v.size(); i++){
+        if(v[i].size() == mostProgress){
+            indexes.emplace_back(i);
         }
     }
-    return {index, progress};
+    return indexes;
 }
-void LL1Parser::printErrorReport(const std::pair<std::vector<token>, std::vector<token>>& cp, const std::string &c){
+
+void LL1Parser::printErrorReport(const std::pair<std::vector<std::vector<token>>, std::vector<std::vector<token>>>& cp, const std::vector<std::string> &c, std::vector<unsigned int>& indexes){
     // In this case, there are no errors, hence no need to report
     if(cp.second.empty()){return;}
     // Otherwise...
-    token t = cp.second[0];
-    std::string expected = cp.first[0].type;
-    std::cout << "EXPECTED: " << expected;
+    token t = cp.second[indexes[0]][0];
+    std::cout << "ERROR at line " << t.pos.line << ", column " << t.pos.column << "\n";
+    std::cout << "GOT: " << t.type << "\nExpected: ";
+    std::vector<std::string> mentionedExpectations;
+    for(auto &i: indexes){
+        if(std::find(mentionedExpectations.begin(), mentionedExpectations.end(), cp.first[i][0].content) != mentionedExpectations.end()){
+            continue;
+        }
+        mentionedExpectations.emplace_back(cp.first[i][0].content);
+    }
+    for(auto &i: mentionedExpectations){
+        std::cout << i;
+        if(i != *std::prev(mentionedExpectations.end())){
+            std::cout << " / ";
+        }
+    }
+    std::cout << std::endl;
 }
