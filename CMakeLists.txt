@@ -25,7 +25,7 @@ set(RELEASE_SOURCE_FILES
         ${OBJECT_FILES_FILE_CONVERTER}
         ${NM_JSON_FILES}
         ${UTILITY_FILES}
-        src/objects/LL1Parser.cpp src/objects/LL1Parser.h src/objects/EMLGrammarGenerator.cpp src/objects/EMLGrammarGenerator.h src/objects/EMLTokenizer.cpp src/objects/EMLTokenizer.h)
+        src/objects/LL1Parser.cpp src/objects/LL1Parser.h src/objects/EMLGrammarGenerator.cpp src/objects/EMLGrammarGenerator.h src/objects/EMLTokenizer.cpp src/objects/EMLTokenizer.h src/objects/CommandLineInterface.cpp src/objects/CommandLineInterface.h)
 
 # The source files with tests
 set(TEST_SOURCE_FILES

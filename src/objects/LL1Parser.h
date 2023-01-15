@@ -19,10 +19,11 @@ public:
 private:
     CFG grammar;
     std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::string>>> parseTable;
+    std::map<std::string, std::vector<std::string>> firstTable;
     static int match(std::vector<token>&, std::vector<token>&);
     static void pop_front(std::vector<token>&);
     static std::vector<unsigned int> mostProgress(std::map<int, int>&, std::vector<std::vector<token>>&);
-    static void printErrorReport(const std::pair<std::vector<std::vector<token>>, std::vector<std::vector<token>>>&, const std::vector<std::string>&, std::vector<unsigned int>&);
+    void printErrorReport(const std::pair<std::vector<std::vector<token>>, std::vector<std::vector<token>>>&, const std::vector<std::string>&, std::vector<unsigned int>&);
 };
 
 #endif //MB_GROEP_22_23_LL1PARSER_H

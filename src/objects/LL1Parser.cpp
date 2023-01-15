@@ -6,7 +6,9 @@
 #include <bits/stdc++.h>
 
 LL1Parser::LL1Parser(const CFG &c) : grammar(c) {
-    parseTable = c.lltable();
+    std::pair<std::map<std::string, std::vector<std::string>>, std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::string>>>> table = c.lltable();
+    parseTable = table.second;
+    firstTable = table.first;
 }
 
 bool LL1Parser::accepts(const std::vector<token> &input){
@@ -54,7 +56,7 @@ bool LL1Parser::accepts(const std::vector<token> &input){
             // At this point the first character of the current string is always a variable,
             // which means we expect a certain production.
             token currentSymbol = current[c][0];
-            if(parseTable[std::make_pair(currentSymbol.content, currentChar.type)] == error){
+            if(parseTable[std::make_pair(currentSymbol.content, currentChar.type)] == error || !grammar.isTerminal(currentChar.type)){
                 if(c == current.size()-1){
                     std::vector<unsigned int> most = mostProgress(totalMatches, progress);
                     std::vector<std::string> strings;
@@ -113,6 +115,11 @@ bool LL1Parser::accepts(const std::vector<token> &input){
 }
 
 int LL1Parser::match(std::vector<token>& input, std::vector<token>& current){
+    /*
+     * Matching function: given 2 vectors of tokens, this function will keep
+     * popping the front token as long as the front tokens of both vectors match.
+     * It returns an integer representing the amount of matches done.
+     */
     int matches = 0;
     while(input[0].type == current[0].content){
         matches += 1;
@@ -124,12 +131,19 @@ int LL1Parser::match(std::vector<token>& input, std::vector<token>& current){
 }
 
 void LL1Parser::pop_front(std::vector<token> &v){
+    /*
+     * A stupid function that makes popping the front of a vector possible.
+     * Is this even efficient at all?
+     */
     std::reverse(v.begin(), v.end());
     v.pop_back();
     std::reverse(v.begin(), v.end());
 }
 
 std::vector<unsigned int> LL1Parser::mostProgress(std::map<int, int> &totalMatches, std::vector<std::vector<token>>& v){
+    /*
+     * Track which sequences of derivations provided the most progress.
+     */
     unsigned int index = 0;
     for(int t = 1; t < v.size(); t++){
         token one = v[t][0];
@@ -149,15 +163,24 @@ std::vector<unsigned int> LL1Parser::mostProgress(std::map<int, int> &totalMatch
 }
 
 void LL1Parser::printErrorReport(const std::pair<std::vector<std::vector<token>>, std::vector<std::vector<token>>>& cp, const std::vector<std::string> &c, std::vector<unsigned int>& indexes){
-    // In this case, there are no errors, hence no need to report
-    if(cp.second.empty()){return;}
-    // Otherwise...
+    /*
+     * Print errors if there are any.
+     */
     token t = cp.second[indexes[0]][0];
     std::cout << "ERROR at line " << t.pos.line << ", column " << t.pos.column << "\n";
     std::cout << "GOT: " << t.type << "\nExpected: ";
     std::vector<std::string> mentionedExpectations;
     for(auto &i: indexes){
         if(std::find(mentionedExpectations.begin(), mentionedExpectations.end(), cp.first[i][0].content) != mentionedExpectations.end()){
+            continue;
+        }
+        if(grammar.isVariable(cp.first[i][0].content)){
+            for(auto &j: firstTable[cp.first[i][0].content]){
+                if(std::find(mentionedExpectations.begin(), mentionedExpectations.end(), j) != mentionedExpectations.end()){
+                    continue;
+                }
+                mentionedExpectations.emplace_back(j);
+            }
             continue;
         }
         mentionedExpectations.emplace_back(cp.first[i][0].content);

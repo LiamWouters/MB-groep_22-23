@@ -57,7 +57,7 @@ public:
 
     bool isVariable(const std::string& symbol) const;
 
-    std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::string>>> lltable() const;
+    std::pair<std::map<std::string, std::vector<std::string>>, std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::string>>>> lltable() const;
 
 private:
     int countProductions() const;

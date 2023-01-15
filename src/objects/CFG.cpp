@@ -576,7 +576,7 @@ bool CFG::accepts(const std::string& w, std::ostream& out) const {
     return accepted;
 }
 
-std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::string>>> CFG::lltable() const {
+std::pair<std::map<std::string, std::vector<std::string>>, std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::string>>>> CFG::lltable() const {
     /*
      * This function determines the first and follow sets to be used by an LL parser.
      *
@@ -814,5 +814,5 @@ std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::strin
             }
         }
     }
-    return expect;
+    return {first, expect};
 }
