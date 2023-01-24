@@ -1,0 +1,82 @@
+Unexpected token of type 'ARRAY_TAG_CLOSE' with content '</Names>' at line 4 and column 3.
+
+[root]
+  <Names>
+    "Herodotus",
+  </Names>
+
+Instead of a ARRAY_TAG_CLOSE, the parser expected a: 
+
+STRING, based on:
+	value -> `STRING`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+NUMBER, based on:
+	value -> `NUMBER`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+BOOLEAN, based on:
+	value -> `BOOLEAN`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+NULL, based on:
+	value -> `NULL`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+TAG_OPEN, based on:
+	object -> `TAG_OPEN TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+ARRAY_TAG_OPEN, based on:
+	array -> `ARRAY_TAG_OPEN ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	elements -> `element`
+	elements -> `element COMMA elements`
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`

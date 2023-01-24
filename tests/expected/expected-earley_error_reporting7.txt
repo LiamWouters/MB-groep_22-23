@@ -1,0 +1,25 @@
+Unexpected token of type 'ARRAY_TAG_OPEN' with content '<Names>' at line 4 and column 3.
+
+[root]
+  <Names>
+    "Herodotus"
+  <Names>
+
+Instead of a ARRAY_TAG_OPEN, the parser expected a: 
+
+COMMA, based on:
+	elements -> `element COMMA elements`
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+ARRAY_TAG_CLOSE, based on:
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`

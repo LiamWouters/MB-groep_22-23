@@ -5,6 +5,7 @@
 #include "EarleyParser.h"
 #include "../../utilities/utilities.h"
 #include "../JsonTokenizer.h"
+#include "../EMLTokenizer.h"
 #include <fstream>
 #include <unordered_set>
 
@@ -125,9 +126,14 @@ bool EarleyParser::validate(const std::vector<token>& input) {
 
 bool EarleyParser::validateFile(const std::string& path, ML markUpLanguage) {
     if (markUpLanguage == Json) {
-        JsonTokenizer tok;
-        tok.tokenizeSimplified(path);
-        return validate(tok.tokens);
+        JsonTokenizer tok_json;
+        tok_json.tokenizeSimplified(path);
+        return validate(tok_json.tokens);
+    }
+    else if (markUpLanguage == EML) {
+        EMLTokenizer tok_eml;
+        tok_eml.tokenizeSimplified(path);
+        return validate(tok_eml.tokens);
     }
     // if statements for other languages here
     return false;
@@ -157,6 +163,8 @@ unsigned int EarleyParser::get_index_last_partial_parse() const {
 
 void EarleyParser::printErrorReport(ML MarkUpLanguage, const std::string& fileWithError, std::ostream& out) const {
     if (MarkUpLanguage == Json) {
+        getErrorReportJson(fileWithError, out);
+    } else if (MarkUpLanguage == EML){
         getErrorReportJson(fileWithError, out);
     }
 }

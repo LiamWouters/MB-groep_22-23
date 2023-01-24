@@ -1,0 +1,25 @@
+Unexpected token of type 'UNMATCHING_TAG' with content '</badClosingTag>' at line 4 and column 3.
+
+[root]
+  <Names>
+    "Herodotus"
+  </badClosingTag>
+
+Instead of a UNMATCHING_TAG, the parser expected a: 
+
+COMMA, based on:
+	elements -> `element COMMA elements`
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+ARRAY_TAG_CLOSE, based on:
+	array -> `ARRAY_TAG_OPEN elements ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
