@@ -36,7 +36,7 @@ set(TEST_SOURCE_FILES
         ${UTILITY_FILES}
         ${DOCTEST_FILES}
         ${T_SOURCE_FILES}
-        tests/SchemaTests.cpp)
+        )
 
 add_executable(MB_groep_22_23 ${RELEASE_SOURCE_FILES})
 add_executable(MB_groep_22_23_test ${TEST_SOURCE_FILES})
