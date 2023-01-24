@@ -3,10 +3,29 @@
 #include "objects/CFG.h"
 #include "objects/JsonGrammarGenerator.h"
 #include "objects/EMLGrammarGenerator.h"
+#include "objects/JsonSchema.h"
+#include "objects/JsonTokenizer.h"
+#include "../lib/nlohmann-json/json.hpp"
+
+using json = nlohmann::json;
 
 int main(int argc, char* argv[]) {
     JsonGrammarGenerator::generate();
     EMLGrammarGenerator::generateSimplified();
+
+
+    // JsonSchema test
+    /*
+    std::string path = "../tests/input/input-json_schema1.json";
+    std::string path2 = "../tests/input/input-json_tokenizer1.json";
+
+    std::ifstream input(path);
+    json j;
+    input >> j;
+
+    JsonSchema schem01(j);
+    cout << schem01.validate(path2) << endl;
+    */
 
     /*  LR1 PARSER TEST
     CFG* grammar = new CFG("../tests/input/input-LR1_1.json");
