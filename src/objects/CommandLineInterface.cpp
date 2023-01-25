@@ -42,11 +42,11 @@ static std::map<std::string, std::string> descriptions = {
 };
 
 static std::map<CommandLineInterface::state, std::string> messages = {
-        {CommandLineInterface::start, "What would you like to do?\n"},
-        {CommandLineInterface::yesNo, "Do you desire a syntax-highlighting output file?\n"},
-        {CommandLineInterface::more, "Would you like to do something else?\n"},
-        {CommandLineInterface::selectFile, "Choose a file:\n"},
-        {CommandLineInterface::parserSelect, "Choose a parser:\n"}
+        {CommandLineInterface::start, "\nWhat would you like to do?\n"},
+        {CommandLineInterface::yesNo, "\nDo you desire a syntax-highlighting output file?\n"},
+        {CommandLineInterface::more, "\nWould you like to do something else?\n"},
+        {CommandLineInterface::selectFile, "\nChoose a file:\n"},
+        {CommandLineInterface::parserSelect, "\nChoose a parser:\n"}
 };
 
 static std::map<CommandLineInterface::state, std::vector<std::string>> validInputs = {
@@ -69,7 +69,7 @@ void CommandLineInterface::simulate(){
     while(current != exiting){
         std::string input;
         if(fileChosen && parserChosen && current != yesNo && current != more){
-            bool parseSuccess = parse(p, type, file, conversion, highlighting);
+            parse(p, type, file, conversion, highlighting);
             current = more;
             continue;
         }
@@ -121,6 +121,7 @@ void CommandLineInterface::simulate(){
             if(conversion){
                 parserChosen = true;
                 p = lr;
+                current = yesNo;
             }
             else{current = parserSelect;}
             continue;
@@ -148,7 +149,7 @@ void CommandLineInterface::simulate(){
             continue;
         }
     }
-    std::cout << "Exited\n";
+    std::cout << "---> Exited. Make sure to save your output files elsewhere!\n";
 }
 
 void CommandLineInterface::help(const CommandLineInterface::state &s){
@@ -173,29 +174,47 @@ bool CommandLineInterface::validCommand(const CommandLineInterface::state &s, co
     return false;
 }
 
-bool CommandLineInterface::parse(const CommandLineInterface::parser &p, const CommandLineInterface::fileType &f, const std::string& v, bool& converse, bool& highlight){
-    JsonTokenizer j;
-    EMLTokenizer e;
-    std::pair<bool, int> success;
-    success.second = -1;
-    if(f == json){j.tokenizeSimplified(v);}
-    if(f == eml){e.tokenizeSimplified(v);}
+void CommandLineInterface::parse(const CommandLineInterface::parser &p, const CommandLineInterface::fileType &f, const std::string& v, bool& converse, bool& highlight){
+    JsonTokenizer j; EMLTokenizer e;
+    std::pair<bool, int> success{true, -1};
+    if(f == json){
+        j.tokenizeSimplified(v);
+        earleyJson.m_chart.clear();
+        earleyJson.m_input = j.tokens;
+        earleyJson.initChart();
+        earleyJson.fillChart();
+    }
+    if(f == eml){
+        e.tokenizeSimplified(v);
+        earleyEml.m_chart.clear();
+        earleyEml.m_input = e.tokens;
+        earleyEml.initChart();
+        earleyEml.fillChart();
+    }
     if(p == ll && f == json){
         success = llJson.accepts(j.tokens);
+        if(!success.first){
+            earleyJson.printErrorReport(Json, v, std::cout);
+        }
     }
     else if(p == ll && f == eml){
         success = llEml.accepts(e.tokens);
+        if(!success.first){
+            earleyEml.printErrorReport(EML, v, std::cout);
+        }
     }
     else if(p == lr && f == json){
         success.first = lrJson.parse(j.tokens);
         if(!success.first){
             earleyJson.printErrorReport(Json, v, std::cout);
+            success.second = earleyJson.m_chart.size()-1;
         }
     }
     else if(p == lr && f == eml){
         success.first = lrEml.parse(e.tokens);
         if(!success.first){
             earleyEml.printErrorReport(EML, v, std::cout);
+            success.second = earleyEml.m_chart.size()-1;
         }
     }
     else if(p == earley && f == json){
@@ -207,28 +226,44 @@ bool CommandLineInterface::parse(const CommandLineInterface::parser &p, const Co
         if(!success.first){success.second = earleyEml.m_chart.size()-1;}
     }
     if(success.first){
-        std::cout << "Parsing successful.\n";
+        std::cout << "---> Parsing successful.\n";
         if(converse){
             if(f == json){
                 lrJson.printToEML();
             }
             else{lrEml.printToJSON();}
-            std::cout << "Conversion successful, look for " << lookFor[f] << " in the \"res\" folder.\n";
-            std::cout << "Make sure to save it somewhere else.\n";
+            std::cout << "---> Conversion successful, look for " << lookFor[f] << " in the \"res\" folder.\n";
+            std::cout << "---> Make sure to save it somewhere else.\n";
         }
     }
     else{
-        std::cout << "Parsing failed.\n";
-        if(converse){std::cout << "Conversion aborted.\n";}
+        std::cout << "\n---> Parsing failed.\n";
+        if(converse){std::cout << "---> Conversion aborted.\n";}
     }
     if(highlight){
         if(f == json){
-            SyntaxHighlighter::jsonToHTML2(j.tokens, success.second);
+            SyntaxHighlighter::jsonToHTML2(j.tokens, success.second, outputs);
+            std::cout << &"---> output" [ outputs] << ".html created in the \"res\" folder";
+            outputs += 1;
         }
         if(f == eml){
-            SyntaxHighlighter::customToHTML2(e.tokens, success.second);
+            SyntaxHighlighter::customToHTML2(e.tokens, success.second, outputs);
+            std::cout << &"---> output" [ outputs] << ".html created in the \"res\" folder";
+            outputs += 1;
         }
-        std::cout << R"("output.html", generated in the "res"-folder, make sure to save it elsewhere.)" << "\n";
+        if(converse && success.first){
+            if(f == json){
+                e.tokenizeSimplified("../res/EML-conversion-output.eml");
+                SyntaxHighlighter::customToHTML2(e.tokens, success.second, outputs);
+                std::cout << &"---> output" [ outputs] << ".html created in the \"res\" folder";
+                outputs += 1;
+            }
+            else{
+                j.tokenizeSimplified("../res/JSON-conversion-output.json");
+                SyntaxHighlighter::jsonToHTML2(j.tokens, success.second, outputs);
+                std::cout << &"---> output" [ outputs] << ".html created in the \"res\" folder";
+                outputs += 1;
+            }
+        }
     }
-    return success.first;
 }

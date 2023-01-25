@@ -59,10 +59,8 @@ std::pair<bool, int> LL1Parser::accepts(const std::vector<token> &input){
             if(parseTable[std::make_pair(currentSymbol.content, currentChar.type)] == error || !grammar.isTerminal(currentChar.type)){
                 if(c == current.size()-1){
                     std::vector<unsigned int> most = mostProgress(totalMatches, progress);
-                    std::vector<std::string> strings;
-                    for(auto &i: most){strings.emplace_back(lastSymbols[i].content);}
-                    int index = printErrorReport(std::make_pair(current, progress), strings, most, input);
-                    return {false, index};
+                    // int index = printErrorReport(std::make_pair(current, progress), strings, most, input);
+                    return {false, input.size()-progress[most[0]].size()};
                 }
                 Break = true; break;
             }
@@ -87,10 +85,8 @@ std::pair<bool, int> LL1Parser::accepts(const std::vector<token> &input){
                 if(matches == 0){
                     if(c == current.size()-1){
                         std::vector<unsigned int> most = mostProgress(totalMatches, progress);
-                        std::vector<std::string> strings;
-                        for(auto &i: most){strings.emplace_back(lastSymbols[i].content);}
-                        int index = printErrorReport(std::make_pair(current, progress), strings, most, input);
-                        return {false, index};
+                        // int index = printErrorReport(std::make_pair(current, progress), strings, most, input);
+                        return {false, input.size()-progress[most[0]].size()};
                     }
                     Break = true; break;
                 }
@@ -99,10 +95,8 @@ std::pair<bool, int> LL1Parser::accepts(const std::vector<token> &input){
             if(current.empty() && !progress[c].empty()){
                 if(c == current.size()-1){
                     std::vector<unsigned int> most = mostProgress(totalMatches, progress);
-                    std::vector<std::string> strings;
-                    for(auto &i: most){strings.emplace_back(lastSymbols[i].content);}
-                    int index = printErrorReport(std::make_pair(current, progress), strings, most, input);
-                    return {false, index};
+                    // int index = printErrorReport(std::make_pair(current, progress), strings, most, input);
+                    return {false, input.size()-progress[most[0]].size()};
                 }
                 Break = true; break;
             }

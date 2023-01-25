@@ -198,7 +198,7 @@ void SyntaxHighlighter::customToHTML(const std::string& path){
     file << pre(addLine) file << endTag(body);
 }
 
-void SyntaxHighlighter::jsonToHTML2(std::vector<token> &t, int& index){
+void SyntaxHighlighter::jsonToHTML2(std::vector<token> &t, int& index, const int& nr){
     /*
      * Given a sequence of json-tokens and a possible error index,
      * this function creates a syntax-highlighted output file.
@@ -211,7 +211,7 @@ void SyntaxHighlighter::jsonToHTML2(std::vector<token> &t, int& index){
     std::string addLine;
     // Create, open an output file and add the body.
     std::ofstream file;
-    file.open("../res/output.html", std::ios::out);
+    file.open("../res/output"+std::to_string(nr)+".html", std::ios::out);
     file << body;
     // Iterate over each token, add them to the output in the correct color.
     for(auto &i: t){
@@ -246,7 +246,7 @@ void SyntaxHighlighter::jsonToHTML2(std::vector<token> &t, int& index){
     file << pre(addLine) file << endTag(body);
 }
 
-void SyntaxHighlighter::customToHTML2(std::vector<token> &t, int& index){
+void SyntaxHighlighter::customToHTML2(std::vector<token> &t, int& index, const int& nr){
     /*
      * Given a sequence of eml-tokens and a possible error index,
      * this function creates a syntax-highlighted output file.
@@ -257,7 +257,7 @@ void SyntaxHighlighter::customToHTML2(std::vector<token> &t, int& index){
     std::string addLine;
     std::ofstream file;
     // Create, open an output file and add the body.
-    file.open("../res/output.html", std::ios::out);
+    file.open("../res/output"+std::to_string(nr)+".html", std::ios::out);
     file << body;
     // Iterate over each token, add them to the output and color them correctly.
     for(auto &i: t){
