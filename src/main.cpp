@@ -5,6 +5,7 @@
 #include "objects/EMLGrammarGenerator.h"
 #include "objects/JsonSchema.h"
 #include "objects/JsonTokenizer.h"
+#include "objects/ParserComparison.h"
 #include "../lib/nlohmann-json/json.hpp"
 
 using json = nlohmann::json;
@@ -12,8 +13,13 @@ using json = nlohmann::json;
 int main(int argc, char* argv[]) {
     JsonGrammarGenerator::generate();
     EMLGrammarGenerator::generateSimplified();
-
-
+    /*
+    for (int i = 0; i < 103; i++) {
+        compareAllParsers("../tests/input/input-LR1_1.json");
+        compareAllParsers("../tests/input/input-LR1_2.json");
+        compareAllParsers("../tests/input/input-LR1_1.eml");
+    }
+    */
     // JsonSchema test
     /*
     std::string path = "../tests/input/input-json_schema1.json";
