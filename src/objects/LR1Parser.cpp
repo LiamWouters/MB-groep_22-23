@@ -729,6 +729,7 @@ const std::stringstream &LR1Parser::getPrintbuffer() const {
 }
 
 bool LR1Parser::parse(std::vector<std::string> input) {
+    std::vector<std::string> term = grammar.getTerminals();
     if (input.empty()) {return false;} // input can not be empty
     if (debugprint) {
         printbuffer.str(std::string());
@@ -750,7 +751,7 @@ bool LR1Parser::parse(std::vector<std::string> input) {
         else {
             inpSymbol = "EOS";
         }
-        if (inpSymbol != "EOS" and std::find(grammar.getTerminals().begin(), grammar.getTerminals().end(), inpSymbol) == grammar.getTerminals().end()) {
+        if (inpSymbol != "EOS" and std::find(term.begin(), term.end(), inpSymbol) == term.end()) {
             //std::cerr << "LR PARSER ERROR: parser input is not in the given grammar" << std::endl;
             return false;
         }
