@@ -623,32 +623,41 @@ std::pair<std::map<std::string, std::vector<std::string>>, std::map<std::pair<st
     // Determine the easy and hard sets
     for(auto &i: p){
         std::string var = i.head;
-        if(i.body.empty()){
+        if(i.body.empty() && std::find(first[var].begin(), first[var].end(), "") == first[var].end()){
             first[var].emplace_back(""); continue;
         }
         std::string firstchar = i.body[0];
-        if(isTerminal(firstchar)){
+        if(isTerminal(firstchar) && std::find(first[var].begin(), first[var].end(), firstchar) == first[var].end()){
             first[var].emplace_back(firstchar); continue;
         }
-        else{
+        else if(isVariable(firstchar)){
             int j = 0;
             std::vector<std::string> checkOrder = {firstchar};
             if(i.body.size() == 1){
                 if(nullables.find(firstchar) != nullables.end()){first[i.head].emplace_back("<EOS>");}
-                check[i.head].emplace_back(i.body[0]); continue;
+                check[var].emplace_back(i.body[0]); continue;
             }
             while(nullables.find(firstchar) != nullables.end()){
                 j += 1; firstchar = i.body[j]; checkOrder.emplace_back(i.body[j]);
             }
             if(j == i.body.size()-1){first[var].emplace_back("<EOS>");}
             else{
-                if(isTerminal(i.body[j+1])){first[var].emplace_back(i.body[j+1]);}
+                if(isTerminal(i.body[j+1]) && j != 0){first[var].emplace_back(i.body[j+1]);}
                 else{checkOrder.emplace_back(i.body[j+1]);}
             }
             for(auto &k:checkOrder){check[i.head].emplace_back(k);}
         }
     }
-    // Determine the "harder" first sets.
+    // Determine the "harder" first sets, remove dupes first.
+    for(auto &i: check){
+        std::vector<std::string> noDuplicates;
+        for(auto &j: i.second){
+            if(std::find(noDuplicates.begin(), noDuplicates.end(), j) == noDuplicates.end()){
+                noDuplicates.emplace_back(j);
+            }
+        }
+        i.second = noDuplicates;
+    }
     bool noChecks = check.empty();
     while(!noChecks){
         auto i = check.begin();

@@ -15,12 +15,37 @@
 #define pink "<span style=\"color:deeppink;\">"
 #define purple "<span style=\"color:purple;\">"
 #define black ""
+// Define the underline tag
+#define underline "<u>"
 
+/*
+ * Colours all get an enumeration, mostly to make the code more readable.
+ * A map shows which token types get assigned which color.
+ *
+ * This does not contain token types that use multiple colors.
+ */
 enum Colour{Red, Green, Blue, Pink, Black, Purple};
 std::map<Colour, std::string> colourMap = {{Red, red}, {Green, green}, {Blue, blue},
                                            {Pink, pink}, {Black, black}, {Purple, purple}};
 std::vector<std::string> digits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."};
 
+std::map<std::string, std::string> colourUsage {
+    {"COMMA", black},
+    {"ARRAY_OPEN", black},
+    {"ARRAY_CLOSE", black},
+    {"CURLY_OPEN", black},
+    {"CURLY_CLOSE", black},
+    {"COLON", black},
+    {"NUMBER", purple},
+    {"NULL", pink},
+    {"BOOLEAN", pink},
+    {"STRING", green},
+    {"UNKNOWN", red}
+};
+
+/*
+ * A simple function that returns the endtag corresponding to the given input tag.
+ */
 std::string endTag(const std::string& tag){
     for(auto &i: colourMap){
         if(i.second == tag){return "</span>";}
@@ -28,6 +53,10 @@ std::string endTag(const std::string& tag){
     return "</"+tag.substr(1, tag.size()-1);
 }
 
+/*
+ * NOTE: the functions with the path argument are first drafts and lack some functionality,
+ * it is better to use the ones that require an input token-vector and index instead.
+ */
 void SyntaxHighlighter::jsonToHTML(const std::string &path){
     /*
      * Given a path to a JSON file, this function will create an HTML output file that highlights
@@ -164,6 +193,115 @@ void SyntaxHighlighter::customToHTML(const std::string& path){
             continue;
         }
         addLine += token.content;
+    }
+    // Add the final line and the body endtag.
+    file << pre(addLine) file << endTag(body);
+}
+
+void SyntaxHighlighter::jsonToHTML2(std::vector<token> &t, int& index){
+    /*
+     * Given a sequence of json-tokens and a possible error index,
+     * this function creates a syntax-highlighted output file.
+     */
+    // Some helpful variables.
+    int counter = 0;
+    int arrayStack = 0;
+    int curlyStack = 0;
+    int currLine = 1;
+    std::string addLine;
+    // Create, open an output file and add the body.
+    std::ofstream file;
+    file.open("../res/output.html", std::ios::out);
+    file << body;
+    // Iterate over each token, add them to the output in the correct color.
+    for(auto &i: t){
+        if(i.pos.line == currLine+1){
+            currLine += 1;
+            file << pre(addLine)
+            addLine = "";
+        }
+        while(addLine.size()<i.pos.column-1){addLine += " ";}
+        if(i.type == "ARRAY_OPEN"){arrayStack += 1;}
+        if(i.type == "ARRAY_CLOSE"){arrayStack -= 1;}
+        if(i.type == "CURLY_OPEN"){curlyStack += 1;}
+        if(i.type == "CURLY_CLOSE"){curlyStack -= 1;}
+        if(counter == index || i.type == "UNKNOWN"){
+            addLine += red;
+            addLine += underline; addLine += i.content; addLine += endTag(underline);
+            addLine += endTag(red);
+        }
+        else if(i.type == "STRING"){
+            token next = t[counter+1];
+            if(next.type == "COLON" && index != counter+1){
+                addLine += blue; addLine += i.content; addLine += endTag(blue);
+            }
+            else{
+                addLine += green; addLine += i.content; addLine += endTag(green);
+            }
+        }
+        else{addLine += colourUsage[i.type]; addLine += i.content; addLine += endTag(colourUsage[i.type]);}
+        counter += 1;
+    }
+    // Add the final line and the body endtag.
+    file << pre(addLine) file << endTag(body);
+}
+
+void SyntaxHighlighter::customToHTML2(std::vector<token> &t, int& index){
+    /*
+     * Given a sequence of eml-tokens and a possible error index,
+     * this function creates a syntax-highlighted output file.
+     */
+    // Some useful variables.
+    int counter = 0;
+    int currLine = 1;
+    std::string addLine;
+    std::ofstream file;
+    // Create, open an output file and add the body.
+    file.open("../res/output.html", std::ios::out);
+    file << body;
+    // Iterate over each token, add them to the output and color them correctly.
+    for(auto &i: t){
+        if(i.pos.line == currLine+1){
+            currLine += 1;
+            file << pre(addLine)
+            addLine = "";
+        }
+        while(addLine.size()<i.pos.column-1){addLine += " ";}
+        if(counter == index || i.type == "UNKNOWN"){
+            addLine += red;
+            addLine += underline; addLine += i.content; addLine += endTag(underline);
+            addLine += endTag(red);
+        }
+        else if(i.type == "ARRAY_TAG_OPEN"){
+            addLine += blue; addLine += "&lt"; addLine += purple;
+            for(int j = 1; j < i.content.size()-1; j++){
+                addLine += i.content[j];
+            }
+            addLine += endTag(purple); addLine += "&gt"; addLine += endTag(blue);
+        }
+        else if(i.type == "ARRAY_TAG_CLOSE"){
+            addLine += blue; addLine += "&lt/"; addLine += purple;
+            for(int j = 2; j < i.content.size()-1; j++){
+                addLine += i.content[j];
+            }
+            addLine += endTag(purple); addLine += "&gt"; addLine += endTag(blue);
+        }
+        else if(i.type == "TAG_OPEN" || i.type == "ROOT_OPEN"){
+            addLine += blue; addLine += "["; addLine += purple;
+            for(int j = 1; j < i.content.size()-1; j++){
+                addLine += i.content[j];
+            }
+            addLine += endTag(purple); addLine += "]"; addLine += endTag(blue);
+        }
+        else if(i.type == "TAG_CLOSE" || i.type == "ROOT_CLOSE"){
+            addLine += blue; addLine += "[/"; addLine += purple;
+            for(int j = 2; j < i.content.size()-1; j++){
+                addLine += i.content[j];
+            }
+            addLine += endTag(purple); addLine += "]"; addLine += endTag(blue);
+        }
+        else{addLine += colourUsage[i.type]; addLine += i.content; addLine += endTag(colourUsage[i.type]);}
+        counter += 1;
     }
     // Add the final line and the body endtag.
     file << pre(addLine) file << endTag(body);

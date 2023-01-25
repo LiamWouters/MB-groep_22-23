@@ -15,7 +15,7 @@
 class LL1Parser {
 public:
     explicit LL1Parser(const CFG&);
-    bool accepts(const std::vector<token>&);
+    std::pair<bool, int> accepts(const std::vector<token>&);
 private:
     CFG grammar;
     std::map<std::pair<std::string, std::string>, std::vector<std::vector<std::string>>> parseTable;
@@ -23,7 +23,7 @@ private:
     static int match(std::vector<token>&, std::vector<token>&);
     static void pop_front(std::vector<token>&);
     static std::vector<unsigned int> mostProgress(std::map<int, int>&, std::vector<std::vector<token>>&);
-    void printErrorReport(const std::pair<std::vector<std::vector<token>>, std::vector<std::vector<token>>>&, const std::vector<std::string>&, std::vector<unsigned int>&);
+    int printErrorReport(const std::pair<std::vector<std::vector<token>>, std::vector<std::vector<token>>>&, const std::vector<std::string>&, std::vector<unsigned int>&, const std::vector<token>&);
 };
 
 #endif //MB_GROEP_22_23_LL1PARSER_H

@@ -11,7 +11,7 @@ LL1Parser::LL1Parser(const CFG &c) : grammar(c) {
     firstTable = table.first;
 }
 
-bool LL1Parser::accepts(const std::vector<token> &input){
+std::pair<bool, int> LL1Parser::accepts(const std::vector<token> &input){
     /*
      * The LL Parser works top-down as in from start symbol to string.
      * It uses 2 techniques: expect (a production), and match (terminals).
@@ -61,8 +61,8 @@ bool LL1Parser::accepts(const std::vector<token> &input){
                     std::vector<unsigned int> most = mostProgress(totalMatches, progress);
                     std::vector<std::string> strings;
                     for(auto &i: most){strings.emplace_back(lastSymbols[i].content);}
-                    printErrorReport(std::make_pair(current, progress), strings, most);
-                    return false;
+                    int index = printErrorReport(std::make_pair(current, progress), strings, most, input);
+                    return {false, index};
                 }
                 Break = true; break;
             }
@@ -89,8 +89,8 @@ bool LL1Parser::accepts(const std::vector<token> &input){
                         std::vector<unsigned int> most = mostProgress(totalMatches, progress);
                         std::vector<std::string> strings;
                         for(auto &i: most){strings.emplace_back(lastSymbols[i].content);}
-                        printErrorReport(std::make_pair(current, progress), strings, most);
-                        return false;
+                        int index = printErrorReport(std::make_pair(current, progress), strings, most, input);
+                        return {false, index};
                     }
                     Break = true; break;
                 }
@@ -101,17 +101,17 @@ bool LL1Parser::accepts(const std::vector<token> &input){
                     std::vector<unsigned int> most = mostProgress(totalMatches, progress);
                     std::vector<std::string> strings;
                     for(auto &i: most){strings.emplace_back(lastSymbols[i].content);}
-                    printErrorReport(std::make_pair(current, progress), strings, most);
-                    return false;
+                    int index = printErrorReport(std::make_pair(current, progress), strings, most, input);
+                    return {false, index};
                 }
                 Break = true; break;
             }
         }
         // If both are empty then the parsing was a success.
-        if(!Break){return true;}
+        if(!Break){return {true, -1};}
         else{continue;}
     }
-    return true;
+    return {true, -1};
 }
 
 int LL1Parser::match(std::vector<token>& input, std::vector<token>& current){
@@ -162,7 +162,7 @@ std::vector<unsigned int> LL1Parser::mostProgress(std::map<int, int> &totalMatch
     return indexes;
 }
 
-void LL1Parser::printErrorReport(const std::pair<std::vector<std::vector<token>>, std::vector<std::vector<token>>>& cp, const std::vector<std::string> &c, std::vector<unsigned int>& indexes){
+int LL1Parser::printErrorReport(const std::pair<std::vector<std::vector<token>>, std::vector<std::vector<token>>>& cp, const std::vector<std::string> &c, std::vector<unsigned int>& indexes, const std::vector<token>& input){
     /*
      * Print errors if there are any.
      */
@@ -192,4 +192,5 @@ void LL1Parser::printErrorReport(const std::pair<std::vector<std::vector<token>>
         }
     }
     std::cout << std::endl;
+    return input.size()-cp.second[indexes[0]].size();
 }
