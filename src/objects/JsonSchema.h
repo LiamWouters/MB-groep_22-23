@@ -34,7 +34,7 @@ class JsonSchema {
     JsonArray* arraydata;
 
 public:
-    JsonSchema(json j);
+    explicit JsonSchema(const string& path);
     bool validate(const string& path);
 };
 
@@ -66,7 +66,7 @@ class JsonObject {
 public:
     string name;
     JsonSchema schema;
-    JsonObject(const string & name, const JsonSchema & schema);
+    JsonObject(string  name, JsonSchema  schema);
 };
 
 
