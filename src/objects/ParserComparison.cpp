@@ -10,6 +10,7 @@
 using std::string;
 
 void compareAllParsers(std::string inputFilePath, int amount) {
+    if (amount == 0) {return;}
     // get file name
     string fileName = inputFilePath;
     fileName.erase(0, fileName.rfind("/")+1);
@@ -166,7 +167,7 @@ void compareAllParsers(std::string inputFilePath, int amount) {
         newFile << "<td>" << ((oge*scans)+earleyTime)/(scans+amount) << "</td>\n";
         newFile << "<td>" << ((oglr*scans)+lrTime)/(scans+amount) << "</td>\n";
         newFile << "<td>" << ((ogll*scans)+llTime)/(scans+amount) << "</td>\n";
-        newFile << "<td>" << scans+1 << "</td>\n";
+        newFile << "<td>" << scans+amount << "</td>\n";
 
         added = true;
     }

@@ -253,46 +253,7 @@ void LR1Parser::generateClosure(std::set<std::pair<Production, std::string>> &it
 void LR1Parser::createFirstSet() {
     std::vector<std::string> variables = grammar.getVariables();
     std::vector<std::string> terminals = grammar.getTerminals();
-    // initialize first for all variables
-    /*
-    for (std::string var : variables) {
-        first.insert(std::make_pair(var, std::set<std::string>{})); // initialize set
-        for (Production prod : grammar.getProductions()) {
-            if (prod.head == var) {
-                if (prod.body.size() == 0) {
-                    first[var].insert(""); // EPSILON
-                }
-                else {
-                    first[var].insert(prod.body[0]); // we will replace the variables later
-                }
-            }
-        }
-    }
-    // replace non-terminals
-    for (std::string var : variables) {
-        // apply production rules for each variable in set (until no more variables are added)
-        int originalSetSize = 0;
-        while (originalSetSize != first[var].size()) {
-            originalSetSize = first[var].size();
-            auto firstVarCopy = first[var];
-            for (std::string symbol : firstVarCopy) {
-                if (std::find(variables.begin(), variables.end(), symbol) != variables.end()) {
-                    // symbol == variable
-                    for (Production prod : grammar.getProductions()) {
-                        if (prod.head == symbol && prod.body.size() > 0) {
-                            first[var].insert(prod.body[0]);
-                        }
-                    }
-                }
-            }
-        }
 
-        // remove all variables in set
-        for (std::string v : variables) {
-            first[var].erase(v);
-        }
-    }
-     */
     int setChanged = true;
     while (setChanged) {
         setChanged = false;
@@ -421,7 +382,6 @@ void LR1Parser::constructParseTable() {
      */
     /// source: "https://en.wikipedia.org/wiki/Canonical_LR_parser"
     /// the goto method: source: "https://www.eecis.udel.edu/~cavazos/cisc672-fall08/lectures/Lecture-10.pdf"
-
 
     // create item set 0, then itemset1 = goto(i0, x), ...
     /// Augment grammar
