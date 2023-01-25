@@ -61,7 +61,7 @@ private:
     /// helper functions
     EarleyItem getEarlyItem(unsigned int index_chart, unsigned int index_state_set) const;
     bool isNullable(const std::string& variable) const;
-    void getErrorReportJson(const std::string& fileWithError, std::ostream& out = std::cout) const;
+    void getErrorReport(ML MarkUpLanguage, const std::string& fileWithError, std::ostream& out = std::cout) const;
 };
 
 #endif // MB_GROEP_22_23_EARLEYPARSER_H

@@ -4,8 +4,8 @@
 
 #include "EarleyParser.h"
 #include "../../utilities/utilities.h"
-#include "../JsonTokenizer.h"
 #include "../EMLTokenizer.h"
+#include "../JsonTokenizer.h"
 #include <fstream>
 #include <unordered_set>
 
@@ -119,6 +119,9 @@ void EarleyParser::addItemToChart(unsigned int index_chart, unsigned int index_s
 bool EarleyParser::validate(const std::vector<token>& input) {
     m_chart.clear();
     m_input = input;
+    if (m_input.empty()) {
+        return false;
+    }
     initChart();
     fillChart();
     return has_complete_parse();
@@ -129,8 +132,7 @@ bool EarleyParser::validateFile(const std::string& path, ML markUpLanguage) {
         JsonTokenizer tok_json;
         tok_json.tokenizeSimplified(path);
         return validate(tok_json.tokens);
-    }
-    else if (markUpLanguage == EML) {
+    } else if (markUpLanguage == EML) {
         EMLTokenizer tok_eml;
         tok_eml.tokenizeSimplified(path);
         return validate(tok_eml.tokens);
@@ -142,7 +144,8 @@ bool EarleyParser::validateFile(const std::string& path, ML markUpLanguage) {
 bool EarleyParser::has_partial_parse(unsigned int index_chart) const {
     for (unsigned int index_state_set = 0; index_state_set < m_chart[index_chart].m_set.size(); index_state_set++) {
         EarleyItem cur_item = getEarlyItem(index_chart, index_state_set);
-        if (cur_item.m_production.head == m_grammar.s && cur_item.isDotAtEnd() && cur_item.m_start == 0) {
+        if (cur_item.m_production.head == m_grammar.s && cur_item.isDotAtEnd() && cur_item.m_start == 0 &&
+            m_chart.size() == m_input.size() + 1) {
             return true;
         }
     }
@@ -163,9 +166,9 @@ unsigned int EarleyParser::get_index_last_partial_parse() const {
 
 void EarleyParser::printErrorReport(ML MarkUpLanguage, const std::string& fileWithError, std::ostream& out) const {
     if (MarkUpLanguage == Json) {
-        getErrorReportJson(fileWithError, out);
-    } else if (MarkUpLanguage == EML){
-        getErrorReportJson(fileWithError, out);
+        getErrorReport(Json, fileWithError, out);
+    } else if (MarkUpLanguage == EML) {
+        getErrorReport(EML, fileWithError, out);
     }
 }
 
@@ -179,8 +182,30 @@ void EarleyParser::printErrorReportToFile(ML MarkUpLanguage, const std::string& 
     }
 }
 
-void EarleyParser::getErrorReportJson(const std::string& fileWithError, std::ostream& out) const {
+void EarleyParser::getErrorReport(ML MarkUpLanguage, const std::string& fileWithError, std::ostream& out) const {
     unsigned int chart_size = m_chart.size();
+
+    if (MarkUpLanguage == EML) {
+        if (m_input.size() < 2) {
+            out << "EML file invalid: file must contain a valid ROOT_OPEN token and ROOT_CLOSE token." << std::endl;
+            return;
+        }
+        if (m_input[0].type != "ROOT_OPEN") {
+            out << "EML file invalid: first token must be a valid ROOT_OPEN." << std::endl;
+            return;
+        }
+    }
+    if (MarkUpLanguage == Json) {
+        if (m_input.empty()) {
+            out << "JSON file does not have any content." << std::endl;
+            return;
+        }
+        if (m_input.back().type == "CURLY_OPEN" or m_input.back().type == "ARRAY_OPEN") {
+            out << "Json file invalid: file can't end on a '{' or '['." << std::endl;
+            return;
+        }
+    }
+
     token unexpected_token = m_input[chart_size - 1];
 
     // print where error occurred

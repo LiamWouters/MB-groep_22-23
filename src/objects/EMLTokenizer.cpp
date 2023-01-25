@@ -134,7 +134,9 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
             if (t.content[0] == '<') {
                 t.type = "INVALID_TAG";
                 if (t.content[1] == '/') {
-                    tagStack.pop();
+                    if (!tagStack.empty()){
+                        tagStack.pop();
+                    }
                 } else {
                     tagStack.push("");
                 }
@@ -150,7 +152,9 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
                 } else {
                     t.type = "UNMATCHING_TAG";
                 }
-                tagStack.pop();
+                if (!tagStack.empty()){
+                    tagStack.pop();
+                }
             } else {
                 tagName = t.content.substr(1, t.content.size()-2);
                 tagStack.push(tagName);
@@ -173,7 +177,9 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
             if (t.content[0] == '[') {
                 t.type = "INVALID_TAG";
                 if (t.content[1] == '/') {
-                    tagStack.pop();
+                    if (!tagStack.empty()){
+                        tagStack.pop();
+                    }
                 } else {
                     tagStack.push("");
                 }
@@ -185,7 +191,9 @@ void EMLTokenizer::tokenizeSimplified(const std::string& path) {
                 } else {
                     t.type = "UNMATCHING_TAG";
                 }
-                tagStack.pop();
+                if (!tagStack.empty()){
+                    tagStack.pop();
+                }
             } else {
                 tagName = t.content.substr(1, t.content.size()-2);
                 tagStack.push(tagName);
