@@ -1,0 +1,18 @@
+[root]
+  <Names>
+    "Herodotus"
+  </Names>
+  <Names>
+    "Agatha Christie",
+    "William Shakespeare"
+  </Names>
+  <Books>
+    [The Lord of the Rings]
+        [price] "20.0" [/price]
+        [authors] <author> "Tolkien" </author> [/authors]
+        [available] false [/available]
+    [/The Lord of the Rings]
+  </Books>
+  [small] -0.05E-12 [/small]
+  [Library] "Library of Alexandria" [/Library]
+[/root]

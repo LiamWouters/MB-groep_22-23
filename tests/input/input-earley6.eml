@@ -1,0 +1,3 @@
+[root]
+  [anObject] a wrong value <anArray> </anArray> [anotherObject] [/anotherObject] [/anObject]
+[/root]

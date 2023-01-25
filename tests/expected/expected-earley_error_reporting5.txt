@@ -1,0 +1,93 @@
+Unexpected token of type 'INVALID_NUMBER' with content '05' at line 2 and column 11.
+
+[root]
+  [small] 05
+
+Instead of a INVALID_NUMBER, the parser expected a: 
+
+TAG_CLOSE, based on:
+	object -> `TAG_OPEN TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	object -> `TAG_OPEN members TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+STRING, based on:
+	value -> `STRING`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	object -> `TAG_OPEN members TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+NUMBER, based on:
+	value -> `NUMBER`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	object -> `TAG_OPEN members TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+BOOLEAN, based on:
+	value -> `BOOLEAN`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	object -> `TAG_OPEN members TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+NULL, based on:
+	value -> `NULL`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	object -> `TAG_OPEN members TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+TAG_OPEN, based on:
+	object -> `TAG_OPEN TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	object -> `TAG_OPEN members TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`
+
+ARRAY_TAG_OPEN, based on:
+	array -> `ARRAY_TAG_OPEN ARRAY_TAG_CLOSE`
+	value -> `array`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	object -> `TAG_OPEN members TAG_CLOSE`
+	value -> `object`
+	element -> `value`
+	member -> `element`
+	members -> `member`
+	eml -> `ROOT_OPEN members ROOT_CLOSE`

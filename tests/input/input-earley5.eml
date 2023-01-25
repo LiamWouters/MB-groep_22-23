@@ -1,0 +1,3 @@
+[root]
+  [anObject] <anArray> </anArray> [anotherObject] [/anotherObject] [/anObject]
+[/root]

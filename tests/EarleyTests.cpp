@@ -52,4 +52,46 @@ TEST_SUITE("EarleyTests") {
 
         CHECK_EQ(expected.str(), actual.str());
     }
+    TEST_CASE("[EarleyTests] test3") {
+
+        const std::ifstream expectedFile("../tests/expected/expected-earley4.txt");
+        std::stringstream expected;
+        expected << expectedFile.rdbuf();
+
+        std::stringstream actual("");
+
+        EarleyParser p("../res/eml_grammar_simplified.json");
+        p.validateFile("../tests/input/input-earley4.eml", EML);
+        p.printChart(actual);
+
+        CHECK_EQ(expected.str(), actual.str());
+    }
+    TEST_CASE("[EarleyTests] test4") {
+
+        const std::ifstream expectedFile("../tests/expected/expected-earley5.txt");
+        std::stringstream expected;
+        expected << expectedFile.rdbuf();
+
+        std::stringstream actual("");
+
+        EarleyParser p("../res/eml_grammar_simplified.json");
+        p.validateFile("../tests/input/input-earley5.eml", EML);
+        p.printChart(actual);
+
+        CHECK_EQ(expected.str(), actual.str());
+    }
+    TEST_CASE("[EarleyTests] test5") {
+
+        const std::ifstream expectedFile("../tests/expected/expected-earley6.txt");
+        std::stringstream expected;
+        expected << expectedFile.rdbuf();
+
+        std::stringstream actual("");
+
+        EarleyParser p("../res/eml_grammar_simplified.json");
+        p.validateFile("../tests/input/input-earley6.eml", EML);
+        p.printChart(actual);
+
+        CHECK_EQ(expected.str(), actual.str());
+    }
 }

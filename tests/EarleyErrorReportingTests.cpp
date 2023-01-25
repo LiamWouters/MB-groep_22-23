@@ -67,4 +67,64 @@ TEST_SUITE("EarleyErrorReportingTests") {
 
         CHECK_EQ(expected.str(), actual.str());
     }
+    TEST_CASE("[EarleyErrorReportingTests] test4") {
+
+        const std::ifstream expectedFile("../tests/expected/expected-earley_error_reporting5.txt");
+        std::stringstream expected;
+        expected << expectedFile.rdbuf();
+
+        std::stringstream actual("");
+
+        EarleyParser p("../res/eml_grammar_simplified.json");
+        if (!p.validateFile("../tests/input/input-earley_error_reporting5.eml", EML)){
+            p.printErrorReport(EML, "../tests/input/input-earley_error_reporting5.eml", actual);
+        }
+
+        CHECK_EQ(expected.str(), actual.str());
+    }
+    TEST_CASE("[EarleyErrorReportingTests] test5") {
+
+        const std::ifstream expectedFile("../tests/expected/expected-earley_error_reporting6.txt");
+        std::stringstream expected;
+        expected << expectedFile.rdbuf();
+
+        std::stringstream actual("");
+
+        EarleyParser p("../res/eml_grammar_simplified.json");
+        if (!p.validateFile("../tests/input/input-earley_error_reporting6.eml", EML)){
+            p.printErrorReport(EML, "../tests/input/input-earley_error_reporting6.eml", actual);
+        }
+
+        CHECK_EQ(expected.str(), actual.str());
+    }
+    TEST_CASE("[EarleyErrorReportingTests] test6") {
+
+        const std::ifstream expectedFile("../tests/expected/expected-earley_error_reporting7.txt");
+        std::stringstream expected;
+        expected << expectedFile.rdbuf();
+
+        std::stringstream actual("");
+
+        EarleyParser p("../res/eml_grammar_simplified.json");
+        if (!p.validateFile("../tests/input/input-earley_error_reporting7.eml", EML)){
+            p.printErrorReport(EML, "../tests/input/input-earley_error_reporting7.eml", actual);
+        }
+
+        CHECK_EQ(expected.str(), actual.str());
+    }
+    TEST_CASE("[EarleyErrorReportingTests] test7") {
+
+        const std::ifstream expectedFile("../tests/expected/expected-earley_error_reporting8.txt");
+        std::stringstream expected;
+        expected << expectedFile.rdbuf();
+
+        std::stringstream actual("");
+
+        EarleyParser p("../res/eml_grammar_simplified.json");
+        if (!p.validateFile("../tests/input/input-earley_error_reporting8.eml", EML)){
+            p.printErrorReport(EML, "../tests/input/input-earley_error_reporting8.eml", actual);
+        }
+
+        CHECK_EQ(expected.str(), actual.str());
+    }
 }

@@ -9,7 +9,7 @@
 #include "../Token.h"
 #include "StateSet.h"
 
-enum ML { Json, XML };
+enum ML { Json, EML };
 
 class EarleyParser {
 public:
