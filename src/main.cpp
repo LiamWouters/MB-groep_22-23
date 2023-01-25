@@ -25,11 +25,7 @@ int main(int argc, char* argv[]) {
     std::string path = "../tests/input/input-json_schema1.json";
     std::string path2 = "../tests/input/input-json_tokenizer1.json";
 
-    std::ifstream input(path);
-    json j;
-    input >> j;
-
-    JsonSchema schem01(j);
+    JsonSchema schem01(path);
     cout << schem01.validate(path2) << endl;
     */
 

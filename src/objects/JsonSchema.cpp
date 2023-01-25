@@ -3,15 +3,18 @@
 //
 
 #include "JsonSchema.h"
-#include "../../lib/nlohmann-json/json.hpp"
 #include "JsonTokenizer.h"
 #include <limits>
 
 using json = nlohmann::json;
 
-JsonSchema::JsonSchema(json j){
+JsonSchema::JsonSchema(const string& path){
+    ifstream input(path);
+    json j;
+    input >> j;
+
     type = j["type"].get<string>();
-    if (type == "boolean") {}
+    if (type == "boolean");
     else if (type == "null") {}
     else if (type == "string") {
         int minLength = 0;
@@ -33,7 +36,7 @@ JsonSchema::JsonSchema(json j){
         JsonSchema* items = nullptr;
         JsonSchema* contains = nullptr;
         int minItems = 0;
-        int maxItems = numeric_limits<int>::infinity();;
+        int maxItems = numeric_limits<int>::infinity();
         if (j.contains("items")) {
             json arrayItemType = j["items"];
             items = new JsonSchema(arrayItemType);
@@ -52,8 +55,8 @@ JsonSchema::JsonSchema(json j){
             }
         }
         if (j.contains("properties")) {
-            for (auto obj : j["properties"].items()) {
-                string objName = obj.key();
+            for (const auto& obj : j["properties"].items()) {
+                const string& objName = obj.key();
                 json jo = obj.value();
                 JsonSchema objSchem(jo);
                 JsonObject object(objName, objSchem);
@@ -69,7 +72,7 @@ bool JsonSchema::validate(const string& path){
     string objectPart;
     int inObject = 0;
     int inArray = 0;
-    for (auto token : tokenizer.tokens) {
+    for (const auto& token : tokenizer.tokens) {
         if (inArray > 0 and token.type != "ARRAY_CLOSE" and token.type != "ARRAY_OPEN") {
             arrayPart += token.content;
             continue;
@@ -146,14 +149,10 @@ bool JsonSchema::validate(const string& path){
             if (inObject > 0) {
                 continue;
             }
-            ofstream out("validationgarbagefile.json");
-            out << objectPart << endl;
-            ifstream in("validationgarbagefile.json");
-            json jPart;
-            in >> jPart;
-            for (string name : required) {
+            json jPart = json::parse(objectPart);
+            for (const string& name : required) {
                 bool found = false;
-                for (auto obj : jPart.items()) {
+                for (const auto& obj : jPart.items()) {
                     if (name == obj.key()) {
                         found = true;
                     }
@@ -163,7 +162,7 @@ bool JsonSchema::validate(const string& path){
                 }
             }
             for (auto prop : properties) {
-                for (auto obj : jPart.items()) {
+                for (const auto& obj : jPart.items()) {
                     if (prop.name == obj.key()) {
                         ofstream out("validationgarbagefile.json");
                         out << obj.value() << endl;
@@ -183,4 +182,4 @@ bool JsonSchema::validate(const string& path){
 JsonString::JsonString(int minLength, int maxLength):minLength(minLength),maxLength(maxLength){}
 JsonNumber::JsonNumber(double minimum, double maximum, double multipleOf = 0):minimum(minimum),maximum(maximum),multipleOf(multipleOf){}
 JsonArray::JsonArray(JsonSchema *items, JsonSchema *contains = nullptr, int minItems = 0, int maxItems = 0):items(items),contains(contains),minItems(minItems),maxItems(maxItems){}
-JsonObject::JsonObject(const string & name, const JsonSchema & schema):name(name),schema(schema){}
+JsonObject::JsonObject(string name, JsonSchema schema):name(std::move(name)),schema(std::move(schema)){}
