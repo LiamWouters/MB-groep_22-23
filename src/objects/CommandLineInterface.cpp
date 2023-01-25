@@ -195,7 +195,7 @@ bool CommandLineInterface::parse(const CommandLineInterface::parser &p, const Co
     else if(p == lr && f == eml){
         success.first = lrEml.parse(e.tokens);
         if(!success.first){
-            earleyEml.printErrorReport(XML, v, std::cout);
+            earleyEml.printErrorReport(EML, v, std::cout);
         }
     }
     else if(p == earley && f == json){
