@@ -14,6 +14,8 @@
 #include "EarleyParser/EarleyParser.h"
 #include "CFG.h"
 
+static int outputs = 1;
+
 class CommandLineInterface {
 public:
     enum state{start, selectFile, parserSelect, yesNo, more, exiting};
@@ -23,7 +25,7 @@ public:
 private:
     static void help(const state&);
     static bool validCommand(const state&, const std::string&);
-    static bool parse(const parser&, const fileType&, const std::string&, bool&, bool&);
+    static void parse(const parser&, const fileType&, const std::string&, bool&, bool&);
 };
 
 #endif //MB_GROEP_22_23_COMMANDLINEINTERFACE_H
