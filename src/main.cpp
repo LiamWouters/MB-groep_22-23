@@ -14,12 +14,15 @@ int main(int argc, char* argv[]) {
     JsonGrammarGenerator::generate();
     EMLGrammarGenerator::generateSimplified();
     /*
-    for (int i = 0; i < 103; i++) {
+    compareAllParsers("../tests/input/input-LR1_1.json", 500);
+    compareAllParsers("../tests/input/input-LR1_2.json", 500);
+    compareAllParsers("../tests/input/input-LR1_1.eml", 500);
+     *//*
+    for (int i = 0; i < 500; i++) {
         compareAllParsers("../tests/input/input-LR1_1.json");
         compareAllParsers("../tests/input/input-LR1_2.json");
         compareAllParsers("../tests/input/input-LR1_1.eml");
-    }
-    */
+    }*/
     // JsonSchema test
     /*
     std::string path = "../tests/input/input-json_schema1.json";

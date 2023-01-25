@@ -9,7 +9,7 @@
 #include "ParserComparison.h"
 using std::string;
 
-void compareAllParsers(std::string inputFilePath) {
+void compareAllParsers(std::string inputFilePath, int amount) {
     // get file name
     string fileName = inputFilePath;
     fileName.erase(0, fileName.rfind("/")+1);
@@ -41,45 +41,71 @@ void compareAllParsers(std::string inputFilePath) {
     // gather parser time data
     auto start = std::chrono::high_resolution_clock::now();
     auto stop = std::chrono::high_resolution_clock::now();
-    int lrTime{}, llTime{}, earleyTime{};
+    int lrTime{0}, llTime{0}, earleyTime{0};
     bool parsedCorrectly;
 
-    if (fileType == ".json") {
-        start = std::chrono::high_resolution_clock::now();
-        parsedCorrectly = lrparser->parse(jTokenizer.tokens);
-        stop = std::chrono::high_resolution_clock::now();
-        lrTime = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+    for (int i = 0; i<amount; i++) {
+        if (fileType == ".json") {
+            start = std::chrono::high_resolution_clock::now();
+            parsedCorrectly = lrparser->parse(jTokenizer.tokens);
+            stop = std::chrono::high_resolution_clock::now();
+            lrTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-        if (!parsedCorrectly) {std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl; return;}
+            if (!parsedCorrectly) {
+                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
+                return;
+            }
 
-        start = std::chrono::high_resolution_clock::now();
-        parsedCorrectly = llparser->accepts(jTokenizer.tokens).first;
-        stop = std::chrono::high_resolution_clock::now();
-        llTime = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+            start = std::chrono::high_resolution_clock::now();
+            parsedCorrectly = llparser->accepts(jTokenizer.tokens).first;
+            stop = std::chrono::high_resolution_clock::now();
+            llTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-        if (!parsedCorrectly) {std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl; return;}
+            if (!parsedCorrectly) {
+                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
+                return;
+            }
 
-        start = std::chrono::high_resolution_clock::now();
-        parsedCorrectly = eparser->validate(jTokenizer.tokens);
-        stop = std::chrono::high_resolution_clock::now();
-        earleyTime = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+            start = std::chrono::high_resolution_clock::now();
+            parsedCorrectly = eparser->validate(jTokenizer.tokens);
+            stop = std::chrono::high_resolution_clock::now();
+            earleyTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-        if (!parsedCorrectly) {std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl; return;}
-    } else {
-        start = std::chrono::high_resolution_clock::now();
-        lrparser->parse(eTokenizer.tokens);
-        stop = std::chrono::high_resolution_clock::now();
-        lrTime = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+            if (!parsedCorrectly) {
+                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
+                return;
+            }
+        } else {
+            start = std::chrono::high_resolution_clock::now();
+            parsedCorrectly = lrparser->parse(eTokenizer.tokens);
+            stop = std::chrono::high_resolution_clock::now();
+            lrTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-        start = std::chrono::high_resolution_clock::now();
-        llparser->accepts(eTokenizer.tokens);
-        stop = std::chrono::high_resolution_clock::now();
-        llTime = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+            if (!parsedCorrectly) {
+                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
+                return;
+            }
 
-        start = std::chrono::high_resolution_clock::now();
-        eparser->validate(eTokenizer.tokens);
-        stop = std::chrono::high_resolution_clock::now();
-        earleyTime = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+            start = std::chrono::high_resolution_clock::now();
+            parsedCorrectly = llparser->accepts(eTokenizer.tokens).first;
+            stop = std::chrono::high_resolution_clock::now();
+            llTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+
+            if (!parsedCorrectly) {
+                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
+                return;
+            }
+
+            start = std::chrono::high_resolution_clock::now();
+            parsedCorrectly = eparser->validate(eTokenizer.tokens);
+            stop = std::chrono::high_resolution_clock::now();
+            earleyTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+
+            if (!parsedCorrectly) {
+                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
+                return;
+            }
+        }
     }
 
     // check if HTML table file exists
@@ -115,7 +141,7 @@ void compareAllParsers(std::string inputFilePath) {
     while (getline(inpHtmlTable, htmlLine)) {
         if (!(htmlLine.find("</table>") == htmlLine.npos) && !added) {
             // create new table entry
-            newFile << "<tr>\n<td>" << fileName << "</td>\n<td>" << earleyTime << "</td>\n<td>" << lrTime << "</td>\n<td>" << llTime << "</td>\n<td>" << 1 << "</td>\n</tr>\n";
+            newFile << "<tr>\n<td>" << fileName << "</td>\n<td>" << earleyTime/amount << "</td>\n<td>" << lrTime/amount << "</td>\n<td>" << llTime/amount << "</td>\n<td>" << amount << "</td>\n</tr>\n";
         }
         // replace existing
         newFile << htmlLine << "\n";
@@ -137,9 +163,9 @@ void compareAllParsers(std::string inputFilePath) {
         getline(inpHtmlTable, htmlLine); // get #scans
         if (htmlLine.find("<td>") == htmlLine.npos) { continue; }
         int scans = std::stoi(htmlLine.substr(htmlLine.find("<td>")+4, htmlLine.find("</td>")-4));
-        newFile << "<td>" << ((oge*scans)+earleyTime)/(scans+1) << "</td>\n";
-        newFile << "<td>" << ((oglr*scans)+lrTime)/(scans+1) << "</td>\n";
-        newFile << "<td>" << ((ogll*scans)+llTime)/(scans+1) << "</td>\n";
+        newFile << "<td>" << ((oge*scans)+earleyTime)/(scans+amount) << "</td>\n";
+        newFile << "<td>" << ((oglr*scans)+lrTime)/(scans+amount) << "</td>\n";
+        newFile << "<td>" << ((ogll*scans)+llTime)/(scans+amount) << "</td>\n";
         newFile << "<td>" << scans+1 << "</td>\n";
 
         added = true;
