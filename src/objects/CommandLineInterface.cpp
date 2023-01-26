@@ -92,9 +92,13 @@ void CommandLineInterface::getSchemas() {
     while((entry = ::readdir(dp))){
         if(entry->d_name[0] == '.'){continue;}
         std::string s = schemaMap+entry->d_name;
-        validInputs[schemaSelect].emplace_back(schemaMap+entry->d_name);
-        descriptions[s] = "";
-        schemas.insert({s, JsonSchema(s)});
+        if(s.find(".json") == std::string::npos){continue;}
+        j.tokenizeSimplified(s);
+        if(lrJson.parse(j.tokens)){
+            validInputs[schemaSelect].emplace_back(schemaMap+entry->d_name);
+            descriptions[s] = "";
+            schemas.insert({s, JsonSchema(s)});
+        }
     }
     ::closedir(dp);
 }
