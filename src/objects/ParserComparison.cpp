@@ -9,14 +9,14 @@
 #include "ParserComparison.h"
 using std::string;
 
-void compareAllParsers(std::string inputFilePath, int amount) {
-    if (amount == 0) {return;}
+string compareAllParsers(string inputFilePath, int amount, string outputFilePath) {
+    if (amount == 0) {return "";}
     // get file name
     string fileName = inputFilePath;
     fileName.erase(0, fileName.rfind("/")+1);
 
     // get file type
-    if (fileName.find('.') == fileName.npos) {std::cout << "compareAllParsers ERROR: file error" << std::endl; return;}
+    if (fileName.find('.') == fileName.npos) {return "compareAllParsers ERROR: file error";}
     string fileType = fileName.substr(fileName.find('.'), fileName.npos);
 
     // create parsers
@@ -37,7 +37,7 @@ void compareAllParsers(std::string inputFilePath, int amount) {
         lrparser = new LR1Parser(grammar, true);
         llparser = new LL1Parser(grammar);
         eparser = new EarleyParser(grammar);
-    } else {std::cout << "compareAllParsers ERROR: invalid file type" << std::endl; return;}
+    } else { return "compareAllParsers ERROR: invalid file type";}
 
     // gather parser time data
     auto start = std::chrono::high_resolution_clock::now();
@@ -53,8 +53,7 @@ void compareAllParsers(std::string inputFilePath, int amount) {
             lrTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
             if (!parsedCorrectly) {
-                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
-                return;
+                return "PARSER COMPARISON ERROR: input file must be parseable";
             }
 
             start = std::chrono::high_resolution_clock::now();
@@ -63,8 +62,7 @@ void compareAllParsers(std::string inputFilePath, int amount) {
             llTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
             if (!parsedCorrectly) {
-                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
-                return;
+                return "PARSER COMPARISON ERROR: input file must be parseable";
             }
 
             start = std::chrono::high_resolution_clock::now();
@@ -73,8 +71,7 @@ void compareAllParsers(std::string inputFilePath, int amount) {
             earleyTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
             if (!parsedCorrectly) {
-                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
-                return;
+                return "PARSER COMPARISON ERROR: input file must be parseable";
             }
         } else {
             start = std::chrono::high_resolution_clock::now();
@@ -83,8 +80,7 @@ void compareAllParsers(std::string inputFilePath, int amount) {
             lrTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
             if (!parsedCorrectly) {
-                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
-                return;
+                return "PARSER COMPARISON ERROR: input file must be parseable";
             }
 
             start = std::chrono::high_resolution_clock::now();
@@ -93,8 +89,7 @@ void compareAllParsers(std::string inputFilePath, int amount) {
             llTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
             if (!parsedCorrectly) {
-                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
-                return;
+                return "PARSER COMPARISON ERROR: input file must be parseable";
             }
 
             start = std::chrono::high_resolution_clock::now();
@@ -103,17 +98,26 @@ void compareAllParsers(std::string inputFilePath, int amount) {
             earleyTime += std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
             if (!parsedCorrectly) {
-                std::cout << "PARSER COMPARISON ERROR: input file must be parseable" << std::endl;
-                return;
+                return "PARSER COMPARISON ERROR: input file must be parseable";
             }
         }
     }
 
     // check if HTML table file exists
-    std::ifstream inpHtmlTable("../res/HTMLcomparisonTable.html");
-    if (!inpHtmlTable.good()) {
+    std::ifstream inpHtmlTable(outputFilePath);
+    bool createHTML = !inpHtmlTable.good();
+    if (!createHTML) {
+        // check if start of file is present
+        string line;
+        int numLines{};
+        while (std::getline(inpHtmlTable, line)) {
+            numLines++;
+        }
+        if (numLines < 16) {createHTML = true;} // atleast 16 lines necessary for the standard file with empty table
+    }
+    if (createHTML) {
         // doesn't exist
-        std::ofstream htmlTable("../res/HTMLcomparisonTable.html");
+        std::ofstream htmlTable(outputFilePath);
         htmlTable << "<!DOCTYPE html>\n"
                      "<html>\n"
                      "<head> <h1>Parser Comparison Table: </h1> </head>\n"
@@ -135,7 +139,7 @@ void compareAllParsers(std::string inputFilePath, int amount) {
     inpHtmlTable.close();
 
     // put time data in table
-    inpHtmlTable.open("../res/HTMLcomparisonTable.html");
+    inpHtmlTable.open(outputFilePath);
     string htmlLine;
     std::ostringstream newFile;
     bool added = false;
@@ -172,7 +176,8 @@ void compareAllParsers(std::string inputFilePath, int amount) {
         added = true;
     }
     inpHtmlTable.close();
-    std::ofstream newOutputFile("../res/HTMLcomparisonTable.html");
+    std::ofstream newOutputFile(outputFilePath);
     newOutputFile << newFile.str();
     newOutputFile.close();
+    return "";
 }
