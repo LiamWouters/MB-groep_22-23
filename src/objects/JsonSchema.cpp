@@ -18,7 +18,7 @@ JsonSchema::JsonSchema(const string& path){
     else if (type == "null") {}
     else if (type == "string") {
         int minLength = 0;
-        int maxLength = numeric_limits<int>::infinity();
+        int maxLength = numeric_limits<int>::max();
         if (j.contains("minLength")) {minLength = j["minLength"].get<int>();}
         if (j.contains("maxLength")) {maxLength = j["maxLength"].get<int>();}
         stringdata = new JsonString(minLength, maxLength);
@@ -36,14 +36,18 @@ JsonSchema::JsonSchema(const string& path){
         JsonSchema* items = nullptr;
         JsonSchema* contains = nullptr;
         int minItems = 0;
-        int maxItems = numeric_limits<int>::infinity();
+        int maxItems = numeric_limits<int>::max();
         if (j.contains("items")) {
             json arrayItemType = j["items"];
-            items = new JsonSchema(arrayItemType);
+            ofstream out("schemagarbagefile.json");
+            out << arrayItemType << endl;
+            items = new JsonSchema("schemagarbagefile.json");
         }
         if (j.contains("contains")) {
             json arrayContainType = j["contains"];
-            contains = new JsonSchema(arrayContainType);
+            ofstream out("schemagarbagefile.json");
+            out << arrayContainType << endl;
+            contains = new JsonSchema("schemagarbagefile.json");
         }
         if (j.contains("minItems")) {minItems = j["minItems"].get<int>();}
         if (j.contains("minItems")) {maxItems = j["maxItems"].get<int>();}
@@ -58,16 +62,21 @@ JsonSchema::JsonSchema(const string& path){
             for (const auto& obj : j["properties"].items()) {
                 const string& objName = obj.key();
                 json jo = obj.value();
-                JsonSchema objSchem(jo);
+                ofstream out("schemagarbagefile.json");
+                out << jo << endl;
+                JsonSchema objSchem("schemagarbagefile.json");
                 JsonObject object(objName, objSchem);
                 properties.push_back(object);
             }
         }
     }
 }
-bool JsonSchema::validate(const string& path){
+
+bool JsonSchema::privateValidate(json j){
+    ofstream out("validationgarbagefile.json");
+    out << j << endl;
     JsonTokenizer tokenizer;
-    tokenizer.tokenizeSimplified(path);
+    tokenizer.tokenizeSimplified("validationgarbagefile.json");
     string arrayPart;
     string objectPart;
     int inObject = 0;
@@ -79,6 +88,13 @@ bool JsonSchema::validate(const string& path){
         }
         if (inObject > 0 and token.type != "CURLY_CLOSE" and token.type != "CURLY_OPEN") {
             objectPart += token.content;
+            continue;
+        }
+        if (token.type == "COMMA") {
+            arrayPart += ",";
+            continue;
+        }
+        if (token.type == "COLON") {
             continue;
         }
         if (token.type == "BOOLEAN") {
@@ -133,12 +149,23 @@ bool JsonSchema::validate(const string& path){
             if (inArray > 0) {
                 continue;
             }
-            ofstream out("validationgarbagefile.json");
-            out << arrayPart << endl;
             if (arraydata->items != nullptr) {
-                if (arraydata->items->validate("validationgarbagefile.json")) {
-                    continue;
-                } else {
+                for (const auto& arrayPiece : json::parse(arrayPart)) {
+                    if (arraydata->items->privateValidate(arrayPiece)) {
+                        continue;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            if (arraydata->contains != nullptr) {
+                bool found = false;
+                for (const auto& arrayPiece : json::parse(arrayPart)) {
+                    if (arraydata->contains->privateValidate(arrayPiece)) {
+                        found = true;
+                    }
+                }
+                if (!found) {
                     return false;
                 }
             }
@@ -164,9 +191,7 @@ bool JsonSchema::validate(const string& path){
             for (auto prop : properties) {
                 for (const auto& obj : jPart.items()) {
                     if (prop.name == obj.key()) {
-                        ofstream out("validationgarbagefile.json");
-                        out << obj.value() << endl;
-                        if (prop.schema.validate("validationgarbagefile.json")) {
+                        if (prop.schema.privateValidate(obj.value())) {
                             continue;
                         } else {
                             return false;
@@ -177,6 +202,13 @@ bool JsonSchema::validate(const string& path){
         }
     }
     return true;
+}
+
+bool JsonSchema::validate(const string& path){
+    ifstream input(path);
+    json j;
+    input >> j;
+    return privateValidate(j);
 }
 
 JsonString::JsonString(int minLength, int maxLength):minLength(minLength),maxLength(maxLength){}

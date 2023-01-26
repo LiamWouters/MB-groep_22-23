@@ -32,6 +32,7 @@ class JsonSchema {
     JsonString* stringdata;
     JsonNumber* numberdata;
     JsonArray* arraydata;
+    bool privateValidate(json j);
 
 public:
     explicit JsonSchema(const string& path);

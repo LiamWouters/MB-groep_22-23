@@ -1,0 +1,11 @@
+[
+  2,
+  "hello",
+  [
+    {"objName": "HAHA", "thatOneArray" : [true, true, true, false]},
+    {"objName": "MUHAHA", "thatOneArray" : [false, false, false]}
+  ],
+  "1 hond",
+  3.1415,
+  true
+]
