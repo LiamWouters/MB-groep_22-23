@@ -346,11 +346,17 @@ void CommandLineInterface::parse(const CommandLineInterface::parser &p, const Co
     }
     else if(p == earley && f == json){
         success.first = earleyJson.validateFile(v, Json);
-        if(!success.first){success.second = earleyJson.m_chart.size()-1;}
+        if(!success.first){
+            earleyJson.printErrorReport(Json, v, std::cout);
+            success.second = earleyJson.m_chart.size()-1;
+        }
     }
     else if(p == earley && f == eml){
         success.first = earleyEml.validate(e.tokens);
-        if(!success.first){success.second = earleyEml.m_chart.size()-1;}
+        if(!success.first){
+            earleyJson.printErrorReport(EML, v, std::cout);
+            success.second = earleyEml.m_chart.size()-1;
+        }
     }
     if(success.first){
         std::cout << "\n---> Parsing successful.\n";

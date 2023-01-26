@@ -42,7 +42,7 @@ string compareAllParsers(string inputFilePath, int amount, string outputFilePath
     // gather parser time data
     auto start = std::chrono::high_resolution_clock::now();
     auto stop = std::chrono::high_resolution_clock::now();
-    int lrTime{0}, llTime{0}, earleyTime{0};
+    unsigned long long int lrTime{0}, llTime{0}, earleyTime{0};
     bool parsedCorrectly;
 
     for (int i = 0; i<amount; i++) {
