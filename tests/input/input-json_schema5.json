@@ -1,0 +1,18 @@
+{
+  "type": "array",
+  "contains": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "required": ["thatOneArray"],
+      "properties": {
+        "thatOneArray": {
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
