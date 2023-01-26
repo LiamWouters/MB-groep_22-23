@@ -1,8 +1,8 @@
 Unexpected token of type 'BOOLEAN' with content 'true' at line 4 and column 3.
 
 [
-  {"key1": "hi"},
-  {"key2" :"val2"}
+  {"author": "Tolkien"},
+  {"book": "The Hobbit"}
   true
 
 Instead of a BOOLEAN, the parser expected a: 

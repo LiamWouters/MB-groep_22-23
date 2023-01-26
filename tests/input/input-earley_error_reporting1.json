@@ -1,14 +1,12 @@
 [
-  {"key1": "hi"},
-  {"key2" :"val2"}
+  {"author": "Tolkien"},
+  {"book": "The Hobbit"}
   true,
-  false,
-  null,
   "null",
   false,
-  {"key3": 5.0},
+  {"price": 15.0},
   [
-    {"key4": true},
-    "hello"
+    {"available": true},
+    "Library of Alexandria"
   ]
 ]
