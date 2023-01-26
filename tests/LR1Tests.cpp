@@ -204,10 +204,6 @@ TEST_SUITE("LR1 Parser Tests") {
         CFG* grammar = new CFG("../res/eml_grammar_simplified.json");
         LR1Parser* parser = new LR1Parser(*grammar, true);
 
-        /// SOME OF THE TESTS HERE ARE COMMENTED OUT
-        /// BECAUSE THE TOKENIZER CONTAINS ERRORS (segmentation faults)
-        /// SO THE FILES CANT BE TOKENIZED, and therefor not parsed
-
         // missing "
         EMLTokenizer e;
         e.tokenizeSimplified("../tests/input/input-LR1_falseEML-0.eml");
@@ -220,13 +216,13 @@ TEST_SUITE("LR1 Parser Tests") {
 
         // missing array close tag
         EMLTokenizer e2;
-        //e2.tokenizeSimplified("../tests/input/input-LR1_falseEML-2.eml");
-        //CHECK_FALSE(parser->parse(e2.tokens));
+        e2.tokenizeSimplified("../tests/input/input-LR1_falseEML-2.eml");
+        CHECK_FALSE(parser->parse(e2.tokens));
 
         // incomplete tag
         EMLTokenizer e3;
-        //e3.tokenizeSimplified("../tests/input/input-LR1_falseEML-3.eml");
-        //CHECK_FALSE(parser->parse(e3.tokens));
+        e3.tokenizeSimplified("../tests/input/input-LR1_falseEML-3.eml");
+        CHECK_FALSE(parser->parse(e3.tokens));
 
         // missing ,
         EMLTokenizer e4;
@@ -240,8 +236,8 @@ TEST_SUITE("LR1 Parser Tests") {
 
         // missing root open
         EMLTokenizer e6;
-        //e6.tokenizeSimplified("../tests/input/input-LR1_falseEML-6.eml");
-        //CHECK_FALSE(parser->parse(e6.tokens));
+        e6.tokenizeSimplified("../tests/input/input-LR1_falseEML-6.eml");
+        CHECK_FALSE(parser->parse(e6.tokens));
 
         // extra ,
         EMLTokenizer e7;
