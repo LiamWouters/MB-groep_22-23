@@ -267,7 +267,7 @@ void SyntaxHighlighter::customToHTML2(std::vector<token> &t, int& index, const i
             addLine = "";
         }
         while(addLine.size()<i.pos.column-1){addLine += " ";}
-        if(counter == index || i.type == "UNKNOWN" || i.type.find("INVALID") != std::string::npos){
+        if(counter == index || i.type == "UNKNOWN" || i.type.find("INVALID") != std::string::npos || i.type.find("UNMATCHING") != std::string::npos){
             addLine += red;
             addLine += underline; addLine += i.content; addLine += endTag(underline);
             addLine += endTag(red);
