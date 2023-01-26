@@ -269,7 +269,14 @@ void SyntaxHighlighter::customToHTML2(std::vector<token> &t, int& index, const i
         while(addLine.size()<i.pos.column-1){addLine += " ";}
         if(counter == index || i.type == "UNKNOWN" || i.type.find("INVALID") != std::string::npos || i.type.find("UNMATCHING") != std::string::npos){
             addLine += red;
-            addLine += underline; addLine += i.content; addLine += endTag(underline);
+            addLine += underline;
+            if(i.content[0] == '<'){
+                addLine += "&lt";
+                for(int j = 1; j < i.content.size()-1; j++){addLine += i.content[j];}
+                addLine += "&gt";
+            }
+            addLine += i.content;
+            addLine += endTag(underline);
             addLine += endTag(red);
         }
         else if(i.type == "ARRAY_TAG_OPEN"){
