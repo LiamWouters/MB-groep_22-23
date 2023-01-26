@@ -327,7 +327,7 @@ void CommandLineInterface::parse(const CommandLineInterface::parser &p, const Co
         if(!success.first){success.second = earleyEml.m_chart.size()-1;}
     }
     if(success.first){
-        std::cout << "---> Parsing successful.\n";
+        std::cout << "\n---> Parsing successful.\n";
         if(converse){
             if(f == json){
                 lrJson.printToEML();
@@ -351,25 +351,25 @@ void CommandLineInterface::parse(const CommandLineInterface::parser &p, const Co
     if(highlight){
         if(f == json){
             SyntaxHighlighter::jsonToHTML2(j.tokens, success.second, outputs);
-            std::cout << &"---> output" [ outputs] << ".html created in the \"res\" folder";
+            std::cout << "---> output" + to_string(outputs) << ".html created in the \"res\" folder\n";
             outputs += 1;
         }
         if(f == eml){
             SyntaxHighlighter::customToHTML2(e.tokens, success.second, outputs);
-            std::cout << &"---> output" [ outputs] << ".html created in the \"res\" folder";
+            std::cout << "---> output" + to_string(outputs) << ".html created in the \"res\" folder\n";
             outputs += 1;
         }
         if(converse && success.first){
             if(f == json){
                 e.tokenizeSimplified("../res/EML-conversion-output.eml");
                 SyntaxHighlighter::customToHTML2(e.tokens, success.second, outputs);
-                std::cout << &"---> output" [ outputs] << ".html created in the \"res\" folder";
+                std::cout << "---> output" + to_string(outputs) << ".html created in the \"res\" folder\n";
                 outputs += 1;
             }
             else{
                 j.tokenizeSimplified("../res/JSON-conversion-output.json");
                 SyntaxHighlighter::jsonToHTML2(j.tokens, success.second, outputs);
-                std::cout << &"---> output" [ outputs] << ".html created in the \"res\" folder";
+                std::cout << "---> output" + to_string(outputs) << ".html created in the \"res\" folder\n";
                 outputs += 1;
             }
         }
