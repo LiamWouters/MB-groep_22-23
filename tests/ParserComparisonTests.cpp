@@ -31,6 +31,8 @@ TEST_SUITE("Parser Comparison Tests") {
         oFile.close();
         CHECK_EQ(contentString.find("<td>1</td>"), std::string::npos);
         CHECK_NE(contentString.find("<td>2</td>"), std::string::npos);
+
+        CHECK_EQ(contentString.find("<td>0</td>"), std::string::npos); // no time that is 0 microseconds ()
     }
     TEST_CASE("[Parser Comparison Tests] testJSONcomp1") {
         std::string testOutputFile = "../tests/expected/test-output-htmlCompTable.html";
@@ -61,6 +63,8 @@ TEST_SUITE("Parser Comparison Tests") {
         CHECK_NE(contentString.find("<td>3</td>"), std::string::npos);
         CHECK_NE(contentString.find("<td>input-LR1_2.json</td>"), std::string::npos);
         CHECK_NE(contentString.find("<td>1</td>"), std::string::npos);
+
+        CHECK_EQ(contentString.find("<td>0</td>"), std::string::npos); // no time that is 0 microseconds ()
     }
     TEST_CASE("[Parser Comparison Tests] testEMLcomp0") {
         std::string testOutputFile = "../tests/expected/test-output-htmlCompTable.html";
@@ -77,5 +81,7 @@ TEST_SUITE("Parser Comparison Tests") {
         oFile.close();
         CHECK_NE(contentString.find("<td>input-LR1_1.eml</td>"), std::string::npos);
         CHECK_NE(contentString.find("<td>1</td>"), std::string::npos);
+
+        CHECK_EQ(contentString.find("<td>0</td>"), std::string::npos); // no time that is 0 microseconds ()
     }
 }
