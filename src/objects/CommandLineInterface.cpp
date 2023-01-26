@@ -214,7 +214,7 @@ void CommandLineInterface::simulate(){
                     earleyEml.initChart();
                     earleyEml.fillChart();
                     valid = lrEml.parse(t.tokens);
-                    if(!valid){earleyJson.printErrorReport(EML, file);}
+                    if(!valid){earleyEml.printErrorReport(EML, file);}
                 }
                 if(valid){compareAllParsers(file, 1);
                     std::cout << "\n---> Comparison added to \"HTMLcomparisonTable.html\"\n";
