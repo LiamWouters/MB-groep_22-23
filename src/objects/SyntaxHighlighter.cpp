@@ -225,7 +225,7 @@ void SyntaxHighlighter::jsonToHTML2(std::vector<token> &t, int& index, const int
         if(i.type == "ARRAY_CLOSE"){arrayStack -= 1;}
         if(i.type == "CURLY_OPEN"){curlyStack += 1;}
         if(i.type == "CURLY_CLOSE"){curlyStack -= 1;}
-        if(counter == index || i.type == "UNKNOWN"){
+        if(counter == index || i.type == "UNKNOWN" || i.type.find("INVALID")){
             addLine += red;
             addLine += underline; addLine += i.content; addLine += endTag(underline);
             addLine += endTag(red);
@@ -267,7 +267,7 @@ void SyntaxHighlighter::customToHTML2(std::vector<token> &t, int& index, const i
             addLine = "";
         }
         while(addLine.size()<i.pos.column-1){addLine += " ";}
-        if(counter == index || i.type == "UNKNOWN"){
+        if(counter == index || i.type == "UNKNOWN" || i.type.find("INVALID")){
             addLine += red;
             addLine += underline; addLine += i.content; addLine += endTag(underline);
             addLine += endTag(red);
