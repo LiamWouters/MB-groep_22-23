@@ -130,7 +130,7 @@ void CommandLineInterface::simulate(){
         }
         if(!fileChosen || current == yesNo || current == parserSelect || current == more || current == schemaSelect){std::cout << msgs[current];}
         std::cin >> input;
-        for(auto &i: input){i = std::tolower(i);}
+        if(current != schemaSelect && current != selectFile){for(auto &i: input){i = std::tolower(i);}}
         if(!validCommand(current, input) && current != selectFile){
             std::cout << "\nInvalid command, expected:\n";
             help(current);
