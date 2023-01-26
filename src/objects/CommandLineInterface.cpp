@@ -197,7 +197,29 @@ void CommandLineInterface::simulate(){
             }
             else if(validation){current = schemaSelect;}
             else if(stats){
-                compareAllParsers(file, 1);
+                bool valid = false;
+                if(type == json){
+                    JsonTokenizer t; t.tokenizeSimplified(file);
+                    earleyJson.m_chart.clear();
+                    earleyJson.m_input = t.tokens;
+                    earleyJson.initChart();
+                    earleyJson.fillChart();
+                    valid = lrJson.parse(t.tokens);
+                    if(!valid){earleyJson.printErrorReport(Json, file);}
+                }
+                if(type == eml){
+                    EMLTokenizer t; t.tokenizeSimplified(file);
+                    earleyEml.m_chart.clear();
+                    earleyEml.m_input = t.tokens;
+                    earleyEml.initChart();
+                    earleyEml.fillChart();
+                    valid = lrEml.parse(t.tokens);
+                    if(!valid){earleyJson.printErrorReport(EML, file);}
+                }
+                if(valid){compareAllParsers(file, 1);
+                    std::cout << "\n---> Comparison added to \"HTMLcomparisonTable.html\"\n";
+                }
+                else{std::cout << "\n---> Comparison aborted.\n";}
                 current = more;
             }
             else{current = parserSelect;}
