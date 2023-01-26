@@ -145,6 +145,7 @@ void CommandLineInterface::simulate(){
                 fileChosen = false;
                 parserChosen = false;
                 stats = false;
+                validation = false;
                 current = start;
                 p = null;
                 type = none;
